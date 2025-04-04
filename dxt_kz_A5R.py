@@ -6,6 +6,7 @@ import pytz
 from astropy.time import Time
 from astropy import units as u
 from astropy.coordinates import EarthLocation
+from astropy.utils.iers import conf
 conf.iers_degraded_accuracy = 'warn'
 
 from dxt_rl import *
