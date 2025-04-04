@@ -6,6 +6,8 @@ import pytz
 from astropy.time import Time
 from astropy import units as u
 from astropy.coordinates import EarthLocation
+conf.iers_degraded_accuracy = 'warn'
+
 from dxt_rl import *
 from dxt_zp import build_dxt_zp
 from legend_mag import plot_legend_mag_at
