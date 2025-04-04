@@ -26,6 +26,9 @@ class CONFIG:
     fbg_a5r_yw_n = 'skyl_bg_n_y%s_A5R_yw.png' # % year <- sky_rl_bg.py
     fbg_a5r_yw_s = 'skyl_bg_s_y%s_A5R_yw.png' # % year <- sky_rl_bg.py
 
+    # iers_auto_url
+    iers_auto_url= Path(interpath, 'finals2000A.all')
+    
     # paper metrics info
     DPI=600
     MARGIN= DPI/8

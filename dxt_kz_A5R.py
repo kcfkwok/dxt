@@ -9,6 +9,7 @@ from astropy.coordinates import EarthLocation
 from astropy.utils.iers import conf
 conf.iers_degraded_accuracy = 'warn'
 
+
 from dxt_rl import *
 from dxt_zp import build_dxt_zp
 from legend_mag import plot_legend_mag_at
@@ -20,6 +21,18 @@ import qrcode
 from def_plnt import K_SUN
 from table_jieqi_to_zod_and_zhemonth import table_jieqi_to_zod_and_zhemonth
 from pathlib import Path
+import platform
+
+# 假设本地文件路径为 d:\kcf\inter\finals2000A.all
+if platform.system()=='Linux':
+    local_file_path = Path(config.interpath,'finals2000A.all')
+else:    
+    local_file_path = Path(r'd:\kcf\inter\finals2000A.all')
+# 将本地文件路径转换为 file:// 格式的 URL
+file_url = local_file_path.as_uri()
+
+# 设置 iers_auto_url 为 file:// 格式的 URL
+conf.iers_auto_url = file_url
 
 def day_cald(draw,x,y,year,month,day,hour=0,minute=0,show_hm=False,tzn=8):
     ystep=100
