@@ -3,12 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_babel import Babel, gettext
 from secret_key import secret_key
 from config import config
-from models import db, User
-from user_views import user_bp, get_user_style, get_admin_location_info
 from image_generator import dxt_rl_img, dxt_kz_img, dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp
 from pdf_generator import dxt_rl_pdf, dxt_xt_pdf, dxt_zp_pdf, dxt_kz_pdf
-
+from default_info import default_info
 from io import BytesIO
+from timezonefinder import TimezoneFinder
 
 
 
@@ -33,68 +32,26 @@ def get_locale():
 def inject_get_locale():
     return dict(get_locale=get_locale)
 
-# 初始化数据库
-db.init_app(app)
-
-@app.route('/choose_style', methods=['GET', 'POST'])
-def choose_style():
-    username = session.get('username')
-    if not username:
-        return redirect('/login')
-
-    if request.method == 'POST':
-        style = request.form.get('style')
-        user = User.query.filter_by(username=username).first()
-        if user:
-            user.style = style
-            db.session.commit()
-        return redirect('/')
-
-    return render_template('choose_style.html', username=username)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    admin_info = get_admin_location_info()
     print('*** index.html')
     if request.method == 'POST':
         lang = request.form.get('lang')
         session['lang'] = lang
         return redirect('/')
-
-    username = session.get('username')
-    print(f"Index route - Username from session: {username}")  # 添加调试信息
-    print(f"Session data in index route: {session}")  # 添加调试信息
-
-    style = get_user_style(username)
-    user = User.query.filter_by(username=username).first()
-    if user:
-        user_info = (user.latitude, user.longitude, user.location, user.timezone)
-    elif 'location_info' in session:
+    if 'location_info' in session:
         location_info = session['location_info']
         user_info = (location_info['latitude'], location_info['longitude'], location_info['location'], location_info['timezone'])
-    elif admin_info:
-        user_info = admin_info
+    elif default_info:
+        user_info = default_info
     else:
-        user_info = []
-
-    # 根据用户登录状态和数据库信息确定位置名称
-    if username:  # 如果用户已登录
-        if user and user.location:
-            location_text = user.location
-        else:
-            location_text = '香港'
-    elif 'location_info' in session:
-        location_text = session['location_info']['location']
-    else:
-        user_id_1 = User.query.filter_by(id=1).first()
-        if user_id_1 and user_id_1.location:
-            location_text = user_id_1.location
-        else:
-            location_text = '香港'
+        user_info = [22.0,114.0,'香港','Asia/Hong_Kong']
+    location_text=user_info[2]
     content = request.args.get('content', None)
     if content is None:
         print('render index.html')
-        return render_template('index.html', username=username, style=style, user_info=user_info, location_text=location_text)
+        return render_template('index.html',user_info=user_info, location_text=location_text)
     print('content:', content)
     m = re_rl.match(content)
     if m is not None:
@@ -112,17 +69,11 @@ def index():
 
 @app.route('/clock')
 def clock():
-    admin_info = get_admin_location_info()
-    username = session.get('username')
-    style = get_user_style(username)
-    user = User.query.filter_by(username=username).first()
-    if user:
-        user_info = (user.latitude, user.longitude, user.location, user.timezone)
-    elif 'location_info' in session:
+    if 'location_info' in session:
         location_info = session['location_info']
         user_info = (location_info['latitude'], location_info['longitude'], location_info['location'], location_info['timezone'])
-    elif admin_info:
-        user_info = admin_info
+    elif default_info:
+        user_info = default_info
     else:
         user_info = [None, None, None, None]
 
@@ -195,20 +146,6 @@ def dxt_rl():
 @app.route('/dxt_xt_img_rq')
 def dxt_xt_img_rq():
     content = request.args.get('content', None)
-    skip='''
-    year = 0
-    if content is not None:
-        m = re_xt.match(content)
-        year, = m.groups()
-        year = int(year)
-
-    if year == 0:
-        timezone = 'Asia/Hong_Kong'
-        hktz = pytz.timezone(timezone)
-        utc_now = datetime.datetime.utcnow()
-        now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
-        year = now.year
-    '''
     result = dxt_xt_img(content)
     if isinstance(result, str):  # 如果返回的是错误信息
         return result
@@ -259,18 +196,49 @@ def dxt_zp():
 
     return render_template('dxt_zp.html', latitude=latitude, longitude=longitude, location=location, timezone=timezone)
 
+@app.route('/set_location', methods=['GET', 'POST'])
+def set_location():
+    tf = TimezoneFinder()
+    if request.method == 'POST':
+        latitude = request.form.get('latitude')
+        longitude = request.form.get('longitude')
+        location = request.form.get('location')[:20]
+        if latitude and longitude:
+            latitude = float(latitude)
+            longitude = float(longitude)
+            timezone = tf.timezone_at(lng=longitude, lat=latitude)
+        else:
+            timezone = None
 
-#@app.route('/')
-#def hello_world():
-#    return 'New Hello from Flask!'
+        # 将位置信息保存到 session 中
+        session['location_info'] = {
+            'latitude': latitude,
+            'longitude': longitude,
+            'location': location,
+            'timezone': timezone
+        }
 
-# 注册蓝图
-app.register_blueprint(user_bp)
+        return redirect('/set_location')
+        
+    user_info = []
+    location_info = session.get('location_info')
+    if location_info:
+        user_info = (
+            location_info['latitude'],
+            location_info['longitude'],
+            location_info['location'],
+            location_info['timezone']
+        )
+    else:
+        user_info = default_info
+
+    return render_template('set_location.html', user_info=user_info)
+
+
+
 
 # 将 get_first_created_username 函数注册到 Jinja2 环境中
-app.jinja_env.globals.update(get_first_created_username=get_admin_location_info)
-
-
+#app.jinja_env.globals.update(get_first_created_username=get_admin_location_info)
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0', port=5001,debug=True)
+    app.run(debug=True)

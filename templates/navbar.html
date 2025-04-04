@@ -4,14 +4,4 @@
     {% if request.endpoint != 'index' %}
         <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a> |
     {% endif %}
-    {% if username %}
-        {{ gettext('Logged in as') }} : {{ username }} <a href="/logout">{{ gettext('Logout') }}  </a> | <a href="/change_password">{{ gettext('Change Password') }} </a>
-        {% if username == get_first_created_username() %}
-            | <a href="/delete_account">{{ gettext('Delete Account') }}</a>
-        {% endif %}
-        | <a href="/change_location">{{ gettext('Change Location') }}</a>
-        | <a href="/choose_style">{{ gettext('Choose Style') }}</a>
-    {% else %}
-        {{ gettext('Not logged in') }} <a href="/login">{{ gettext('Login') }}</a> | <a href="/register">{{ gettext('Register') }}</a>
-    {% endif %}
 </div>
