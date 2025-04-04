@@ -2,7 +2,7 @@ import platform
 from pathlib import Path
 
 APP_NAME='dxt'
-if platform.system=='Linux':
+if platform.system()=='Linux':
     user_home = Path.home()
     app_home = Path(Path.home(),APP_NAME)
 else:
