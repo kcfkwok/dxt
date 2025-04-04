@@ -181,3 +181,9 @@ cython_debug/
 .#*
 \#*#
 .env
+
+# user specific
+secret_key.py
+win_user_home.py
+AstroModule.py
+plnt.py

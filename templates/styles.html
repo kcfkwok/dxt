@@ -1,0 +1,15 @@
+<!-- templates/styles.html -->
+<style>
+    body {
+        {% if style == 'dark' %}
+            background-color: #333;
+            color: white;
+        {% elif style == 'light' %}
+            background-color: #f0f0f0;
+            color: #333;
+        {% else %}
+            background-color: white;
+            color: #333;
+        {% endif %}
+    }
+</style>

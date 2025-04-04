@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+    <title>{{ gettext('DongXingTu - Change Location') }}  </title>
+    <!-- 引入 Leaflet 的 CSS 和 JavaScript 文件 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- 引入 Leaflet.Geocoder 插件 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
+    {% include 'styles.html' %}
+    <style>
+	    body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+    <script>
+        function initMap() {
+            var map = L.map('map').setView([30, 0], 2);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            }).addTo(map);
+
+            // 用于存储当前标记，方便后续移除
+            var currentMarker = null;
+
+            map.on('click', function (e) {
+                var latitude = e.latlng.lat;
+                var longitude = e.latlng.lng;
+
+                // 如果已有标记，先移除
+                if (currentMarker) {
+                    map.removeLayer(currentMarker);
+                }
+
+                // 添加新的标记
+                currentMarker = L.marker([latitude, longitude]).addTo(map);
+
+                var geocoder = L.Control.Geocoder.nominatim();
+                geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), function (results) {
+                    if (results.length > 0) {
+                        var location = results[0].name.slice(0, 20);
+
+                        document.getElementById('latitude').value = latitude;
+                        document.getElementById('longitude').value = longitude;
+                        document.getElementById('location').value = location;
+                        // 可以在这里添加获取时区信息并填充表单的逻辑
+                    } else {
+                        alert('未能获取到该地点的地址信息，请重试。');
+                    }
+                }, function (error) {
+                    alert('地理编码出错: ' + error);
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <h1>{{ gettext('Change Location Information') }}</h1>
+    {% if success %}
+        <p style="color: green;">{{ success }}</p>
+    {% endif %}
+    <form id="locationForm" method="post">
+        <label for="latitude">{{ gettext('Latitude') }}:</label>
+        <input type="text" id="latitude" name="latitude" value="{{ user_info[0] if user_info else '' }}"><br>
+        <label for="longitude">{{ gettext('Longitude') }}:</label>
+        <input type="text" id="longitude" name="longitude" value="{{ user_info[1] if user_info else '' }}"><br>
+        <label for="location">{{ gettext('Location') }}:</label>
+        <input type="text" id="location" name="location" value="{{ user_info[2] if user_info else '' }}"><br>
+        <label for="timezone">{{ gettext('Timezone') }}:</label>
+        <input type="text" id="timezone" name="timezone" value="{{ user_info[3] if user_info else '' }}"><br>
+        <button type="button" onclick="initMap();">{{ gettext('Open Map') }}</button>
+        <input type="submit" value="{{ gettext('Save Changes') }} ">
+    </form>
+    <div id="map"></div>
+</body>
+</html>

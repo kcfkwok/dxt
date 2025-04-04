@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+    <title>{{ gettext('DongXingTu - Choose Style') }} </title>
+		<style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+		</style>
+</head>
+<body>
+  {% include 'navbar.html' %}
+    <h1>{{ gettext('Choose Your Style') }} </h1>
+    <form method="post">
+        <label for="default">{{ gettext('Default') }}</label>
+        <input type="radio" id="default" name="style" value="default" checked><br>
+        <label for="dark">{{ gettext('Dark') }}</label>
+        <input type="radio" id="dark" name="style" value="dark"><br>
+        <label for="light">{{ gettext('Light') }}</label>
+        <input type="radio" id="light" name="style" value="light"><br>
+        <input type="submit" value="{{ gettext('Save Style') }} ">
+    </form>
+</body>
+</html>

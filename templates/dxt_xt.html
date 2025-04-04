@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+    <title>{{ gettext('DongXingTu - Background Star Chart') }} </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+        #dxt_xt-image {
+            margin: 5px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+        #dxt_xt-img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+    {% include 'styles.html' %}
+  </head>
+  <body>
+    <!--<h1>DongXingTu</h1>-->
+    {{ gettext('Background Star Chart') }} &nbsp;&nbsp;&nbsp;<button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
+    <div id="dxt_xt-image">
+        <img src="" alt="DXT RL" id="dxt_xt-img">
+    </div>
+    <script>
+        function downloadPDF() {
+            // 假设 content 参数需要根据实际情况生成
+            const content = 'xt-{{ year }}'; 
+            const downloadUrl = `/download?content=${content}`;
+            window.location.href = downloadUrl;
+        }
+
+        const year = '{{ year }}';
+		let imagePath;
+        if (year === '0') {
+            imagePath = 'static/dxt_xt_A4.png';
+        } else {
+            imagePath = `dxt/dxt_xt_${year}_A4.png`;
+        }
+        const imgElement = document.getElementById('dxt_xt-img');
+
+        const img = new Image();
+        img.src = imagePath;
+        img.onload = function() {
+            // 如果图像加载成功，则显示该图像
+            imgElement.src = imagePath;
+        };
+        img.onerror = function() {
+            // 如果图像加载失败，则使用 dxt_xt_img_rq 生成图像
+            imgElement.src = "{{ url_for('dxt_xt_img_rq', content='xt-' +  year ) }}";
+        };
+    </script>
+  </body>
+</html>

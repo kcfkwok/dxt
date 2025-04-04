@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="UTF-8">
+	<link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+    <title>{{ gettext('DongXingTu - Register') }}</title>
+		<style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+		</style>
+    {% include 'styles.html' %}
+</head>
+<body>
+    <h1>{{ gettext('Register') }}</h1>
+    {% include 'navbar.html' %}
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+        <label for="username">{{ gettext('Username:') }}</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">{{ gettext('Password:') }}</label>
+        <input type="password" id="password" name="password" required><br>
+        <input type="submit" value="{{ gettext('Register') }}">
+    </form>
+</body>
+</html>

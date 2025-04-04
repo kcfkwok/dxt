@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+  <head>
+   <meta charset="UTF-8">
+    <link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+	<title>{{ gettext('DongXingTu - Check Other Times') }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+        #dxt_kz-image {
+            margin: 5px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+	#dxt_kz-img {
+	    max-width: 100%;
+	    max-height: 100%;
+	}
+    </style>
+	{% include 'styles.html' %}
+</head>
+<body>
+    <!--<h1>DongXingTu</h1>-->
+    {{ gettext('Check Other Times') }} &nbsp;&nbsp;&nbsp;
+    {{ gettext('Month') }}:
+	    <select id="month">
+        {% for i in range(1, 13) %}
+            <option value="{{ i }}" {% if i == month|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+	{{ gettext('Day') }}:
+	    <select id="day">
+        {% for i in range(1, 32) %}
+            <option value="{{ i }}" {% if i == day|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+	{{ gettext('Hour') }}:
+	    <select id="hour">
+        {% for i in range(0, 24) %}
+            <option value="{{ i }}" {% if i == hour|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+	{{ gettext('Minute') }}:
+	    <select id="minute">
+        {% for i in range(0, 60) %}
+            <option value="{{ i }}" {% if i == minute|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    <button id="go-button" onclick="goToDxtKz()">{{ gettext('去看看') }}</button>	&nbsp;&nbsp;&nbsp;  <button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
+    <div id="dxt_kz-image">
+	<img src="{{ url_for('dxt_kz_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}" alt="DXT KZ" id="dxt_kz-img">
+    </div>
+    <script>
+        function downloadPDF() {
+            // 假设 content 参数需要根据实际情况生成
+            const content = 'kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-{{ month }}-{{ day }};{{ hour }}-{{ minute }}'; 
+            const downloadUrl = `/download?content=${content}`;
+            window.location.href = downloadUrl;
+        }
+		function goToDxtKz() {
+            const month = document.getElementById('month').value;
+            const day = document.getElementById('day').value;
+            const hour = document.getElementById('hour').value;
+            const minute = document.getElementById('minute').value;
+            const content = `kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-${month}-${day};${hour}-${minute}`;
+            const url = `/dxt_kz?content=${content}`;
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

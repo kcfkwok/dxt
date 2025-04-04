@@ -1,0 +1,45 @@
+WHITE = (255,255,255,255)
+BLACK = (0,0,0,255)
+RED=(255,0,0,255)
+GREEN=(0,255,0,255)
+BLUE=(0,0,255,255)
+YELLOW=(255,255,0,255)
+COLOR_BLUE=BLUE
+COLOR_RED=RED
+#春季：浅草绿 #C1E1C1
+#夏季：晴空蓝 #87CEEB
+#秋季：枫叶橙 #FF7F50
+#冬季：冰晶白 #F0FFFF
+COLOR_SPRING =(0xC1,0xE1,0xC1,255)
+COLOR_SUMMAR =(0x87,0xCE,0xEB,255)
+COLOR_AUTUMN = (0xFF,0x7F, 0x50,255)
+COLOR_WINTER= (0xF0,0xFF,0xFF, 255)
+# color used for book fontpage
+BK_ORANGE=(255, 165, 0,255)
+COLOR_JIEQI={
+    '春分':COLOR_SPRING,
+    '清明':COLOR_SPRING,
+    '谷雨':COLOR_SPRING,
+    '立夏':COLOR_SUMMAR,
+    '小满':COLOR_SUMMAR,
+    '芒种':COLOR_SUMMAR,
+    '夏至':COLOR_SUMMAR,
+    '小暑':COLOR_SUMMAR,
+    '大暑':COLOR_SUMMAR,
+    '立秋':COLOR_AUTUMN,
+    '处暑':COLOR_AUTUMN,
+    '白露':COLOR_AUTUMN,
+    '秋分':COLOR_AUTUMN,
+    '寒露':COLOR_AUTUMN,
+    '霜降':COLOR_AUTUMN,
+    '立冬':COLOR_WINTER,
+    '小雪':COLOR_WINTER,
+    '大雪':COLOR_WINTER,
+    '冬至':COLOR_WINTER,
+    '小寒':COLOR_WINTER,
+    '大寒':COLOR_WINTER,
+    '立春':COLOR_SPRING,
+    '雨水':COLOR_SPRING,
+    '惊蛰':COLOR_SPRING,
+    
+}

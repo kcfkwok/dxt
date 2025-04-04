@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+  <head>
+   <meta charset="UTF-8">
+    <link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+	<title>{{ gettext('DongXingTu - Make a Turntable') }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+        #dxt_zp-image {
+            margin: 5px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+	#dxt_zp-img {
+	    max-width: 100%;
+	    max-height: 100%;
+	}
+    </style>
+	{% include 'styles.html' %}
+</head>
+<body>
+    <!--<h1>DongXingTu</h1>-->
+    {{ gettext('Make a Turntable') }} &nbsp;&nbsp;&nbsp;  <button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
+    <div id="dxt_zp-image">
+	<img src="{{ url_for('dxt_zp_img_rq', content='zp_' +  latitude + ';' + longitude + ';' + location +';' + timezone ) }}" alt="DXT ZP" id="dxt_zp-img">
+    </div>
+    <script>
+        function downloadPDF() {
+            // 假设 content 参数需要根据实际情况生成
+            const content = 'zp_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }}'; 
+            const downloadUrl = `/download?content=${content}`;
+            window.location.href = downloadUrl;
+        }
+    </script>
+</body>
+</html>

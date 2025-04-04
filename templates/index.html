@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+    <title>{{ gettext('DongXingTu') }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+		#clock-image {
+            margin: 5px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            position: relative; 
+        }
+        #clock-img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+		#save-moment-button {
+            position: absolute; 
+            top: 10px;
+            right: 10px;
+        }
+		#other-time-button {
+            position: absolute; 
+            top: 50px; /* 可以根據需要調整按鈕的垂直位置 */
+            right: 10px;
+        }
+    </style>
+    {% include 'styles.html' %}
+  </head>
+  <body>
+    <!--<h1>DongXingTu</h1>-->
+    
+    {{ gettext('Live sky map') }} ({{ location_text }}) &nbsp;&nbsp;&nbsp;
+    <label for="interval">{{ gettext('Update') }}:</label>
+    <select id="interval">
+        <option value="60000">1 {{ gettext('Minute') }}</option>
+        <option value="300000">5 {{ gettext('Minute') }}</option>
+        <option value="600000">10 {{ gettext('Minute') }}</option>
+    </select>
+	<button id="dxt_rl">{{ gettext('Planets Today') }}</button>
+	<button id="dxt_xt">{{ gettext('Background Star Chart') }}</button>
+    {% if not username %}
+        <button id="set-location">{{ gettext('Change Location') }}</button>
+    {% endif %}
+    <button id="dxt_zp_button">{{ gettext('Make a Turntable') }}</button>
+    <form method="post">
+        <button type="submit" name="lang" value="zh">{{ gettext('中文') }}</button>
+        <button type="submit" name="lang" value="en">{{ gettext('English') }}</button>
+    </form>
+	
+    {% include 'navbar.html' with context %}
+    <div id="clock-image">
+        <img src="/clock" alt="Current Time" id="clock-img">
+		<button id="save-moment-button">{{ gettext('Capture this moment') }}</button> 
+		<button id="other-time-button">{{ gettext('Check Other Times') }}</button>
+    </div>
+
+    <script>
+        let timer;
+        const clockImg = document.getElementById('clock-img');
+        const intervalSelect = document.getElementById('interval');
+        const saveMomentButton = document.getElementById('save-moment-button'); 
+		const otherTimeButton = document.getElementById('other-time-button');
+		
+        function updateClock() {
+            // Add timestamp to prevent caching
+            clockImg.src = '/clock?' + new Date().getTime();
+        }
+
+        function startTimer(interval) {
+            if (timer) clearInterval(timer);
+            updateClock();
+            timer = setInterval(updateClock, interval);
+        }
+
+        // Initial timer with default interval
+        startTimer(60000);
+
+        // Handle interval change
+        intervalSelect.addEventListener('change', (e) => {
+            startTimer(parseInt(e.target.value));
+        });
+        // Add event listener for the button
+        const openRLPageButton = document.getElementById('dxt_rl');
+        openRLPageButton.addEventListener('click', () => {
+		    //window.open('/?content=rl-0-0-0', '_self');
+            window.open('/dxt_rl', '_self');
+        });
+		const openXTPageButton = document.getElementById('dxt_xt');
+        openXTPageButton.addEventListener('click', () => {
+            //window.open('/?content=xt-0', '_self');
+		    window.open('/dxt_xt', '_self');	
+        });
+	
+        const setLocationButton = document.getElementById('set-location');
+        if (setLocationButton) {
+            setLocationButton.addEventListener('click', () => {
+                window.open('/set_location', '_self');
+            });
+        }
+		document.getElementById('dxt_zp_button').addEventListener('click', function() {
+            var latitude = "{{ user_info[0] }}";
+            var longitude = "{{ user_info[1] }}";
+            var location = "{{ user_info[2] }}";
+            var timezone = "{{ user_info[3] }}";
+            var content = "zp_" + latitude + ";" + longitude + ";" + location + ";" + timezone;
+            window.location.href = "/dxt_zp?content=" + content;
+        });
+	
+        saveMomentButton.addEventListener('click', () => {
+            var latitude = "{{ user_info[0] }}";
+            var longitude = "{{ user_info[1] }}";
+            var location = "{{ user_info[2] }}";
+            var timezone = "{{ user_info[3] }}";
+           //download?content=kz_<latitude>;<longitude>;<location>;<timezone>
+            var content = "kz_" + latitude + ";" + longitude + ";" + location + ";" + timezone;
+            var downloadUrl = `/download?content=${content}`;
+            window.location.href = downloadUrl;
+        });
+		// Add event listener for the other-time-button
+        otherTimeButton.addEventListener('click', function() {
+            var latitude = "{{ user_info[0] }}";
+            var longitude = "{{ user_info[1] }}";
+            var location = "{{ user_info[2] }}";
+            var timezone = "{{ user_info[3] }}";
+            var content = "kz_" + latitude + ";" + longitude + ";" + location + ";" + timezone;
+            window.location.href = "/dxt_kz?content=" + content;
+        });
+    </script>
+  </body>
+</html>
