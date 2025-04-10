@@ -24,6 +24,9 @@ re_zp = re.compile(r_zp)
 r_kz0= r'kz_(-?\d+(\.\d+)?);(-?\d+(\.\d+)?);([^;]+);(.*)'
 re_kz0 = re.compile(r_kz0)
 
+r_kz1= r'kz_(-?\d+(\.\d+)?);(-?\d+(\.\d+)?);([^;]+);(.*);(\d+)-(\d+)-(\d+);(\d+)-(\d+)'
+re_kz1 = re.compile(r_kz1)
+
 from flask import render_template_string
 import os
 
@@ -319,24 +322,59 @@ def dxt_zp_pdf(content):
 def dxt_kz_pdf(content):
     location = None
     if content is not None:
+        m1 = re_kz1.match(content)
+        if m1 is None:
+            m0 = re_kz0.match(content)
+            if m0 is None:
+                error_html = '<html><body><h1>該location暫未支持</h1></body></html>'
+                return render_template_string(error_html)
+                
+    if m1 is not None:
+        lats,_,longs,_,location,timezone,year,month,day,hour,minute = m1.groups()
+    else:
+        lats,_,longs,_,location,timezone = m0.groups()
+        year=0
+    skip="""
+    location = None
+    if content is not None:
         m = re_kz0.match(content)
         lats,_,longs,_,location,timezone = m.groups()
         latv = float(lats)
         longv = float(longs)
-
+    """
     if location is None:
         error_html = '<html><body><h1>該location暫未支持</h1></body></html>'
         return render_template_string(error_html)
-             
-    fn = 'dxt_kz_%.2f_%.2f_%s_A4.pdf' % (latv, longv, location)
+       
+    latv = float(lats)
+    longv = float(longs)
+    year = int(year)
+    if year ==0:
+        tz = pytz.timezone(timezone)
+        utc_now = datetime.datetime.utcnow()
+        now = utc_now.replace(tzinfo=pytz.utc).astimezone(tz)
+        year = now.year
+        month = now.month
+        day = now.day
+        hour = now.hour
+        minute = now.minute  
+        
+    month=int(month)
+    day = int(day)
+    hour=int(hour)
+    minute= int(minute)
+    
+    fn = 'dxt_kz_%.2f_%.2f_%s_%02d%02d%02dT%02d%02d_A4.pdf' % (latv, longv, location,
+        year,month,day,hour,minute)
     config.debug = False
     
     try:
-        hktz = pytz.timezone(timezone)
-        utc_now = datetime.datetime.utcnow()
-        now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
+        #hktz = pytz.timezone(timezone)
+        #utc_now = datetime.datetime.utcnow()
+        #now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
+        dt = datetime_w_timezone(year,month,day,hour,minute,0,timezone)
         config.hor_cir_opacity=128
-        paper = make_dxt_kz_A4L(now, latv, longv, location, timezone)
+        paper = make_dxt_kz_A4L(dt, latv, longv, location, timezone)
         x = config.banner_x
         y = config.banner_y
         layer = paper.add_layer(name='banner')
