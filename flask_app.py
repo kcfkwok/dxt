@@ -3,13 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_babel import Babel, gettext
 from secret_key import secret_key
 from config import config
-from image_generator import dxt_rl_img, dxt_kz_img, dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp
+from image_generator import dxt_rl_img, dxt_kz_img, dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp, re_kz0, re_kz1
 from pdf_generator import dxt_rl_pdf, dxt_xt_pdf, dxt_zp_pdf, dxt_kz_pdf
 from default_info import default_info
 from io import BytesIO
 from timezonefinder import TimezoneFinder
-
-
+import pytz
+import datetime
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -116,6 +116,60 @@ def download():
         download_name=fn,
         mimetype='application/pdf'
     )
+
+@app.route('/dxt_kz_img_rq')
+def dxt_kz_img_rq():
+    content = request.args.get('content', None)
+    result = dxt_kz_img(content)
+    if isinstance(result, str):  # 如果返回的是错误信息
+        return result
+    buf = BytesIO()
+    result.save(buf, format='PNG')
+    buf.seek(0)
+    return Response(buf.getvalue(), mimetype='image/png')
+
+
+@app.route('/dxt_kz')
+def dxt_kz():
+    content = request.args.get('content', None)
+    print('dxt_kz content:%s' % content)
+    if content is None:
+        return render_template('index.html')
+    print('content:', content)
+    # 这里可以添加对 content 格式的验证
+    m1 = re_kz1.match(content)
+    if m1 is None:
+        m0 = re_kz0.match(content)
+        if m0 is None:
+            return render_template('index.html')
+
+    if m1 is not None:
+        lats,_,longs,_,location,timezone,year,month,day,hour,minute = m1.groups()
+    else:
+        lats,_,longs,_,location,timezone = m0.groups()
+        year='0'
+        month='0'
+        day='0'
+        hour='0'
+        minute='0'
+
+    latitude = '%.2f' % float(lats)
+    longitude = '%.2f' % float(longs)
+
+    if year=='0':
+        hktz = pytz.timezone(timezone)
+        utc_now = datetime.datetime.utcnow()
+        now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
+        year = '%s' % now.year
+        if month=='0':
+            month = '%s' % now.month
+            day = '%s' % now.day
+            hour = '%s' % now.hour
+            minute = '%s' % now.minute
+    print('lats:%s longs:%s loc:%s tz:%s %s-%s-%s %s:%s' % (lats,longs,location,timezone,
+    year,month,day,hour,minute))
+    return render_template('dxt_kz.html', latitude=latitude, longitude=longitude, location=location, timezone=timezone, year=year,month=month,day=day,hour=hour,minute=minute)
+
 
 @app.route('/dxt_rl_img_rq', methods=['GET'])
 def dxt_rl_img_rq():
