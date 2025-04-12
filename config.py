@@ -51,9 +51,17 @@ class CONFIG:
     MM_UNIT = DPI/25.4
     xc1 = int(70 * MM_UNIT)
     yc1 = int(77 * MM_UNIT)
+    xckz = int(70 * MM_UNIT)  # Crosshair center X coordinate
+    yckz = int(77 * MM_UNIT)  # Crosshair center Y coordinate
     xc2 = int(70 * MM_UNIT *2 + 60 * MM_UNIT)
     yc2 = int(77 * MM_UNIT)
 
+    r1 = round(2.333 * DPI) 
+    r2 = r1 - 60
+    r3 = r2 - 60
+    r4 = r3 - 60
+    r5 = r4 -60
+    
     banner_x = int(10*MM_UNIT)
     banner_y = int(4*MM_UNIT)
 

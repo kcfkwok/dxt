@@ -19,12 +19,6 @@
             max-width: 100%;
             max-height: 100%;
         }
-		canvas {
-            border: 1px solid #000;
-            margin-top: 20px;
-			max-width: 100%;
-            max-height: 100%;
-        }
 
     </style>
     {% include 'styles.html' %}
@@ -32,83 +26,12 @@
   <body>
     <!--<h1>DongXingTu</h1>-->
     {{ gettext('Background Star Chart') }} &nbsp;&nbsp;&nbsp;<button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
-	<!--
+	
     <div id="dxt_xt-image">
-        <img src="" alt="DXT RL" id="dxt_xt-img">
+        <img src="{{ url_for('dxt_xt_img_rq', content='xt-' +  year ) }}" alt="DXT RL" id="dxt_xt-img">
     </div>
-	-->
-	<canvas id="dxt_xt-canvas" width="800" height="600"></canvas>
+	
     <script>
-	    const canvas = document.getElementById('dxt_xt-canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-
-        // Set image source
-        //img.src = "{{ url_for('static', filename='image.png') }}";
-		img.src = "{{url_for('dxt_xt_img_rq', content='xt-' +  year ) }}";
-        // Wait for image to load
-        img.onload = function() {
-            // Set canvas size to match image
-            canvas.width = img.width;
-            canvas.height = img.height;
-
-            // Draw image on canvas
-            ctx.drawImage(img, 0, 0);
-        };
-		
-		// Mouse down event handler
-        canvas.addEventListener('mousedown', function(e) {
-            // Get mouse position relative to canvas
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Clear previous drawings
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-
-            // Calculate center point
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-
-            // Draw line from center to mouse position
-            ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.lineTo(x, y);
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Draw crosshair at mouse position
-            ctx.beginPath();
-            // Vertical line
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, canvas.height);
-            // Horizontal line
-            ctx.moveTo(0, y);
-            ctx.lineTo(canvas.width, y);
-            ctx.strokeStyle = 'blue';
-            ctx.lineWidth = 1;
-            ctx.stroke();
-			
-			// Display coordinates
-            ctx.font = '16px Arial';
-            ctx.fillStyle = 'black';
-            ctx.fillText(`(${x.toFixed(1)}, ${y.toFixed(1)})`, x + 10, y + 20);
-
-            // Calculate and display sum
-            fetch('/calculate_sum', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({x: x, y: y})
-            })
-            .then(response => response.json())
-            .then(data => {
-                ctx.fillText(`Sum: ${data.result.toFixed(1)}`, x + 10, y + 40);
-            });
-        });
 
 
         function downloadPDF() {

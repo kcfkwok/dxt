@@ -74,7 +74,12 @@ def calculate_sum():
     y = float(data['y'])
     return jsonify({'result': x + y})
 
-
+@app.route('/get_star_info', methods=['POST'])
+def get_star_info():
+    data = request.get_json()
+    x = float(data['x'])
+    y = float(data['y'])
+    return jsonify({'result': x + y})
 
 @app.route('/clock')
 def clock():
@@ -177,7 +182,23 @@ def dxt_kz():
             minute = '%s' % now.minute
     print('lats:%s longs:%s loc:%s tz:%s %s-%s-%s %s:%s' % (lats,longs,location,timezone,
     year,month,day,hour,minute))
-    return render_template('dxt_kz.html', latitude=latitude, longitude=longitude, location=location, timezone=timezone, year=year,month=month,day=day,hour=hour,minute=minute)
+    # Create simplified config with only needed values
+    template_config = {
+        'xckz': config.xckz,
+        'yckz': config.yckz,
+        'r5': config.r5
+    }
+    return render_template('dxt_kz.html',
+        latitude=latitude,
+        longitude=longitude,
+        location=location,
+        timezone=timezone,
+        year=year,
+        month=month,
+        day=day,
+        hour=hour,
+        minute=minute,
+        config=template_config)
 
 
 @app.route('/dxt_rl_img_rq', methods=['GET'])
