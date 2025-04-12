@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-12 16:46+0800\n"
+"POT-Creation-Date: 2025-04-12 17:07+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -112,6 +112,22 @@ msgstr "下载 PDF"
 #: templates/dxt_zp.html:27 templates/navbar.html:5
 msgid "Home"
 msgstr "主页"
+
+#: templates/dxt_kz.html:176
+msgid "RA"
+msgstr "赤經"
+
+#: templates/dxt_kz.html:179
+msgid "Dec"
+msgstr "赤緯"
+
+#: templates/dxt_kz.html:184
+msgid "Constellation"
+msgstr "星座"
+
+#: templates/dxt_kz.html:188
+msgid "Nearest Star"
+msgstr "附近恒星"
 
 #: templates/dxt_rl.html:6
 msgid "DongXingTu - Planets Today"

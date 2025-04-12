@@ -159,7 +159,7 @@
 			                 if (y > canvas.height - 160) {
 			                     textY = y - 160; // Move text up if near bottom
 			                 }
-			                 
+			                 /*
 			                 ctx.fillText(`RA: ${raH}h ${raM}m ${raS}s`, x + 10, textY + 30);
 			                 ctx.fillText(`Dec: ${decSign}${decD}° ${decM} ${decS}`, x + 10, textY + 70);
 			                 
@@ -171,18 +171,23 @@
 			                 if (data.star) {
 			                     ctx.fillText(`Nearest Star: ${data.star}`, x + 10, textY + 150);
 			                 }
+							 */
 							 
-							 /*
-							 ctx.fillText(`${gettext('RA')}: ${raH}h ${raM}m ${raS}s`, x + 10, textY + 30);
-			                 ctx.fillText(`${gettext('Dec')}: ${decSign}${decD}° ${decM} ${decS}`, x + 10, textY + 70);
-			                 
-			                 // Display constellation and star info if available
-			                 if (data.constellation) {
-			                     ctx.fillText(`${gettext('Constellation')}: ${data.constellation}`, x + 10, textY + 110);
-			                 }
+							 const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+							 ctx.fillText(raText, x + 10, textY + 30);
+							             
+							 const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+							 ctx.fillText(decText, x + 10, textY + 70);
+							             
+							 // Display constellation and star info if available
+							 if (data.constellation) {
+							                 const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+							                 ctx.fillText(constellationText, x + 10, textY + 110);
+							             }
 			                 if (data.star) {
-			                     ctx.fillText(`${gettext('Nearest Star')}: ${data.star}`, x + 10, textY + 150);
-			                 } */
+			                     const nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
+			                     ctx.fillText(nearestStarText, x + 10, textY + 150);
+			                 } 
 
 			             });
 			        }
