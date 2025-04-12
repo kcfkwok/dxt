@@ -188,7 +188,7 @@ def get_cst_from_ra_dec(ra, dec):
     closest_star_info = None
     
     # Parse star list data
-    stars = parse_star_list('star_list1.md')
+    stars = parse_star_list(config.star_list_path)
     
     for cst in CSTS:
         for star_list in starsln[cst]:

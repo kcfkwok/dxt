@@ -2,6 +2,7 @@
 
 import re
 from typing import List, Dict
+from config import config
 
 # Mapping of Bayer designation prefixes to Greek letters
 BAYER_TO_GREEK = {
@@ -100,7 +101,7 @@ def find_stars_in_constellation(stars: Dict, constellation: str) -> List[Dict]:
 def main():
     """Main function to demonstrate usage."""
     try:
-        stars = parse_star_list('star_list1.md')
+        stars = parse_star_list(config.star_list_path)
         print(f"Successfully parsed {len(stars)} stars")
         
         # Example usage
