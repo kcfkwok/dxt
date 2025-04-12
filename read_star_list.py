@@ -7,7 +7,7 @@ from config import config
 # Mapping of Bayer designation prefixes to Greek letters
 BAYER_TO_GREEK = {
     'alf': 'α', 'bet': 'β', 'gam': 'γ', 'del': 'δ', 'eps': 'ε',
-    'zet': 'ζ', 'eta': 'η', 'the': 'θ', 'iot': 'ι', 'kap': 'κ',
+    'zet': 'ζ', 'eta': 'η', 'the': 'θ', 'tet':'θ', 'iot': 'ι', 'kap': 'κ',
     'lam': 'λ', 'mu': 'μ', 'nu': 'ν', 'xi': 'ξ', 'omi': 'ο',
     'pi': 'π', 'rho': 'ρ', 'sig': 'σ', 'tau': 'τ', 'ups': 'υ',
     'phi': 'φ', 'chi': 'χ', 'psi': 'ψ', 'ome': 'ω'

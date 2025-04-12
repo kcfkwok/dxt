@@ -189,7 +189,8 @@ def get_cst_from_ra_dec(ra, dec):
     
     # Parse star list data
     stars = parse_star_list(config.star_list_path)
-    
+
+    skip="""
     for cst in CSTS:
         for star_list in starsln[cst]:
             for star in star_list:
@@ -198,14 +199,24 @@ def get_cst_from_ra_dec(ra, dec):
                 if dist < min_dist:
                     min_dist = dist
                     closest_star_info = find_star_by_hr(stars, star)
-                    
+            """
+            
+    for star_hr in stars:
+        star_ra, star_dec, _,_ = starsi[star_hr]
+        dist = ((ra - star_ra)**2 + (dec - star_dec)**2)**0.5
+        if dist < min_dist:
+            min_dist = dist
+            closest_star_info = find_star_by_hr(stars, star_hr)
+        
+        
     if closest_star_info:
         # Build star name combining bayer_name and chinese_name
         star_name = closest_star_info['bayer_name']
         if closest_star_info['chinese_name']:
             star_name += f" ({closest_star_info['chinese_name']})"
-            
+        print('closest star: %s' % star_name)    
         return (closest_star_info['constellation'], star_name, min_dist)
+    print('closest star info:None')
     
     return (None, None, min_dist)
 
