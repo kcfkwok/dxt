@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-03-31 09:27+0800\n"
+"POT-Creation-Date: 2025-04-12 16:46+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -17,50 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
-
-#: user_views.py:44
-msgid "Invalid username or password"
-msgstr "无效的用户名或密码"
-
-#: user_views.py:52
-msgid "Registration is closed as the maximum number of accounts has been reached."
-msgstr "由于已达到账户的最大数量，注册已关闭。"
-
-#: user_views.py:66
-msgid "Username already exists"
-msgstr "用户名已存在"
-
-#: user_views.py:104
-msgid "Location information updated successfully"
-msgstr "位置信息更新成功"
-
-#: user_views.py:176
-msgid "Old password is incorrect"
-msgstr "旧密码不正确"
-
-#: user_views.py:190
-msgid "You do not have permission to delete accounts."
-msgstr "您无权删除账户。"
-
-#: user_views.py:196
-msgid "You cannot delete the admin account."
-msgstr "你无法删除管理员账户"
-
-#: user_views.py:203
-msgid "Account"
-msgstr "账户"
-
-#: user_views.py:203
-msgid "deleted successfully."
-msgstr "已删除"
-
-#: user_views.py:208
-msgid "An error occurred while deleting the account."
-msgstr "删除账户时发生了错误。"
-
-#: user_views.py:211
-msgid "User not found."
-msgstr "用户未找到。"
 
 #: templates/change_location.html:6
 msgid "DongXingTu - Change Location"
@@ -94,23 +50,6 @@ msgstr "打开地图"
 msgid "Save Changes"
 msgstr "保存更改"
 
-#: templates/change_password.html:6
-msgid "DongXingTu - Change Password"
-msgstr "动手造星图 - 修改密码"
-
-#: templates/change_password.html:18 templates/change_password.html:30
-#: templates/navbar.html:8
-msgid "Change Password"
-msgstr "修改密码"
-
-#: templates/change_password.html:26
-msgid "Old Password"
-msgstr "旧密码"
-
-#: templates/change_password.html:28
-msgid "New Password"
-msgstr "新密码"
-
 #: templates/choose_style.html:6
 msgid "DongXingTu - Choose Style"
 msgstr "动手造星图 - 选择风格"
@@ -135,41 +74,58 @@ msgstr "浅色"
 msgid "Save Style"
 msgstr "保存风格"
 
-#: templates/delete_account.html:6
-msgid "DongXingTu - Delete Account"
-msgstr "动手造星图 - 删除账户"
+#: templates/dxt_kz.html:6
+msgid "DongXingTu - Check Other Times"
+msgstr "动手造星图 - 看看其他時間"
 
-#: templates/delete_account.html:18 templates/delete_account.html:32
-#: templates/navbar.html:10
-msgid "Delete Account"
-msgstr "删除账户"
+#: templates/dxt_kz.html:33 templates/index.html:62
+msgid "Check Other Times"
+msgstr "看看其他時間"
 
-#: templates/delete_account.html:26
-msgid "Select account to delete:"
-msgstr "选择要删除的账户："
+#: templates/dxt_kz.html:34
+msgid "Month"
+msgstr "月"
+
+#: templates/dxt_kz.html:40
+msgid "Day"
+msgstr "日"
+
+#: templates/dxt_kz.html:46
+msgid "Hour"
+msgstr "時"
+
+#: templates/dxt_kz.html:52 templates/index.html:43 templates/index.html:44
+#: templates/index.html:45
+msgid "Minute"
+msgstr "分"
+
+#: templates/dxt_kz.html:58
+msgid "Go"
+msgstr "去看看"
+
+#: templates/dxt_kz.html:58 templates/dxt_rl.html:27 templates/dxt_xt.html:28
+#: templates/dxt_zp.html:27
+msgid "download pdf"
+msgstr "下载 PDF"
+
+#: templates/dxt_kz.html:58 templates/dxt_rl.html:27 templates/dxt_xt.html:28
+#: templates/dxt_zp.html:27 templates/navbar.html:5
+msgid "Home"
+msgstr "主页"
 
 #: templates/dxt_rl.html:6
 msgid "DongXingTu - Planets Today"
 msgstr "动手造星图 - 今日行星"
 
-#: templates/dxt_rl.html:27 templates/index.html:41
+#: templates/dxt_rl.html:27 templates/index.html:47
 msgid "Planets Today"
 msgstr "今日行星"
-
-#: templates/dxt_rl.html:27 templates/dxt_xt.html:27 templates/dxt_zp.html:27
-msgid "download pdf"
-msgstr "下载 PDF"
-
-#: templates/dxt_rl.html:27 templates/dxt_xt.html:27 templates/dxt_zp.html:27
-#: templates/navbar.html:5
-msgid "Home"
-msgstr "主页"
 
 #: templates/dxt_xt.html:6
 msgid "DongXingTu - Background Star Chart"
 msgstr "动手造星图 - 背景星圖"
 
-#: templates/dxt_xt.html:27 templates/index.html:42
+#: templates/dxt_xt.html:28 templates/index.html:48
 msgid "Background Star Chart"
 msgstr "背景星圖"
 
@@ -177,7 +133,7 @@ msgstr "背景星圖"
 msgid "DongXingTu - Make a Turntable"
 msgstr "动手造星图 - 製作轉盤"
 
-#: templates/dxt_zp.html:27 templates/index.html:46
+#: templates/dxt_zp.html:27 templates/index.html:52
 #: templates/set_location.html:87
 msgid "Make a Turntable"
 msgstr "製作轉盤"
@@ -186,74 +142,29 @@ msgstr "製作轉盤"
 msgid "DongXingTu"
 msgstr "动手造星图"
 
-#: templates/index.html:34
+#: templates/index.html:40
 msgid "Live sky map"
 msgstr "即時星空圖"
 
-#: templates/index.html:35
+#: templates/index.html:41
 msgid "Update"
 msgstr "更新"
 
-#: templates/index.html:37 templates/index.html:38 templates/index.html:39
-msgid "Minute"
-msgstr "分钟"
-
-#: templates/index.html:44 templates/navbar.html:12
+#: templates/index.html:50
 msgid "Change Location"
 msgstr "更改位置"
 
-#: templates/index.html:48
+#: templates/index.html:54
 msgid "中文"
 msgstr "中文"
 
-#: templates/index.html:49
+#: templates/index.html:55
 msgid "English"
 msgstr "英文"
 
-#: templates/index.html:55
+#: templates/index.html:61
 msgid "Capture this moment"
 msgstr "留住這一刻"
-
-#: templates/login.html:6
-msgid "DongXingTu - Login"
-msgstr "动手造星图 - 登录"
-
-#: templates/login.html:17 templates/login.html:27 templates/navbar.html:15
-msgid "Login"
-msgstr "登录"
-
-#: templates/login.html:23 templates/register.html:23
-msgid "Username:"
-msgstr "用户名："
-
-#: templates/login.html:25 templates/register.html:25
-msgid "Password:"
-msgstr "密码："
-
-#: templates/navbar.html:8
-msgid "Logged in as"
-msgstr "已登录为"
-
-#: templates/navbar.html:8
-msgid "Logout"
-msgstr "注销"
-
-#: templates/navbar.html:13
-msgid "Choose Style"
-msgstr "选择风格"
-
-#: templates/navbar.html:15
-msgid "Not logged in"
-msgstr "未登录"
-
-#: templates/navbar.html:15 templates/register.html:17
-#: templates/register.html:27
-msgid "Register"
-msgstr "注册"
-
-#: templates/register.html:6
-msgid "DongXingTu - Register"
-msgstr "动手造星图 - 注册"
 
 #: templates/set_location.html:7
 msgid "DongXingTu - Set Location"
@@ -269,4 +180,93 @@ msgstr "設定位置"
 
 #~ msgid "Real-time Starry Sky"
 #~ msgstr "实时星空"
+
+#~ msgid "Invalid username or password"
+#~ msgstr "无效的用户名或密码"
+
+#~ msgid ""
+#~ "Registration is closed as the maximum"
+#~ " number of accounts has been reached."
+#~ msgstr "由于已达到账户的最大数量，注册已关闭。"
+
+#~ msgid "Username already exists"
+#~ msgstr "用户名已存在"
+
+#~ msgid "Location information updated successfully"
+#~ msgstr "位置信息更新成功"
+
+#~ msgid "Old password is incorrect"
+#~ msgstr "旧密码不正确"
+
+#~ msgid "You do not have permission to delete accounts."
+#~ msgstr "您无权删除账户。"
+
+#~ msgid "You cannot delete the admin account."
+#~ msgstr "你无法删除管理员账户"
+
+#~ msgid "Account"
+#~ msgstr "账户"
+
+#~ msgid "deleted successfully."
+#~ msgstr "已删除"
+
+#~ msgid "An error occurred while deleting the account."
+#~ msgstr "删除账户时发生了错误。"
+
+#~ msgid "User not found."
+#~ msgstr "用户未找到。"
+
+#~ msgid "DongXingTu - Change Password"
+#~ msgstr "动手造星图 - 修改密码"
+
+#~ msgid "Change Password"
+#~ msgstr "修改密码"
+
+#~ msgid "Old Password"
+#~ msgstr "旧密码"
+
+#~ msgid "New Password"
+#~ msgstr "新密码"
+
+#~ msgid "DongXingTu - Delete Account"
+#~ msgstr "动手造星图 - 删除账户"
+
+#~ msgid "Delete Account"
+#~ msgstr "删除账户"
+
+#~ msgid "Select account to delete:"
+#~ msgstr "选择要删除的账户："
+
+#~ msgid "DongXingTu - Login"
+#~ msgstr "动手造星图 - 登录"
+
+#~ msgid "Login"
+#~ msgstr "登录"
+
+#~ msgid "Username:"
+#~ msgstr "用户名："
+
+#~ msgid "Password:"
+#~ msgstr "密码："
+
+#~ msgid "Logged in as"
+#~ msgstr "已登录为"
+
+#~ msgid "Logout"
+#~ msgstr "注销"
+
+#~ msgid "Choose Style"
+#~ msgstr "选择风格"
+
+#~ msgid "Not logged in"
+#~ msgstr "未登录"
+
+#~ msgid "Register"
+#~ msgstr "注册"
+
+#~ msgid "DongXingTu - Register"
+#~ msgstr "动手造星图 - 注册"
+
+#~ msgid "去看看"
+#~ msgstr ""
 

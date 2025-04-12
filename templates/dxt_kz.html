@@ -55,7 +55,7 @@
             <option value="{{ i }}" {% if i == minute|int %}selected{% endif %}>{{ i }}</option>
         {% endfor %}
     </select>
-    <button id="go-button" onclick="goToDxtKz()">{{ gettext('去看看') }}</button>	&nbsp;&nbsp;&nbsp;  <button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
+    <button id="go-button" onclick="goToDxtKz()">{{ gettext('Go') }}</button>	&nbsp;&nbsp;&nbsp;  <button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
 	<!--
     <div id="dxt_kz-image">
 	<img src="{{ url_for('dxt_kz_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}" alt="DXT KZ" id="dxt_kz-img">
@@ -167,9 +167,23 @@
 			                 if (data.constellation) {
 			                     ctx.fillText(`Constellation: ${data.constellation}`, x + 10, textY + 110);
 			                 }
+							 
 			                 if (data.star) {
 			                     ctx.fillText(`Nearest Star: ${data.star}`, x + 10, textY + 150);
 			                 }
+							 
+							 /*
+							 ctx.fillText(`${gettext('RA')}: ${raH}h ${raM}m ${raS}s`, x + 10, textY + 30);
+			                 ctx.fillText(`${gettext('Dec')}: ${decSign}${decD}° ${decM} ${decS}`, x + 10, textY + 70);
+			                 
+			                 // Display constellation and star info if available
+			                 if (data.constellation) {
+			                     ctx.fillText(`${gettext('Constellation')}: ${data.constellation}`, x + 10, textY + 110);
+			                 }
+			                 if (data.star) {
+			                     ctx.fillText(`${gettext('Nearest Star')}: ${data.star}`, x + 10, textY + 150);
+			                 } */
+
 			             });
 			        }
 			    });

@@ -42,11 +42,15 @@ def parse_star_list(file_path: str) -> Dict:
                 bayer_name = fields[1]
                 
                 # Convert Bayer designation to Greek letter if needed
-                if '/' in bayer_name:
-                    prefix = bayer_name.split('/')[0].lower()
-                    if prefix in BAYER_TO_GREEK:
-                        greek = BAYER_TO_GREEK[prefix]
-                        bayer_name = bayer_name.replace(prefix, greek, 1)
+                if bayer_name:
+                    # Handle cases like "alf1" or "alf/α And"
+                    for prefix, greek in BAYER_TO_GREEK.items():
+                        # Match prefix followed by optional number or slash
+                        if bayer_name.lower().startswith(prefix):
+                            # Replace prefix with Greek letter while preserving suffix
+                            suffix = bayer_name[len(prefix):]
+                            bayer_name = greek + suffix
+                            break
                 
                 star_data = {
                     'hr_id': int(fields[0]),
