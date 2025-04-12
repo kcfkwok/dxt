@@ -159,7 +159,7 @@
 			                 if (y > canvas.height - 160) {
 			                     textY = y - 160; // Move text up if near bottom
 			                 }
-			                 
+			                 /*
 			                 ctx.fillText(`RA: ${raH}h ${raM}m ${raS}s`, x + 10, textY + 30);
 			                 ctx.fillText(`Dec: ${decSign}${decD}° ${decM}' ${decS}"`, x + 10, textY + 70);
 			                 
@@ -171,8 +171,8 @@
 			                 if (data.star) {
 			                     ctx.fillText(`Nearest Star: ${data.star}`, x + 10, textY + 150);
 			                 }
+							 */
 							 
-							 /*
 							 const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
 							 ctx.fillText(raText, x + 10, textY + 30);
 							             
@@ -187,7 +187,7 @@
 			                 if (data.star) {
 			                     const nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
 			                     ctx.fillText(nearestStarText, x + 10, textY + 150);
-			                 } */
+			                 } 
 
 			             });
 			        }
