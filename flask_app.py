@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, render_template_string, send_file, Response, redirect, session
+from flask import Flask, request, render_template, render_template_string, send_file, Response, redirect, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_babel import Babel, gettext
 from secret_key import secret_key
@@ -13,8 +13,8 @@ import datetime
 
 app = Flask(__name__)
 app.secret_key = secret_key
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{config.dbpath}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{config.dbpath}'
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # 初始化 Babel
 babel = Babel(app)
@@ -66,6 +66,15 @@ def index():
         return render_template('dxt_xt.html', year=year)
 
     return render_template('index.html', username=username, style=style, user_info=user_info, location_text=location_text)
+
+@app.route('/calculate_sum', methods=['POST'])
+def calculate_sum():
+    data = request.get_json()
+    x = float(data['x'])
+    y = float(data['y'])
+    return jsonify({'result': x + y})
+
+
 
 @app.route('/clock')
 def clock():
