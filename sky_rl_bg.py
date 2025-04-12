@@ -14,7 +14,7 @@ def make_dxt_rl_A4_bg(year):
     minute=0
     tz=8
     
-    config.f_south=False
+    g_share.f_south=False
     paper = PAPER("A4L")
     paper.draw_outline()
     #paper.draw_MAX_RECT()
@@ -69,7 +69,7 @@ def make_dxt_rl_A4_bg(year):
     #add_cir_month_zhe(paper,xc,yc,r2,year,tz) 
 
     
-    config.f_south=True
+    g_share.f_south=True
     xc =config.xc2 
     yc =config.yc2
     fp_mw = Path(config.interpath, config.fmw_s)
@@ -113,7 +113,7 @@ def make_dxt_rl_A5R_bg(year,f_south,cir_yellow=True):
     minute=0
     tz=8
     
-    config.f_south=f_south
+    g_share.f_south=f_south
     paper = PAPER("A5R")
     paper.draw_outline()
     #paper.draw_MAX_RECT()

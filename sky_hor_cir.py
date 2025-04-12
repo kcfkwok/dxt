@@ -84,8 +84,8 @@ class SEGMENTS:
         
 
 def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
-    from config import config
-    f_south= config.f_south
+    from g_share import g_share
+    f_south= g_share.f_south
 
     #im = Image.new(mode='RGBA',size=im1.size,color=(255,255,255,0))
     #draw = ImageDraw.Draw(im)
@@ -306,8 +306,8 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
     
 
 def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
-    from config import config
-    f_south= config.f_south
+    from g_share import g_share
+    f_south= g_share.f_south
     stroke_width=1
     # avoid extreme cases
     if latv >89:

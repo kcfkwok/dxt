@@ -59,10 +59,10 @@ def draw_hour_angle_marking(im,draw,xc,yc,r5,f_south=False,fgcolor=BLACK,lw=2,
 def add_cir_RA(paper,xc,yc,r,im=None,draw=None,small=False):
     LW=2
     try:
-        f_south = config.f_south
+        f_south = g_share.f_south
     except:
-        from config import config
-        f_south = config.f_south 
+        from g_share import g_share
+        f_south = g_share.f_south
     if im is not None:
         draw.circle((xc,yc),r,outline=(0,0,0,255),width=LW)
         draw_hour_angle_marking(im,draw,xc,yc,r, f_south=f_south,small=small)

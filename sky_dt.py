@@ -62,7 +62,7 @@ if __name__=='__main__':
     year = now.year
         
     config.debug=False
-    config.f_south=False
+    g_share.f_south=False
     im =app_dt_yr(year)
     fnx = config.fdt_n % year
     fn = '%s/%s' % (config.fskyl, fnx)
@@ -80,7 +80,7 @@ if __name__=='__main__':
     year = now.year
 
     config.debug=False
-    config.f_south=True
+    g_share.f_south=True
     im =app_dt_yr(year)
     fnx = config.fdt_s % year
     fn = '%s/%s' % (config.fskyl, fnx)

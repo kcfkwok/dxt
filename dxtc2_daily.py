@@ -37,13 +37,13 @@ if __name__=='__main__':
     # fskyl = '/home/kcfkwok/inter'
     # fmw_n = 'skyl_mw_n_j2000.png' # <- sky_mw.py
     # fmw_s = 'skyl_mw_s_j2000.png' # <- sky_mw.py
-    config.f_south=False
+    g_share.f_south=False
     im =app_mw()
     fn = Path(config.interpath, config.fmw_n)
     im.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
-    config.f_south=True
+    g_share.f_south=True
     im =app_mw()
     fn = Path(config.interpath, config.fmw_s)
     im.save(fn, dpi=(600,600))
@@ -52,13 +52,13 @@ if __name__=='__main__':
     
     # fdt_n = 'skyl_dt_n.y%s.png' # % year <- sky_dt.py
     # fdt_s = 'skyl_dt_s_y%s.png' # % year <- sky_dt.py
-    config.f_south=False
+    g_share.f_south=False
     im =app_dt_yr(year)
     fn =Path(config.interpath, config.fdt_n % year) 
     im.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
-    config.f_south=True
+    g_share.f_south=True
     im =app_dt_yr(year)
     fn =Path(config.interpath, config.fdt_s % year)     
     im.save(fn, dpi=(600,600))
@@ -66,13 +66,13 @@ if __name__=='__main__':
     
     # fbg_n = 'skyl_bg_n_j2000.png' #  <- sky_bg.py
     # fbg_s = 'skyl_bg_s_j2000.png' #   <-  sky_bg.py
-    config.f_south=False
+    g_share.f_south=False
     im =app_bg(year)
     fn = Path(config.interpath, config.fbg_n)
     im.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
-    config.f_south=True
+    g_share.f_south=True
     im =app_bg(year)
     fn = Path(config.interpath, config.fbg_s)
     im.save(fn, dpi=(600,600))

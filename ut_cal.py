@@ -152,13 +152,16 @@ def get_days_of_month(year,month):
     return days
 
 
-def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_south=False):
+def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_south=None):
     try:
         ari_ang = config.ari_ang
     except:
         from config import config
         ari_ang = config.ari_ang
-    
+
+    if f_south is None:
+        f_south = g_share.f_south
+        
     if requ is None:
         r_90 = 180 / rr
         requ = int(r_90/2)
@@ -288,4 +291,41 @@ if __name__=='__main__':
     print(lst)
     
     
+def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_south=None):
+    try:
+        ari_ang = config.ari_ang
+    except:
+        from config import config
+        ari_ang = config.ari_ang
+    
+    if f_south is None:
+        f_south = g_share.f_south
+        
+    if requ is None:
+        r_90 = 180 / rr
+        requ = int(r_90/2)
+        
+    # Normalize coordinates to be within valid range
+    x = max(0, min(x, 2*xc))
+    y = max(0, min(y, 2*yc))
+        
+    # Calculate radius from center
+    dx = x - xc
+    dy = y - yc
+    r = math.sqrt(dx*dx + dy*dy)
+    print('r: %s requ:%s rr:%s r_90:%s' % (r, requ,rr,r_90))
+    # Calculate angle
+    ang = math.atan2(dy, dx) * 180/math.pi
+    ra = (ang - ari_ang) % 360
+    
+    # Calculate declination
+    if f_south:
+        dec = (r - requ) * rr
+    else:
+        dec = (requ - r) * rr
+    print('dec in:',dec)
+    # Constrain declination to valid range
+    
+    return ra, dec
+
     

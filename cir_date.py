@@ -35,10 +35,10 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
         Obl = g_share.Obl
         
     try:
-        f_south = config.f_south
+        f_south = g_share.f_south
     except:
-        from config import config
-        f_south = config.f_south    
+        from g_share import g_share
+        f_south = g_share.f_south
     if f_south:
         txt_ang=90 +5 +90
     else:

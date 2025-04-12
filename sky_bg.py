@@ -70,7 +70,7 @@ if __name__=='__main__':
     
     g_share.color_cst_line=(0,0,0)
     
-    config.f_south=False
+    g_share.f_south=False
     im =app_bg(year)
     fn = '%s/%s' % (config.fskyl, config.fbg_n)
     im.save(fn, dpi=(600,600))
@@ -82,7 +82,7 @@ if __name__=='__main__':
     
     g_share.color_cst_line = (0,0,0)
     
-    config.f_south=True
+    g_share.f_south=True
     im =app_bg(year)
     fn = '%s/%s' % (config.fskyl, config.fbg_s)
     im.save(fn, dpi=(600,600))

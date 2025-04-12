@@ -61,6 +61,8 @@ class CONFIG:
     r3 = r2 - 60
     r4 = r3 - 60
     r5 = r4 -60
+    r_90=r5
+    rr = 180/r_90
     
     banner_x = int(10*MM_UNIT)
     banner_y = int(4*MM_UNIT)

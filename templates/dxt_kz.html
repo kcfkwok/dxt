@@ -65,7 +65,7 @@
     <script>
         // Get config values from template
         const config = JSON.parse('{{ config|tojson }}');
-  const canvas = document.getElementById('dxt_kz-canvas');
+		const canvas = document.getElementById('dxt_kz-canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
 
@@ -129,15 +129,10 @@
                 ctx.strokeStyle = 'blue';
                 ctx.lineWidth = 1;
                 ctx.stroke();
-            //}
+            
 			
-			             // Display coordinates with larger font
-			             ctx.font = '20px Arial';
-			             ctx.fillStyle = 'black';
-			             ctx.fillText(`(${x.toFixed(1)}, ${y.toFixed(1)})`, x + 10, y + 25);
-
-			             // Calculate and display sum
-			             fetch('/calculate_sum', {
+			             // Convert to RA/Dec and display
+			             fetch('/xy_to_radec', {
 			                 method: 'POST',
 			                 headers: {
 			                     'Content-Type': 'application/json',
@@ -146,10 +141,39 @@
 			             })
 			             .then(response => response.json())
 			             .then(data => {
-			                 ctx.fillText(`Sum: ${data.result.toFixed(1)}`, x + 10, y + 50);
+			                 // Format RA/Dec nicely
+			                 const raH = Math.floor(data.ra/15);
+			                 const raM = Math.floor((data.ra/15 - raH)*60);
+			                 const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+			                 
+			                 const decSign = data.dec >= 0 ? '+' : '-';
+			                 const decAbs = Math.abs(data.dec);
+			                 const decD = Math.floor(decAbs);
+			                 const decM = Math.floor((decAbs - decD)*60);
+			                 const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+			                 
+			                 ctx.font = '40px Arial';
+			                 ctx.fillStyle = 'red';
+			                 // Adjust text position based on click location to ensure visibility
+			                 let textY = y;
+			                 if (y > canvas.height - 160) {
+			                     textY = y - 160; // Move text up if near bottom
+			                 }
+			                 
+			                 ctx.fillText(`RA: ${raH}h ${raM}m ${raS}s`, x + 10, textY + 30);
+			                 ctx.fillText(`Dec: ${decSign}${decD}° ${decM} ${decS}`, x + 10, textY + 70);
+			                 
+			                 // Display constellation and star info if available
+			                 if (data.constellation) {
+			                     ctx.fillText(`Constellation: ${data.constellation}`, x + 10, textY + 110);
+			                 }
+			                 if (data.star) {
+			                     ctx.fillText(`Nearest Star: ${data.star}`, x + 10, textY + 150);
+			                 }
 			             });
-				}
-        });
+			        }
+			    });
+			
 	
         function downloadPDF() {
             // 假设 content 参数需要根据实际情况生成

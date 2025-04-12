@@ -63,9 +63,9 @@ def day_cald(draw,x,y,year,month,day,hour=0,minute=0,show_hm=False,tzn=8):
 def make_dxt_kz_A4L(dt,latv,longv,place,timezone):
     second=0
     if latv <0:
-        config.f_south=True
+        g_share.f_south=True
     else:
-        config.f_south=False
+        g_share.f_south=False
     year = dt.year
     month = dt.month
     day = dt.day
@@ -107,7 +107,7 @@ def make_dxt_kz_A4L(dt,latv,longv,place,timezone):
 
    
     layer_bg = paper.add_layer(name='bg')
-    if config.f_south:
+    if g_share.f_south:
         fn = Path(config.interpath, config.fbg_a5r_yw_s % year)
     else:
         fn = Path(config.interpath, config.fbg_a5r_yw_n % year)

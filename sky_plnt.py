@@ -440,7 +440,7 @@ def draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,f_south,small=False,color_f=True):
 def draw_sky_plnt(im, draw, xc, yc,r1,r5,r5b,rr,
                     year,month,day,hour,minute,tz,small=False,color_f=True):
 
-    f_south = config.f_south 
+    f_south = g_share.f_south
     #config.small=small
     if small:
         txt_r = SMALL_TXT_R

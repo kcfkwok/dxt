@@ -196,8 +196,8 @@ def add_qrcode(im, draw, x,y, title, url):
 def make_dxt_xt_A4(year,month=1,day=1,hour=0,minute=0):
     from PIL import Image, ImageColor,ImageDraw,ImageFont,ImageOps
     from IPython.display import display
-    from config import config
-    config.f_south=False
+    from g_share import g_share
+    g_share.f_south=False
     paper = PAPER("A4L")
     paper.draw_outline()
     #paper.draw_MAX_RECT()
@@ -243,7 +243,7 @@ def make_dxt_xt_A4(year,month=1,day=1,hour=0,minute=0):
     cal_planet_info(year,month,day,hour,minute,tz)
     
  
-    config.f_south=True
+    g_share.f_south=True
 
     xc =config.xc2 #= int(70 * MM_UNIT *2 + 60 * MM_UNIT)
     yc =config.yc2 #= int(85 * MM_UNIT)

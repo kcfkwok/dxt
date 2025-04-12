@@ -218,7 +218,7 @@ def dxt_rl():
     content = request.args.get('content', None)
     if content is None:
         return render_template('dxt_rl.html', year='0', month='0', day='0')
-        #return render_template('index.html')
+        #
     print('content:', content)
     m = re_rl.match(content)
     if m is None:
@@ -226,6 +226,27 @@ def dxt_rl():
         #return render_template('index.html')
     year, month, day = m.groups()
     return render_template('dxt_rl.html', year=year, month=month, day=day)
+    
+@app.route('/xy_to_radec', methods=['POST'])
+def xy_to_radec():
+    data = request.get_json()
+    x = float(data['x'])
+    y = float(data['y'])
+    xc = config.xckz
+    yc = config.yckz
+    rr = config.rr
+    from ut_cal import xyplot_to_ra_dec
+    from ut_star import get_cst_from_ra_dec
+    ra, dec = xyplot_to_ra_dec(x, y, xc, yc, rr)
+    cst, star, dist = get_cst_from_ra_dec(ra, dec)
+    return jsonify({
+        'ra': ra,
+        'dec': dec,
+        'constellation': cst,
+        'star': star,
+        'distance': dist
+    })
+
 
 @app.route('/dxt_xt_img_rq')
 def dxt_xt_img_rq():

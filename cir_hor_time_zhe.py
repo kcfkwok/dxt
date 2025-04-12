@@ -1,3 +1,5 @@
+from g_share import g_share
+
 from ut_math import *
 from ut_cal import *
 from paper import *
@@ -9,7 +11,7 @@ def draw_hor_time_zhe(im,draw,xc,yc,r1,r2,stroke_width=0):
     FCOLOR = (0,0,0,255)
     LW=4
     ari_ang = config.ari_ang
-    f_south = config.f_south
+    f_south = g_share.f_south
     
     r1a = r1 - 30
     #ang=Ra = 0  #270 - ari_ang -180  # when ari_ang=90, ang=0

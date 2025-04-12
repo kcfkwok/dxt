@@ -55,8 +55,8 @@ def day_cald(draw,x,y,year,month,day,hour=0,minute=0,show_hm=False):
 def make_dxt_rl_A4(year,month,day,hour=0,minute=0):
     from PIL import Image, ImageColor,ImageDraw,ImageFont,ImageOps
     from IPython.display import display
-    from config import config
-    config.f_south=False
+    from g_share import g_share
+    g_share.f_south=False
     paper = PAPER("A4L")
     paper.draw_outline()
     #paper.draw_MAX_RECT()
@@ -103,7 +103,7 @@ def make_dxt_rl_A4(year,month,day,hour=0,minute=0):
     #add_cir_month_zhe(paper,xc,yc,r2,year,tz) #,im=im,draw=draw)
     #draw_cir_and_sky(paper,xc,yc,r1,r2,r3,r4,r5,rr,requ,tz,year)
     
-    config.f_south=True
+    g_share.f_south=True
     #xc = xc+ 2*r1 + 400
     #xc = int(70 * MM_UNIT *2 + 60 * MM_UNIT)
     #fp_s = 'd:/kcf/dxtc/skyls_bg_s_y%s.png' % year

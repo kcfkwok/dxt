@@ -19,7 +19,8 @@ def rotate(image,im2,x,y,angle):
 def build_dxt_zp(im0,xc0,yc0,r1,r2,r3,rr,latv,
                                       longv,place,tz,lst=0,show_t_cir=True):
 
-    f_south=config.f_south
+    from g_share import g_share
+    f_south=g_share.f_south
     LW=4
     stroke_width=1
     width=height = r1*2
@@ -104,7 +105,7 @@ def build_dxt_zp_A4L(latv, longv, place, time_zone, debug=False):
     
     layer0 = paper.add_layer(name='0')
         
-    config.f_south=False
+    g_share.f_south=False
     xc = config.xc1
     yc = config.yc1
     layer0.draw.circle((xc,yc),r1,fill=YELLOW)
@@ -118,7 +119,7 @@ def build_dxt_zp_A4L(latv, longv, place, time_zone, debug=False):
     layer1.draw.rectangle([(x0,y0), (x0+l0,y0+l0)], outline=RED, width=2)
     layer1.draw.text((x0+100,y0-50), text='120 mm',font=unicode_font_48, fill=RED)
     
-    config.f_south=True
+    g_share.f_south=True
     xc = config.xc2
     yc = config.yc2
     layer0.draw.circle((xc,yc),r1,fill=YELLOW)
@@ -193,7 +194,7 @@ def build_dxt_zp_A5(latv, longv, place, time_zone, f_south=False, debug=False):
     
     layer0 = paper.add_layer(name='0')
         
-    config.f_south=f_south
+    g_share.f_south=f_south
     xc = config.xc1
     yc = config.yc1
     layer0.draw.circle((xc,yc),r1,fill=YELLOW)

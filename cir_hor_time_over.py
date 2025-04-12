@@ -6,8 +6,8 @@ from def_font import *
 
 def draw_hor_time_over(im, draw,xc,yc,r2,r3,hour,minute,second,sun_ra):
     # plot hour angle marking
-    from config import config
-    f_south = config.f_south
+    from g_share import g_share
+    f_south = g_share.f_south
     ari_ang = config.ari_ang
     
     FCOLOR=(0,0,0,255)

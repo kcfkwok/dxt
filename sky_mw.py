@@ -139,8 +139,8 @@ def draw_milkyway_south(draw,xc,yc,rr):
 
 
 def add_milkyway(paper,xc,yc,rr,im=None, draw=None):
-    from config import config
-    f_south = config.f_south
+    from g_share import g_share
+    f_south = g_share.f_south
     if im is not None:
         if f_south:
             draw_milkyway_south(draw,xc,yc,rr)
@@ -211,7 +211,7 @@ def app_mw(fn=None):
 if __name__=='__main__':
     year = 2025
     config.debug=False
-    config.f_south=False
+    g_share.f_south=False
     cx=config.color_sky_day
     g_share.color_sky=(cx[0],cx[1],cx[2],255)
     
@@ -223,7 +223,7 @@ if __name__=='__main__':
 if __name__=='__main__':
     year = 2025
     config.debug=False
-    config.f_south=True
+    g_share.f_south=True
     cx=config.color_sky_day
     g_share.color_sky=(cx[0],cx[1],cx[2],255)
     

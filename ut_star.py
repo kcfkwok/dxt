@@ -146,10 +146,10 @@ def draw_cst(draw, cst,xc,yc,rr,f_south,small=False,color_f=True):
     
 def draw_fix_stars(draw,xc,yc,rr,small=False,color_f=True):
     try:
-        f_south = config.f_south
+        f_south = g_share.f_south
     except:
-        from config import config
-        f_south = config.f_south 
+        from g_share import g_share
+        f_south = g_share.f_south
         
     skip='''
     def _draw_text(xy, text="", font=unicode_font_64,fill=FCOLOR,draw=draw):
@@ -167,4 +167,45 @@ def draw_fix_stars(draw,xc,yc,rr,small=False,color_f=True):
     for star in stars:
         if star not in g_share.stars_plotted:
             draw_star(draw, star,xc,yc,rr,f_south,small=small,color_f=color_f)
+def get_cst_from_ra_dec(ra, dec):
+    """Find constellation and closest star from RA and DEC coordinates.
+    
+    Args:
+        ra: Right ascension in degrees
+        dec: Declination in degrees
+        
+    Returns:
+        tuple: (constellation, star_name, distance)
+               where constellation is the Chinese constellation name
+               star_name combines bayer_name and chinese_name if available
+               distance is the angular distance in degrees
+    """
+    # Import star catalog functions
+    from read_star_list import parse_star_list, find_star_by_hr
+    
+    # Find closest star in our catalog
+    min_dist = float('inf')
+    closest_star_info = None
+    
+    # Parse star list data
+    stars = parse_star_list('star_list1.md')
+    
+    for cst in CSTS:
+        for star_list in starsln[cst]:
+            for star in star_list:
+                star_ra, star_dec, _, _ = starsi[star]
+                dist = ((ra - star_ra)**2 + (dec - star_dec)**2)**0.5
+                if dist < min_dist:
+                    min_dist = dist
+                    closest_star_info = find_star_by_hr(stars, star)
+                    
+    if closest_star_info:
+        # Build star name combining bayer_name and chinese_name
+        star_name = closest_star_info['bayer_name']
+        if closest_star_info['chinese_name']:
+            star_name += f" ({closest_star_info['chinese_name']})"
+            
+        return (closest_star_info['constellation'], star_name, min_dist)
+    
+    return (None, None, min_dist)
 
