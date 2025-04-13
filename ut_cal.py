@@ -177,7 +177,8 @@ def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_s=None):
     cos_phi = r_cs(angx)
     x = int(cos_phi * r + xc)
     y = int(sin_phi * r + yc)
-    print('ra_dec_to_xyplot ra:%.2f dec:%.2f f_south:%s x:%s y:%s' % (ra,dec,f_s,x,y))
+    print('ra_dec_to_xyplot ra:%.2f dec:%.2f xc:%s yc:%s rr:%s f_south:%s x:%s y:%s' % 
+    (ra,dec,xc,yc,rr,f_s,x,y))
     return x,y
 
 
@@ -330,3 +331,28 @@ def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_s=None):
     return ra, dec
 
     
+if __name__=='__main__':
+    #xyplot_to_ra_dec x:2109.4884724056355 y:1724.5474483661253 f_south:True ra:258.43024253693807 dec:-17.70
+    x=2109
+    y=1724
+    f_s=True
+    rr=0.155 
+    xc=1500 
+    yc=1500
+    ra,dec =xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_s=f_s)
+    print('ra:%s(%s) dec:%s' % (ra, ra/15.0, dec))
+    x,y =ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_s=f_s)
+    print('x:%s y:%s' % (x,y))
+    
+if __name__=='__main__':
+    #xyplot_to_ra_dec x:2109.4884724056355 y:1724.5474483661253 f_south:True ra:258.43024253693807 dec:-17.70
+    x=2109
+    y=1724
+    f_s=False
+    rr=0.155 
+    xc=1500 
+    yc=1500
+    ra,dec =xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_s=f_s)
+    print('ra:%s(%s) dec:%s' % (ra, ra/15.0, dec))
+    x,y =ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_s=f_s)
+    print('x:%s y:%s' % (x,y))

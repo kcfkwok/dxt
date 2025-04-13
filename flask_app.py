@@ -245,13 +245,15 @@ def xy_to_radec():
     from ut_star import get_cst_from_ra_dec
     print('xy_to_radec f_south:', g_share.f_south)
     ra, dec = xyplot_to_ra_dec(x, y, xc, yc, rr)
-    cst, star, dist = get_cst_from_ra_dec(ra, dec)
+    cst, star, dist, hr_id = get_cst_from_ra_dec(ra, dec)
+    print('cst:%s star:%s ra:%.2f dec:%.2f' % (cst,star,ra,dec))
     return jsonify({
         'ra': ra,
         'dec': dec,
         'constellation': cst,
         'star': star,
-        'distance': dist
+        'distance': dist,
+        'hr_id': hr_id
     })
 
 

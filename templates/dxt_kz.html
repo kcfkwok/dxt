@@ -161,7 +161,10 @@
                             ctx.fillText(constellationText, x + 10, textY + 110);
                         }
                         if (data.star) {
-                            const nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
+                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
+                            if (data.hr_id) {
+                                nearestStarText = '{{ gettext("Nearest Star") }}: HR ' + data.hr_id + ' - ' + data.star;
+                            }
                             ctx.fillText(nearestStarText, x + 10, textY + 150);
                         } 
                     });
