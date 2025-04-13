@@ -2,31 +2,17 @@ from ut_math import *
 from ut_cal import *
 from paper import *
 from def_font import *
-
+from g_share import g_share
 
 def draw_hor_time_over(im, draw,xc,yc,r2,r3,hour,minute,second,sun_ra):
     # plot hour angle marking
-    from g_share import g_share
-    f_south = g_share.f_south
     ari_ang = config.ari_ang
     
     FCOLOR=(0,0,0,255)
     LW=2
     r2a = r2 -30
     r2b = r2 -40
-    skip="""
-    tzhr = tz - (longv/15)
-    tzdt = tzhr * 60
-    tzdg = tzdt /4
-    #ang= tzdg  #270 - ari_ang -180  # when ari_ang=90, ang=0
-    # test
-    hr=0
-    if f_south:
-        ang=270 - tzdg
-    else:
-        ang=270 + tzdg
-    txt_ang=270 - ang
-    """
+
     #-------------
     s_hr = hour + (minute/60) + (second/3600)
     s_hr_ang = s_hr * 15
@@ -41,7 +27,7 @@ def draw_hor_time_over(im, draw,xc,yc,r2,r3,hour,minute,second,sun_ra):
     print('s_hr0_ang:', s_hr0_ang)
     
     hr= 0
-    if f_south:
+    if g_share.f_south:
         ang = 180 - s_hr0_ang
     else:
         ang= s_hr0_ang #270
@@ -81,7 +67,7 @@ def draw_hor_time_over(im, draw,xc,yc,r2,r3,hour,minute,second,sun_ra):
             draw.line([(x3,y3),(x2b,y2b)],fill=FCOLOR,width=LW)
  
         #break
-        if f_south:
+        if g_share.f_south:
             hr +=1
             ang +=15
             if hr > 23:

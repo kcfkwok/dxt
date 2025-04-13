@@ -1,6 +1,6 @@
 from config import config
 from ut_cal import *
-
+from g_share import g_share
 
 def draw_ecl(im, draw,xc,yc,rx,s_year,tz,rr,requ,color_f=True):
     from config import config
@@ -19,12 +19,7 @@ def draw_ecl(im, draw,xc,yc,rx,s_year,tz,rr,requ,color_f=True):
         nd = cal_d_w_hm(s_year,1,1,-tz,0)
         Obl = g_share.Obl
         
-    try:
-        f_south = g_share.f_south
-    except:
-        from g_share import g_share
-        f_south = g_share.f_south
-    if f_south:
+    if g_share.f_south:
         txt_ang=90 +5 +90
     else:
         txt_ang=270 -5 -90
@@ -45,17 +40,17 @@ def draw_ecl(im, draw,xc,yc,rx,s_year,tz,rr,requ,color_f=True):
 
         if day==1:
 
-            ex0,ey0 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ,f_south=f_south)
+            ex0,ey0 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ)
         elif day in [11,21,31]:
 
-            ex0,ey0 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ,f_south=f_south)
+            ex0,ey0 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ)
         elif day in [6,16,26]:
 
-            ex0,ey0 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ,f_south=f_south)
+            ex0,ey0 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ)
         else:
 
             if day in [3,8,13,18,23,28]:
-                ex1,ey1 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ,f_south=f_south)
+                ex1,ey1 = ra_dec_to_xyplot(sra,sdec,xc,yc,rr,requ)
                 #if draw_ecl:
                 draw.line([(ex0,ey0),(ex1,ey1)],fill=ECL_LINE_COLOR,width=ECL_LINE_WIDTH)
 

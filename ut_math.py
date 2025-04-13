@@ -37,11 +37,7 @@ def atn2(y,x):
     return math.degrees(math.atan2(y,x))
 
 def r_cs(deg):
-    try:
-        f_south=g_share.f_south
-    except:
-        from g_share import g_share
-        f_south=g_share.f_south
-    if f_south:
+    from g_share import g_share
+    if g_share.f_south:
         return -cs(deg)
     return cs(deg)

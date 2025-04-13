@@ -231,7 +231,8 @@ def dxt_zp_pdf(content):
         pdf.image(temp_image_path, x=x, y=y, w=new_width, h=new_height)
 
         # page 2: A5 face north
-        paper2 = build_dxt_zp_A5(latv,longv,location,timezone,f_south=False)
+        g_share.set_f_south(False)
+        paper2 = build_dxt_zp_A5(latv,longv,location,timezone)
         x = config.banner_x
         y = config.banner_y
         layer = paper2.add_layer(name='banner')
@@ -269,7 +270,8 @@ def dxt_zp_pdf(content):
 
 
         # page 3: A5 face south
-        paper3 = build_dxt_zp_A5(latv,longv,location,timezone,f_south=True)
+        g_share.set_f_south(True)
+        paper3 = build_dxt_zp_A5(latv,longv,location,timezone)
         x = config.banner_x
         y = config.banner_y
         layer = paper3.add_layer(name='banner')

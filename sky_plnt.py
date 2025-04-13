@@ -3,6 +3,7 @@ from def_plnt import *
 from ut_star import *
 from lunar_python import Lunar
 from datetime import datetime
+from g_share import g_share
 
 MAG_SUN_R=20
 MAG_MOON_R=20
@@ -241,8 +242,7 @@ def draw_moon(image, x,y,phase,inangle, R=20):
     #image.paste(im2, (px, py, px + sx, py + sy), im2)
     image.paste(im2, (px, py), im2)
     
-def draw_moon_sym(im, draw,xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,f_south,
-                 small=False, color_f=True):
+def draw_moon_sym(im, draw,xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz, small=False, color_f=True):
     k = K_MOON
     if color_f:
         kcolor = SYM_COLORS.get(k, WHITE)
@@ -255,7 +255,7 @@ def draw_moon_sym(im, draw,xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,f_south
     else:
         k_mag_r =PLN_MAG_R.get(k, MAG_N_R)
         
-    if f_south:
+    if g_share.f_south:
         TEXT_ANG_OFS=90
     else:
         TEXT_ANG_OFS=270
@@ -276,7 +276,7 @@ def draw_moon_sym(im, draw,xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,f_south
     dec = g_share.pln_0[k].dec
     ra1 = g_share.pln_1[k].ra
     dec = g_share.pln_1[k].dec   
-    x,y = ra_dec_to_xyplot(ra, dec, xc,yc,rr,f_south=f_south)
+    x,y = ra_dec_to_xyplot(ra, dec, xc,yc,rr)
     #ang = ari_ang + ra
     #sin_ang = sn(ang)
     #cos_ang = r_cs(ang)
@@ -316,7 +316,7 @@ def draw_moon_sym(im, draw,xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,f_south
     #x5b = int(cos_ang*r5b + xc)
     #y5b = int(sin_ang*r5b + yc)
     #ang=360-ang + TEXT_ANG_OFS
-    if f_south:
+    if g_share.f_south:
         txt_ang=ang + TEXT_ANG_OFS
     else:
         txt_ang=360-ang + TEXT_ANG_OFS
@@ -327,10 +327,10 @@ def draw_moon_sym(im, draw,xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,f_south
     
     ra = g_share.pln_0[K_SUN].ra
     dec = g_share.pln_0[K_SUN].dec
-    sun_x,sun_y = ra_dec_to_xyplot(ra, dec, xc, yc,rr,f_south=f_south)
+    sun_x,sun_y = ra_dec_to_xyplot(ra, dec, xc, yc,rr)
     ra = g_share.pln_0[K_MOON].ra
     dec = g_share.pln_0[K_MOON].dec
-    moon_x, moon_y = ra_dec_to_xyplot(ra, dec, xc, yc,rr,f_south=f_south)
+    moon_x, moon_y = ra_dec_to_xyplot(ra, dec, xc, yc,rr)
     
     lun_cal = Lunar.fromDate(datetime(year,month,day))
     lun_d = lun_cal.getDay()
@@ -342,7 +342,7 @@ def draw_moon_sym(im, draw,xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,f_south
     draw.circle((moon_x,moon_y),k_mag_r,outline=FCOLOR,width=1)
 
 
-def draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,f_south,small=False,color_f=True):
+def draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,small=False,color_f=True):
 
     if color_f:    
         kcolor = SYM_COLORS.get(k, WHITE)
@@ -358,7 +358,7 @@ def draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,f_south,small=False,color_f=True):
         txt_r = TXT_R
         txt_font = TXT_FONT
         k_mag_r =PLN_MAG_R.get(k, MAG_N_R)
-    if f_south:
+    if g_share.f_south:
         TEXT_ANG_OFS=90
     else:
         TEXT_ANG_OFS=270
@@ -375,7 +375,7 @@ def draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,f_south,small=False,color_f=True):
     dec = g_share.pln_0[k].dec
     ra1 = g_share.pln_1[k].ra
     dec = g_share.pln_1[k].dec   
-    x,y = ra_dec_to_xyplot(ra, dec, xc,yc,rr,f_south=f_south)
+    x,y = ra_dec_to_xyplot(ra, dec, xc,yc,rr)
     #print('k:%s ra:%s dec:%s x:%s y:%s xc:%s yc:%s rr:%s f_s:%s' % 
     #     (k,ra,dec,x,y,xc,yc,rr,f_south))
     #ang = ari_ang + ra
@@ -427,7 +427,7 @@ def draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,f_south,small=False,color_f=True):
     #x5b = int(cos_ang*r5b + xc)
     #y5b = int(sin_ang*r5b + yc)
     #ang=360-ang + TEXT_ANG_OFS
-    if f_south:
+    if g_share.f_south:
         txt_ang=ang + TEXT_ANG_OFS
     else:
         txt_ang=360-ang + TEXT_ANG_OFS
@@ -440,7 +440,6 @@ def draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,f_south,small=False,color_f=True):
 def draw_sky_plnt(im, draw, xc, yc,r1,r5,r5b,rr,
                     year,month,day,hour,minute,tz,small=False,color_f=True):
 
-    f_south = g_share.f_south
     #config.small=small
     if small:
         txt_r = SMALL_TXT_R
@@ -450,7 +449,7 @@ def draw_sky_plnt(im, draw, xc, yc,r1,r5,r5b,rr,
         txt_r = TXT_R
         r5c = r5b - txt_r-10 # for track arrow
         r5d = r5b + txt_r+10 # for track arrow of MOON
-    if f_south:
+    if g_share.f_south:
         TEXT_ANG_OFS=90
     else:
         TEXT_ANG_OFS=270
@@ -460,13 +459,13 @@ def draw_sky_plnt(im, draw, xc, yc,r1,r5,r5b,rr,
     ari_ang = config.ari_ang
     pre_cal_txt_pos(xc,yc,r5b,r5c,txt_r)
     for k in [K_NEPTUNE,K_URANUS,K_SATURN,K_JUPITER,K_MERCURY,K_VENUS,K_MARS,K_SUN]:
-        draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,f_south,small=small,color_f=color_f)
+        draw_plnt_sym(im, draw, k, xc,yc,rr,r1,r5,small=small,color_f=color_f)
         
-    draw_moon_sym(im, draw, xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,f_south,
+    draw_moon_sym(im, draw, xc,yc,rr,r5,r5d,year,month,day,hour,minute,tz,
                   small=small,color_f=color_f)
 
 
-def add_sky_plnt(paper,xc,yc,r1,r5,r5b,rr,year,month,day,hour,minute,tz,f_south=False,
+def add_sky_plnt(paper,xc,yc,r1,r5,r5b,rr,year,month,day,hour,minute,tz,
                  im=None,draw=None,small=False,color_f=True):
     LW=2
     if im is not None:

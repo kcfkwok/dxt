@@ -81,9 +81,9 @@ def day_cald(draw,x,y,year,month,day,hour=0,minute=0,show_hm=False,tzn=8):
 def make_dxt_kz_A5R(dt,latv,longv,place,timezone,psize='A5'):
     second=0
     if latv <0:
-        g_share.f_south=True
+        g_share.set_f_south(True)
     else:
-        g_share.f_south=False
+        g_share.set_f_south(False)
     year = dt.year
     month = dt.month
     day = dt.day

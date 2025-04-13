@@ -152,15 +152,15 @@ def get_days_of_month(year,month):
     return days
 
 
-def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_south=None):
+def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_s=None):
     try:
         ari_ang = config.ari_ang
     except:
         from config import config
         ari_ang = config.ari_ang
 
-    if f_south is None:
-        f_south = g_share.f_south
+    if f_s is None:
+        f_s = g_share.f_south
         
     if requ is None:
         r_90 = 180 / rr
@@ -168,7 +168,7 @@ def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_south=None):
         
     angx = ari_ang + ra
     rd = dec / rr
-    if f_south:
+    if f_s:
         r = requ + rd
     else:
         r = requ - rd
@@ -177,7 +177,7 @@ def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_south=None):
     cos_phi = r_cs(angx)
     x = int(cos_phi * r + xc)
     y = int(sin_phi * r + yc)
-    print('ra_dec_to_xyplot ra:%.2f dec:%.2f f_south:%s x:%s y:%s' % (ra,dec,f_south,x,y))
+    print('ra_dec_to_xyplot ra:%.2f dec:%.2f f_south:%s x:%s y:%s' % (ra,dec,f_s,x,y))
     return x,y
 
 
@@ -292,15 +292,15 @@ if __name__=='__main__':
     print(lst)
     
     
-def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_south=None):
+def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_s=None):
     try:
         ari_ang = config.ari_ang
     except:
         from config import config
         ari_ang = config.ari_ang
     
-    if f_south is None:
-        f_south = g_share.f_south
+    if f_s is None:
+        f_s = g_share.f_south
         
     if requ is None:
         r_90 = 180 / rr
@@ -320,12 +320,12 @@ def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_south=None):
     ra = (ang - ari_ang) % 360
     
     # Calculate declination
-    if f_south:
+    if f_s:
         dec = (r - requ) * rr
     else:
         dec = (requ - r) * rr
         
-    print('xyplot_to_ra_dec x:%s y:%s f_south:%s ra:%s dec:%.2f' % (x, y, f_south, ra,dec))
+    print('xyplot_to_ra_dec x:%s y:%s f_south:%s ra:%s dec:%.2f' % (x, y, f_s, ra,dec))
     
     return ra, dec
 

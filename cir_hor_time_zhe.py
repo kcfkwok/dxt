@@ -1,22 +1,20 @@
-from g_share import g_share
-
 from ut_math import *
 from ut_cal import *
 from paper import *
 from def_font import *
 from config import config
+from g_share import g_share
 from word_list import ZHE
 
 def draw_hor_time_zhe(im,draw,xc,yc,r1,r2,stroke_width=0):
     FCOLOR = (0,0,0,255)
     LW=4
     ari_ang = config.ari_ang
-    f_south = g_share.f_south
     
     r1a = r1 - 30
     #ang=Ra = 0  #270 - ari_ang -180  # when ari_ang=90, ang=0
         
-    if f_south:
+    if g_share.f_south:
         ang=180
     else:
         ang = 0
@@ -52,7 +50,7 @@ def draw_hor_time_zhe(im,draw,xc,yc,r1,r2,stroke_width=0):
             #y2 = int(sin_ang*r2 + yc)
             draw.line([(x1,y1),(x2,y2)],fill=FCOLOR,width=LW) 
         #break
-        if f_south:
+        if g_share.f_south:
             hr +=1
         else:
             hr -=1

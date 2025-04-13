@@ -6,6 +6,7 @@ from ut_cal import *
 from legend_mag import *
 from legend_sp import *
 from pathlib import Path
+from g_share import g_share
 
 def make_dxt_rl_A4_bg(year):
     month=1
@@ -14,7 +15,7 @@ def make_dxt_rl_A4_bg(year):
     minute=0
     tz=8
     
-    g_share.f_south=False
+    g_share.set_f_south(False)
     paper = PAPER("A4L")
     paper.draw_outline()
     #paper.draw_MAX_RECT()
@@ -69,7 +70,7 @@ def make_dxt_rl_A4_bg(year):
     #add_cir_month_zhe(paper,xc,yc,r2,year,tz) 
 
     
-    g_share.f_south=True
+    g_share.set_f_south(True)
     xc =config.xc2 
     yc =config.yc2
     fp_mw = Path(config.interpath, config.fmw_s)
@@ -106,14 +107,13 @@ def make_dxt_rl_A4_bg(year):
     return paper
 
 
-def make_dxt_rl_A5R_bg(year,f_south,cir_yellow=True):
+def make_dxt_rl_A5R_bg(year,cir_yellow=True):
     month=1
     day=1
     hour=0
     minute=0
     tz=8
     
-    g_share.f_south=f_south
     paper = PAPER("A5R")
     paper.draw_outline()
     #paper.draw_MAX_RECT()
@@ -148,7 +148,7 @@ def make_dxt_rl_A5R_bg(year,f_south,cir_yellow=True):
         layer_bg.draw.circle((xc,yc),r1,fill=YELLOW)
         layer_bg.draw.circle((xc,yc),r3,fill=WHITE)
     
-    if f_south ==False:
+    if g_share.f_south ==False:
         fp_mw = Path (config.interpath, config.fmw_n)
         fp_bg = Path (config.interpath, config.fbg_n)
         fnx = config.fdt_n % year
@@ -211,8 +211,8 @@ if __name__=='__main__':
     year = now.year
     config.debug=False
 
-    f_south=False
-    paper= make_dxt_rl_A5R_bg(year,f_south)
+    g_share.set_f_south(False)
+    paper= make_dxt_rl_A5R_bg(year)
     #paper.draw.text((paper.min_x,paper.min_y), fnx, font=unicode_font_36,fill=RED)
     fnx = config.fbg_a5r_yw_n % year
     fn = '%s/%s' % (config.fskyl, fnx)
@@ -220,8 +220,8 @@ if __name__=='__main__':
     paper.im.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
-    f_south=True
-    paper= make_dxt_rl_A5R_bg(year,f_south)
+    g_share.set_f_south(True)
+    paper= make_dxt_rl_A5R_bg(year)
     #paper.draw.text((paper.min_x,paper.min_y), fnx, font=unicode_font_36,fill=RED)
     fnx = config.fbg_a5r_yw_s % year
     fn = '%s/%s' % (config.fskyl, fnx)
@@ -230,6 +230,4 @@ if __name__=='__main__':
     print('saved to %s' % fn)
     
     
-    #paper.commit_image(fn)    
-    
-    
+    #paper.commit_image(fn)

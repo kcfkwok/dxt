@@ -49,13 +49,13 @@ def SP_to_color(sp):
     return (255,255,255,0)
 
 
-def draw_star(draw, star,xc,yc,rr,f_south,
+def draw_star(draw, star,xc,yc,rr,
               small=False,color_f=True):
     FCOLOR=(0,0,0,255)
     #BGCOLOR=(255,255,255,0)
     #LW=4
     Ra,decl,mag,sp= starsi[star]
-    x,y =ra_dec_to_xyplot(Ra,decl,xc,yc,rr,f_south=f_south)
+    x,y =ra_dec_to_xyplot(Ra,decl,xc,yc,rr)
     #if star not in stars_plotted:
     r = mag_to_r(mag)
     if small:
@@ -99,11 +99,11 @@ def draw_star_at(draw, star,x,y,color_f=True):
         draw.circle((x,y),r,outline=FCOLOR,width=2)
         
 
-def draw_stars_with_line(draw,lstars,xc,yc,rr,f_south,
+def draw_stars_with_line(draw,lstars,xc,yc,rr,
                          small=False,color_f=True):
     ls=1
     for star in lstars:
-        x,y =draw_star(draw, star,xc,yc,rr,f_south,
+        x,y =draw_star(draw, star,xc,yc,rr,
                        small=small,color_f=color_f)
         if ls==1:
             ls=0
@@ -115,21 +115,21 @@ def draw_stars_with_line(draw,lstars,xc,yc,rr,f_south,
             y0=y
     # draw stars over again
     for star in lstars:
-        x,y =draw_star(draw, star,xc,yc,rr,f_south,
+        x,y =draw_star(draw, star,xc,yc,rr,
                        small=small,color_f=color_f)
  
-def draw_cst(draw, cst,xc,yc,rr,f_south,small=False,color_f=True):
+def draw_cst(draw, cst,xc,yc,rr,small=False,color_f=True):
     for lstars in starsln[cst]:
         ls=1
         for star in lstars:
-            x,y =draw_star(draw, star,xc,yc,rr,f_south,
+            x,y =draw_star(draw, star,xc,yc,rr,
                            small=small,color_f=color_f)
             if ls==1:
                 ls=0
                 x0=x
                 y0=y
             else:
-                if f_south:
+                if g_share.f_south:
                     if cst !='UMi':  # in south hemisphere, ignore UMi lines which locate in south pole
                         draw.line([(x0,y0),(x,y)],fill=(60,60,60,255),width=2)  
                 else:
@@ -140,33 +140,22 @@ def draw_cst(draw, cst,xc,yc,rr,f_south,small=False,color_f=True):
     # draw stars over again
     for lstars in starsln[cst]:
         for star in lstars:
-            x,y =draw_star(draw, star,xc,yc,rr,f_south,
+            x,y =draw_star(draw, star,xc,yc,rr,
                            small=small,color_f=color_f)
                            
     
 def draw_fix_stars(draw,xc,yc,rr,small=False,color_f=True):
-    try:
-        f_south = g_share.f_south
-    except:
-        from g_share import g_share
-        f_south = g_share.f_south
-        
-    skip='''
-    def _draw_text(xy, text="", font=unicode_font_64,fill=FCOLOR,draw=draw):
-        ss=convert(text, 'zh-hans')
-        draw.text(xy, text=ss, font=font, fill=fill)
-        '''
     g_share.stars_plotted=[]
 
     # plot stars and lines in constellations                
     for cst in CSTS:
-        draw_cst(draw, cst,xc,yc,rr,f_south,small=small,color_f=color_f)
+        draw_cst(draw, cst,xc,yc,rr,small=small,color_f=color_f)
     
     # plot stars not in cst lines
     stars = list(starsi.keys())
     for star in stars:
         if star not in g_share.stars_plotted:
-            draw_star(draw, star,xc,yc,rr,f_south,small=small,color_f=color_f)
+            draw_star(draw, star,xc,yc,rr,small=small,color_f=color_f)
 def get_cst_from_ra_dec(ra, dec):
     """Find constellation and closest star from RA and DEC coordinates.
     

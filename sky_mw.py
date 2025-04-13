@@ -96,7 +96,7 @@ def draw_milkyway_south(draw,xc,yc,rr):
                         for v3 in v2:
                             #print('\t[%s..]..%d' % (v3[:5], len(v3)))
                             ra,dec = v3[0], v3[1]
-                            x,y = ra_dec_to_xyplot(ra, dec,xc,yc,rr,f_south=True)
+                            x,y = ra_dec_to_xyplot(ra, dec,xc,yc,rr)
                             dts.append((x,y))
                         dtss[i].append(dts)
                         #draw.polygon(dts, outline=(0,0,0,0),width=1)                  
@@ -139,10 +139,8 @@ def draw_milkyway_south(draw,xc,yc,rr):
 
 
 def add_milkyway(paper,xc,yc,rr,im=None, draw=None):
-    from g_share import g_share
-    f_south = g_share.f_south
     if im is not None:
-        if f_south:
+        if g_share.f_south:
             draw_milkyway_south(draw,xc,yc,rr)
         else:
             draw_milkyway_north(draw,xc,yc,rr)
@@ -153,7 +151,7 @@ def add_milkyway(paper,xc,yc,rr,im=None, draw=None):
     MAX_Y = paper.max_y
     LW=2
     layer = paper.add_layer(name='milkyway')
-    if f_south:
+    if g_share.f_south:
         draw_milkyway_south(layer.draw,xc,yc,rr)
     else:
         draw_milkyway_north(layer.draw,xc,yc,rr)
@@ -211,7 +209,7 @@ def app_mw(fn=None):
 if __name__=='__main__':
     year = 2025
     config.debug=False
-    g_share.f_south=False
+    g_share.set_f_south(False)
     cx=config.color_sky_day
     g_share.color_sky=(cx[0],cx[1],cx[2],255)
     
@@ -223,7 +221,7 @@ if __name__=='__main__':
 if __name__=='__main__':
     year = 2025
     config.debug=False
-    g_share.f_south=True
+    g_share.set_f_south(True)
     cx=config.color_sky_day
     g_share.color_sky=(cx[0],cx[1],cx[2],255)
     

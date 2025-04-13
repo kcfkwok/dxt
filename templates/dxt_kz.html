@@ -74,199 +74,202 @@
 
     <canvas id="dxt_kz-canvas" width="800" height="600"></canvas>
     <script>
-        // Get config values from template
-        const config = JSON.parse('{{ config|tojson }}');
-        const canvas = document.getElementById('dxt_kz-canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
+        // Wait for DOM to be fully loaded before executing JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get config values from template
+            const config = JSON.parse('{{ config|tojson }}');
+            const canvas = document.getElementById('dxt_kz-canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
 
-        // Set image source
-        img.src = "{{ url_for('dxt_kz_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}"
-        
-        // Wait for image to load
-        img.onload = function() {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-        };
-        
-        // Mouse down event handler
-        canvas.addEventListener('mousedown', function(e) {
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-
-            const centerX = config.xckz;
-            const centerY = config.yckz;
-            const radius = config.r5;
-            const dx = x - centerX;
-            const dy = y - centerY;
-            const distance = Math.sqrt(dx*dx + dy*dy);
-
-            if (distance <= radius) {
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(x, y);
-                ctx.strokeStyle = 'red';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.strokeStyle = 'blue';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-                
-                fetch('/xy_to_radec', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({x: x, y: y})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const raH = Math.floor(data.ra/15);
-                    const raM = Math.floor((data.ra/15 - raH)*60);
-                    const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
-                    
-                    const decSign = data.dec >= 0 ? '+' : '-';
-                    const decAbs = Math.abs(data.dec);
-                    const decD = Math.floor(decAbs);
-                    const decM = Math.floor((decAbs - decD)*60);
-                    const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
-                    
-                    ctx.font = '40px Arial';
-                    ctx.fillStyle = 'red';
-                    let textY = y > canvas.height - 160 ? y - 160 : y;
-                    
-                    const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
-                    ctx.fillText(raText, x + 10, textY + 30);
-                    
-                    const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
-                    ctx.fillText(decText, x + 10, textY + 70);
-                    
-                    if (data.constellation) {
-                        const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
-                        ctx.fillText(constellationText, x + 10, textY + 110);
-                    }
-                    if (data.star) {
-                        const nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
-                        ctx.fillText(nearestStarText, x + 10, textY + 150);
-                    } 
-                });
-            }
-        });
-        
-        function downloadPDF() {
-            const content = 'kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-{{ month }}-{{ day }};{{ hour }}-{{ minute }}'; 
-            const downloadUrl = `/download?content=${content}`;
-            window.location.href = downloadUrl;
-        }
-        
-        function goToDxtKz() {
-            const month = document.getElementById('month').value;
-            const day = document.getElementById('day').value;
-            const hour = document.getElementById('hour').value;
-            const minute = document.getElementById('minute').value;
-            const content = `kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-${month}-${day};${hour}-${minute}`;
-            const url = `/dxt_kz?content=${content}`;
-            window.location.href = url;
-        }
-
-        // Load stars when constellation changes
-        document.getElementById('constellation').addEventListener('change', function() {
-            const constellation = this.value;
-            const starSelect = document.getElementById('star');
+            // Set image source
+            img.src = "{{ url_for('dxt_kz_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}"
             
-            if (!constellation) {
-                starSelect.disabled = true;
-                starSelect.innerHTML = '<option value="">-- Select constellation first --</option>';
-                return;
-            }
+            // Wait for image to load
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+            };
             
-            fetch('/get_stars?constellation=' + constellation)
-                .then(response => response.json())
-                .then(stars => {
-                    starSelect.disabled = false;
-                    starSelect.innerHTML = '';
-                    starSelect.add(new Option('-- Select star --', ''));
+            // Mouse down event handler
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+
+                const centerX = config.xckz;
+                const centerY = config.yckz;
+                const radius = config.r5;
+                const dx = x - centerX;
+                const dy = y - centerY;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+
+                if (distance <= radius) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
                     
-                    stars.forEach(star => {
-                        let displayName = star.hr_id;
-                        if (star.bayer_name) {
-                            displayName += ' (' + star.bayer_name + ')';
+                    fetch('/xy_to_radec', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({x: x, y: y})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const raH = Math.floor(data.ra/15);
+                        const raM = Math.floor((data.ra/15 - raH)*60);
+                        const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                        
+                        const decSign = data.dec >= 0 ? '+' : '-';
+                        const decAbs = Math.abs(data.dec);
+                        const decD = Math.floor(decAbs);
+                        const decM = Math.floor((decAbs - decD)*60);
+                        const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                        
+                        ctx.font = '40px Arial';
+                        ctx.fillStyle = 'red';
+                        let textY = y > canvas.height - 160 ? y - 160 : y;
+                        
+                        const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+                        ctx.fillText(raText, x + 10, textY + 30);
+                        
+                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+                        ctx.fillText(decText, x + 10, textY + 70);
+                        
+                        if (data.constellation) {
+                            const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+                            ctx.fillText(constellationText, x + 10, textY + 110);
                         }
-                        if (star.chinese_name) {
-                            displayName += ' - ' + star.chinese_name;
-                        }
-                        starSelect.add(new Option(displayName, star.hr_id));
+                        if (data.star) {
+                            const nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
+                            ctx.fillText(nearestStarText, x + 10, textY + 150);
+                        } 
                     });
-                });
-        });
-        
-        // Locate star button click handler
-        document.getElementById('locate-star').addEventListener('click', function() {
-            const hrId = document.getElementById('star').value;
-            if (!hrId) return;
+                }
+            });
+            
+            function downloadPDF() {
+                const content = 'kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-{{ month }}-{{ day }};{{ hour }}-{{ minute }}'; 
+                const downloadUrl = `/download?content=${content}`;
+                window.location.href = downloadUrl;
+            }
+            
+            function goToDxtKz() {
+                const month = document.getElementById('month').value;
+                const day = document.getElementById('day').value;
+                const hour = document.getElementById('hour').value;
+                const minute = document.getElementById('minute').value;
+                const content = `kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-${month}-${day};${hour}-${minute}`;
+                const url = `/dxt_kz?content=${content}`;
+                window.location.href = url;
+            }
 
-            fetch('/get_star_coords?hr_id=' + hrId)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ra && data.dec) {
-                        return fetch('/radec_to_xy', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ra: data.ra, dec: data.dec})
+            // Load stars when constellation changes
+            document.getElementById('constellation').addEventListener('change', function() {
+                const constellation = this.value;
+                const starSelect = document.getElementById('star');
+                
+                if (!constellation) {
+                    starSelect.disabled = true;
+                    starSelect.innerHTML = '<option value="">-- Select constellation first --</option>';
+                    return;
+                }
+                
+                fetch('/get_stars?constellation=' + constellation)
+                    .then(response => response.json())
+                    .then(stars => {
+                        starSelect.disabled = false;
+                        starSelect.innerHTML = '';
+                        starSelect.add(new Option('-- Select star --', ''));
+                        
+                        stars.forEach(star => {
+                            let displayName = star.hr_id;
+                            if (star.bayer_name) {
+                                displayName += ' (' + star.bayer_name + ')';
+                            }
+                            if (star.chinese_name) {
+                                displayName += ' - ' + star.chinese_name;
+                            }
+                            starSelect.add(new Option(displayName, star.hr_id));
                         });
-                    }
-                    throw new Error('Invalid star coordinates');
-                })
-                .then(response => response.json())
-                .then(coords => {
-                    if (coords.x && coords.y) {
-						// test codes
-						const rect = canvas.getBoundingClientRect();
-						const scaleX = canvas.width / rect.width;
-						const scaleY = canvas.height / rect.height;
-						ctx.clearRect(0, 0, canvas.width, canvas.height);
-						ctx.drawImage(img, 0, 0);
-						const centerX = config.xckz;
-						const centerY = config.yckz;
-						const x = coords.x;
-						const y = coords.y;
-						ctx.beginPath();
-						ctx.moveTo(centerX, centerY);
-						ctx.lineTo(x, y);
-						ctx.strokeStyle = 'red';
-						ctx.lineWidth = 2;
-						ctx.stroke();
-						
-		                ctx.beginPath();
-						ctx.moveTo(x, 0);
-						ctx.lineTo(x, canvas.height);
-						ctx.moveTo(0, y);
-						ctx.lineTo(canvas.width, y);
-						ctx.strokeStyle = 'blue';
-						ctx.lineWidth = 1;
-						ctx.stroke();
-					}
-					
-                })
-                .catch(err => {
-                    console.error('Error:', err);
+                    });
+            });
+            
+            // Locate star button click handler
+            const locateStarBtn = document.getElementById('locate-star');
+            if (locateStarBtn) {
+                locateStarBtn.addEventListener('click', function() {
+                    const hrId = document.getElementById('star').value;
+                    if (!hrId) return;
+
+                    fetch('/get_star_coords?hr_id=' + hrId)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.ra && data.dec) {
+                                return fetch('/radec_to_xy', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ra: data.ra, dec: data.dec})
+                                });
+                            }
+                            throw new Error('Invalid star coordinates');
+                        })
+                        .then(response => response.json())
+                        .then(coords => {
+                            if (coords.x && coords.y) {
+                                const rect = canvas.getBoundingClientRect();
+                                const scaleX = canvas.width / rect.width;
+                                const scaleY = canvas.height / rect.height;
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(img, 0, 0);
+                                const centerX = config.xckz;
+                                const centerY = config.yckz;
+                                const x = coords.x;
+                                const y = coords.y;
+                                ctx.beginPath();
+                                ctx.moveTo(centerX, centerY);
+                                ctx.lineTo(x, y);
+                                ctx.strokeStyle = 'red';
+                                ctx.lineWidth = 2;
+                                ctx.stroke();
+                                
+                                ctx.beginPath();
+                                ctx.moveTo(x, 0);
+                                ctx.lineTo(x, canvas.height);
+                                ctx.moveTo(0, y);
+                                ctx.lineTo(canvas.width, y);
+                                ctx.strokeStyle = 'blue';
+                                ctx.lineWidth = 1;
+                                ctx.stroke();
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error:', err);
+                        });
                 });
-				
+            }
         });
     </script>
 </body>

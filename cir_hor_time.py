@@ -2,11 +2,10 @@ from ut_math import *
 from ut_cal import *
 from paper import *
 from def_font import *
+from g_share import g_share
 
 def draw_hor_time(im, draw,xc,yc,r2,r3,longv,tz): #hour,minute,second,sun_ra):
     # plot hour angle marking
-    from g_share import g_share
-    f_south = g_share.f_south
     ari_ang = config.ari_ang
     
     FCOLOR=(0,0,0,255)
@@ -21,7 +20,7 @@ def draw_hor_time(im, draw,xc,yc,r2,r3,longv,tz): #hour,minute,second,sun_ra):
     #ang= tzdg  #270 - ari_ang -180  # when ari_ang=90, ang=0
     # test
     hr=0
-    if f_south:
+    if g_share.f_south:
         ang=270 - tzdg
     else:
         ang=270 + tzdg
@@ -64,7 +63,7 @@ def draw_hor_time(im, draw,xc,yc,r2,r3,longv,tz): #hour,minute,second,sun_ra):
             draw.line([(x3,y3),(x2b,y2b)],fill=FCOLOR,width=LW)
  
         #break
-        if f_south:
+        if g_share.f_south:
             hr +=1
             ang +=15
             if hr > 23:

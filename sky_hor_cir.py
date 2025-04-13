@@ -4,6 +4,7 @@ from ut_cal import *
 from def_font import *
 from def_color import *
 from config import config
+from g_share import g_share
 ari_ang = config.ari_ang
 
 def hor_to_radc(alt, azi,lat,lst):  # altitude, azimuth, latitude,local sidereal time
@@ -27,11 +28,11 @@ def hor_to_radc(alt, azi,lat,lst):  # altitude, azimuth, latitude,local sidereal
     return ra, dec
 
 class SEGMENTS:
-    def __init__(self,f_south,latv,ena=True):
+    def __init__(self,latv,ena=True):
         self.azi=None
         self.ena=ena
         self.latv=latv
-        self.f_south=f_south
+        self.f_south=g_share.f_south
         self.data={}
         self.ras=[]
         
@@ -85,7 +86,6 @@ class SEGMENTS:
 
 def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
     from g_share import g_share
-    f_south= g_share.f_south
 
     #im = Image.new(mode='RGBA',size=im1.size,color=(255,255,255,0))
     #draw = ImageDraw.Draw(im)
@@ -112,7 +112,7 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
     azi=0
     s=1
     FCOLOR=(0,0,0,255)
-    segments=SEGMENTS(f_south, latv)
+    segments=SEGMENTS(latv)
     if latv==0:
         segments.new_segment(0)
     test_cnt=360
@@ -121,14 +121,14 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
 
         # horizontal line
         ra,dec = hor_to_radc(alt,azi,latv,lst)
-        x,y = ra_dec_to_xyplot(ra,dec,xc,yc,rr,requ=requ,f_south=f_south)
+        x,y = ra_dec_to_xyplot(ra,dec,xc,yc,rr,requ=requ)
 
         # aaa
         # corresponding point at cir_RA
         if latv !=0:
             ang = ra + 90
         else:
-            if f_south:
+            if g_share.f_south:
                 ang = int(azi/2)+180
             else:
                 if azi < 180:
@@ -151,28 +151,7 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
         yra= int(sin_ang*r_90 + yc)
         if latv==0:
             segments.add(None,None,xra,yra)
-        skip="""
-        # -2 deg below horizontal line for placing direction marker
-        ra_2,dec_2 = hor_to_radc(alt-2,azi,latv,lst)
-        xcd,ycd = ra_dec_to_xyplot(ra_2,dec_2,xc,yc,rr,requ=requ,f_south=f_south)
 
-        # -5 deg below horizontal line for placing direction name
-        ra_5,dec_5 = hor_to_radc(alt-5,azi,latv,lst)
-        xb,yb = ra_dec_to_xyplot(ra_5,dec_5,xc,yc,rr,requ=requ,f_south=f_south)
-        
-
-        # -18 deg below horizontal line
-        ra_18,dec_18 = hor_to_radc(alt-18,azi,latv,lst)
-        xa,ya = ra_dec_to_xyplot(ra_18,dec_18,xc,yc,rr,requ=requ,f_south=f_south)
-                
-        # 30 deg above horizontal line
-        ra30,dec30 = hor_to_radc(alt+30,azi,latv,lst)
-        x30,y30 = ra_dec_to_xyplot(ra30,dec30,xc,yc,rr,requ=requ,f_south=f_south)
-
-        # 60 deg above horizontal line
-        ra60,dec60 = hor_to_radc(alt+60,azi,latv,lst)
-        x60,y60 = ra_dec_to_xyplot(ra60,dec60,xc,yc,rr,requ=requ,f_south=f_south)
-        """
         if s ==1:
             s=0
             x0=x
@@ -227,7 +206,7 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
             else:
                 ra_h = 0 * 15
                 dec_h= 90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
             if latv !=0:
                 segments.new_segment(azi,xh,yh,x0,y0)
             # test
@@ -245,9 +224,9 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
             else:
                 dec_h= 90
                 
-                xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
+                xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
             
-            if (f_south==False and latv>0) or (f_south and latv<0):            
+            if (g_share.f_south==False and latv>0) or (g_share.f_south and latv<0):            
                 segments.new_segment(azi,xh,yh,x0,y0)
             
             # test
@@ -265,8 +244,8 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
             else:
                 ra_h = 12* 15
                 dec_h = 90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
-            if (f_south==False and latv>0) or (f_south and latv<0):    
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
+            if (g_share.f_south==False and latv>0) or (g_share.f_south and latv<0):    
                 segments.new_segment(azi,xh,yh,x0,y0)
                 # test
             if config.debug:
@@ -281,8 +260,8 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
                 dec_h=-90
             else:
                 dec_h =90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
-            if (f_south==False and latv>0) or (f_south and latv<0):    
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
+            if (g_share.f_south==False and latv>0) or (g_share.f_south and latv<0):    
                 segments.new_segment(azi,xh,yh,x0,y0)
                 # test
             if config.debug:
@@ -291,11 +270,11 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
 
         if azi==360:
             ra_h = 12*15
-            if f_south:
+            if g_share.f_south:
                 dec_h= 90
             else:
                 dec_h=-90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
             segments.commit_segment(xh,yh)
             
     # draw lines for locating direction
@@ -307,7 +286,6 @@ def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):
 
 def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
     from g_share import g_share
-    f_south= g_share.f_south
     stroke_width=1
     # avoid extreme cases
     if latv >89:
@@ -333,7 +311,7 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
     azi=0
     s=1
     FCOLOR=(0,0,0,255)
-    segments=SEGMENTS(f_south, latv, ena=False)
+    segments=SEGMENTS(latv, ena=False)
     if latv==0:
         segments.new_segment(0)
     test_cnt=360
@@ -342,14 +320,14 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
 
         # horizontal line
         ra,dec = hor_to_radc(alt,azi,latv,lst)
-        x,y = ra_dec_to_xyplot(ra,dec,xc,yc,rr,requ=requ,f_south=f_south)
+        x,y = ra_dec_to_xyplot(ra,dec,xc,yc,rr,requ=requ)
 
         # aaa
         # corresponding point at cir_RA
         if latv !=0:
             ang = ra + 90
         else:
-            if f_south:
+            if g_share.f_south:
                 ang = int(azi/2)+180
             else:
                 if azi < 180:
@@ -375,24 +353,24 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
             
         # -2 deg below horizontal line for placing direction marker
         ra_2,dec_2 = hor_to_radc(alt-2,azi,latv,lst)
-        xcd,ycd = ra_dec_to_xyplot(ra_2,dec_2,xc,yc,rr,requ=requ,f_south=f_south)
+        xcd,ycd = ra_dec_to_xyplot(ra_2,dec_2,xc,yc,rr,requ=requ)
 
         # -5 deg below horizontal line for placing direction name
         ra_5,dec_5 = hor_to_radc(alt-5,azi,latv,lst)
-        xb,yb = ra_dec_to_xyplot(ra_5,dec_5,xc,yc,rr,requ=requ,f_south=f_south)
+        xb,yb = ra_dec_to_xyplot(ra_5,dec_5,xc,yc,rr,requ=requ)
         
 
         # -18 deg below horizontal line
         ra_18,dec_18 = hor_to_radc(alt-18,azi,latv,lst)
-        xa,ya = ra_dec_to_xyplot(ra_18,dec_18,xc,yc,rr,requ=requ,f_south=f_south)
+        xa,ya = ra_dec_to_xyplot(ra_18,dec_18,xc,yc,rr,requ=requ)
                 
         # 30 deg above horizontal line
         ra30,dec30 = hor_to_radc(alt+30,azi,latv,lst)
-        x30,y30 = ra_dec_to_xyplot(ra30,dec30,xc,yc,rr,requ=requ,f_south=f_south)
+        x30,y30 = ra_dec_to_xyplot(ra30,dec30,xc,yc,rr,requ=requ)
 
         # 60 deg above horizontal line
         ra60,dec60 = hor_to_radc(alt+60,azi,latv,lst)
-        x60,y60 = ra_dec_to_xyplot(ra60,dec60,xc,yc,rr,requ=requ,f_south=f_south)
+        x60,y60 = ra_dec_to_xyplot(ra60,dec60,xc,yc,rr,requ=requ)
 
         if s ==1:
             s=0
@@ -445,7 +423,7 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
             else:
                 ra_h = 0 * 15
                 dec_h= 90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
             if latv !=0:
                 segments.new_segment(azi,xh,yh,x0,y0)
             # test
@@ -474,7 +452,7 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
                 #text ='地平綫' +  " (%s %s %s)" % (lats,longs,place)
                 text ="(%s %s %s)" % (lats,longs,place)
                 yb_ofs=0
-                if f_south==False:
+                if g_share.f_south==False:
                     if latv>0 and latv<35:
                         yb_ofs=-int(2*MM_UNIT)
                     if latv<0:    
@@ -485,7 +463,7 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
                         elif abs(latv) <35:
                             yb_ofs = -int(5*MM_UNIT)
                 print("xb:%s yb:%s" % (xb,yb))
-                if f_south and latv<0:
+                if g_share.f_south and latv<0:
                     if yb<1500:
                         yb=1290
                         xb=1400
@@ -508,9 +486,9 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
             else:
                 dec_h= 90
                 
-                xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
+                xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
             
-            if (f_south==False and latv>0) or (f_south and latv<0):            
+            if (g_share.f_south==False and latv>0) or (g_share.f_south and latv<0):            
                 segments.new_segment(azi,xh,yh,x0,y0)
             
             # test
@@ -532,7 +510,7 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
         if azi==180:
             # South
             if True:
-                xb1,yb1 = ra_dec_to_xyplot(ra_5, -90,xc,yc,rr,requ=requ,f_south=f_south)
+                xb1,yb1 = ra_dec_to_xyplot(ra_5, -90,xc,yc,rr,requ=requ)
                 draw.line([(xb,yb),(xb1,yb1)],fill=COLOR_RED, width=LW)
 
                 
@@ -545,8 +523,8 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
             else:
                 ra_h = 12* 15
                 dec_h = 90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
-            if (f_south==False and latv>0) or (f_south and latv<0):    
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
+            if (g_share.f_south==False and latv>0) or (g_share.f_south and latv<0):    
                 segments.new_segment(azi,xh,yh,x0,y0)
                 # test
             if config.debug:
@@ -568,8 +546,8 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
                 dec_h=-90
             else:
                 dec_h =90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
-            if (f_south==False and latv>0) or (f_south and latv<0):    
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
+            if (g_share.f_south==False and latv>0) or (g_share.f_south and latv<0):    
                 segments.new_segment(azi,xh,yh,x0,y0)
                 # test
             if config.debug:
@@ -583,11 +561,11 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
 
         if azi==360:
             ra_h = 12*15
-            if f_south:
+            if g_share.f_south:
                 dec_h= 90
             else:
                 dec_h=-90
-            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ,f_south=f_south)
+            xh,yh = ra_dec_to_xyplot(ra_h,dec_h,xc,yc,rr,requ=requ)
             segments.commit_segment(xh,yh)
             
     # draw lines for locating direction
@@ -598,7 +576,7 @@ def draw_hor_cir(im, draw, xc,yc,rr, latv,lst, longv, place):
         for i in range(90):
             alt = i
             ra,dec = hor_to_radc(alt,azi,latv,lst)
-            x,y = ra_dec_to_xyplot(ra,dec,xc,yc,rr,requ=requ,f_south=f_south)
+            x,y = ra_dec_to_xyplot(ra,dec,xc,yc,rr,requ=requ)
             if s ==1:
                 s=0
                 x0=x

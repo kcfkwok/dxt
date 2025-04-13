@@ -2,12 +2,13 @@ from PIL import Image, ImageColor,ImageDraw,ImageFont,ImageOps
 from paper import *    
 from ut_cal import *
 from def_font import *
+from g_share import g_share
 
 def _draw_text(draw, xy, text="", font=unicode_font_64,fill=(0,0,0)):
     #ss=convert(text, 'zh-hans')
     draw.text(xy, text=text, font=font, fill=fill)
     
-def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2, f_south=False,name=''):
+def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2,f_s=None,name=''):
     #print('plnt:%s co:%s x:%d y:%d draw_arrow ang:%.2f' % (plnt,color,x,y, iangle))
     LW=2
     D = L1 *2 +2
@@ -47,12 +48,12 @@ def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2, f_south=False
     yz0=None
     xz1=None
     yz1=None
-    if f_south ==False:
-        x,y=ra_dec_to_xyplot(ra, 100,xc,yc,rr)
+    if f_s ==False:
+        x,y=ra_dec_to_xyplot(ra, 100,xc,yc,rr, f_s=False)
         _draw_text(draw2,(x+50, y-40), text='北', font=unicode_font_64,
                        fill=(0,0,0,255) )
         for dec in range(91):
-            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr)
+            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr, f_s=False)
             if dec ==23:
                 xz0=x
                 yz0=y
@@ -65,7 +66,7 @@ def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2, f_south=False
                 draw2.line([(x,y),(x+15,y)],fill=(0,0,0,255),width=2)
             
         for dec in range(-90,-1):
-            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr)
+            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr,f_s=False)
             if dec ==-23:
                 xz1=x
                 yz1=y
@@ -78,11 +79,11 @@ def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2, f_south=False
                 draw2.line([(x,y),(x+15,y)],fill=(0,0,0,255),width=2)
             
     else:
-        x,y=ra_dec_to_xyplot(ra, -100,xc,yc,rr,f_south=True)
+        x,y=ra_dec_to_xyplot(ra, -100,xc,yc,rr)
         _draw_text(draw2,(x+50, y-40), text='南', font=unicode_font_64,
                        fill=(0,0,0,255) )
         for dec in range(91):
-            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr,f_south=True)
+            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr,f_s=True)
             if dec ==23:
                 xz0=x
                 yz0=y
@@ -96,7 +97,7 @@ def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2, f_south=False
             
         
         for dec in range(-90,-1):
-            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr,f_south=True)
+            x,y=ra_dec_to_xyplot(ra, dec,xc,yc,rr,f_s=True)
             if dec ==-23:
                 xz1=x
                 yz1=y
@@ -109,7 +110,7 @@ def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2, f_south=False
                 draw2.line([(x,y),(x+15,y)],fill=(0,0,0,255),width=2)
             
     yzz = abs(yz1-yz0)
-    if f_south:
+    if f_s:
         draw2.rectangle([(xz0-W0,yz0-yzz),(xz0,yz0)],fill=color2)    
     else:
         draw2.rectangle([(xz0-W0,yz0),(xz0,yz0+yzz)],fill=color2)

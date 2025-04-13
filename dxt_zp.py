@@ -6,6 +6,7 @@ from cir_hor_time import add_cir_hor_time
 from sky_hor_cir import add_hor_cir
 from sym_pointer import draw_pointer
 from config import config
+from g_share import g_share
 
 def rotate(image,im2,x,y,angle):
     im2 = im2.rotate(angle, expand=1)
@@ -19,8 +20,6 @@ def rotate(image,im2,x,y,angle):
 def build_dxt_zp(im0,xc0,yc0,r1,r2,r3,rr,latv,
                                       longv,place,tz,lst=0,show_t_cir=True):
 
-    from g_share import g_share
-    f_south=g_share.f_south
     LW=4
     stroke_width=1
     width=height = r1*2
@@ -43,7 +42,7 @@ def build_dxt_zp(im0,xc0,yc0,r1,r2,r3,rr,latv,
     draw.line([(xc+10, yc-10),(xc-10,yc+10)], fill=(255,0,0,255), width=LW)
     draw.line([(xc+10, yc+10),(xc-10,yc-10)], fill=(255,0,0,255), width=LW)
     
-    if f_south:
+    if g_share.f_south:
         rot_ang = lst
     else:
         rot_ang = 360-lst
@@ -105,7 +104,7 @@ def build_dxt_zp_A4L(latv, longv, place, time_zone, debug=False):
     
     layer0 = paper.add_layer(name='0')
         
-    g_share.f_south=False
+    g_share.set_f_south(False)
     xc = config.xc1
     yc = config.yc1
     layer0.draw.circle((xc,yc),r1,fill=YELLOW)
@@ -119,7 +118,7 @@ def build_dxt_zp_A4L(latv, longv, place, time_zone, debug=False):
     layer1.draw.rectangle([(x0,y0), (x0+l0,y0+l0)], outline=RED, width=2)
     layer1.draw.text((x0+100,y0-50), text='120 mm',font=unicode_font_48, fill=RED)
     
-    g_share.f_south=True
+    g_share.set_f_south(True)
     xc = config.xc2
     yc = config.yc2
     layer0.draw.circle((xc,yc),r1,fill=YELLOW)
@@ -143,17 +142,16 @@ def build_dxt_zp_A4L(latv, longv, place, time_zone, debug=False):
     x= int(20 * MM_UNIT)
     y =int(170 * MM_UNIT)
     for i in range(2):
-        draw_pointer(layer_ptr.im,x,y,rr,L0,L1,W0,W1,iangle,RED,YELLOW,
-                     f_south=False)
+        draw_pointer(layer_ptr.im,x,y,rr,L0,L1,W0,W1,iangle,RED,YELLOW,f_s=False)
         draw_pointer(layer_ptr.im,x+L1+L0,y,rr,L0,L1,W0,W1,iangle,RED,YELLOW,
-                     f_south=True)
+                     f_s=True)
         y+= W0+W1
         
 
     return paper
 
 
-def build_dxt_zp_A5(latv, longv, place, time_zone, f_south=False, debug=False):
+def build_dxt_zp_A5(latv, longv, place, time_zone, debug=False):
     from PIL import Image, ImageColor,ImageDraw,ImageFont,ImageOps
     import datetime
     from ut_geo_tz import get_location_info, get_timezone_offset
@@ -194,7 +192,6 @@ def build_dxt_zp_A5(latv, longv, place, time_zone, f_south=False, debug=False):
     
     layer0 = paper.add_layer(name='0')
         
-    g_share.f_south=f_south
     xc = config.xc1
     yc = config.yc1
     layer0.draw.circle((xc,yc),r1,fill=YELLOW)
@@ -219,9 +216,9 @@ def build_dxt_zp_A5(latv, longv, place, time_zone, f_south=False, debug=False):
     y =int(170 * MM_UNIT)
     for i in range(2):
         draw_pointer(layer_ptr.im,x,y,rr,L0,L1,W0,W1,iangle,RED,YELLOW,
-                     f_south=False)
+                     f_s=False)
         draw_pointer(layer_ptr.im,x+L1+L0,y,rr,L0,L1,W0,W1,iangle,RED,YELLOW,
-                     f_south=True)
+                     f_s=True)
         y+= W0+W1
         
 
@@ -247,7 +244,8 @@ def testA5_fn():
     place='香港'
     time_zone='Asia/Hong_Kong'
     config.hor_cir_opacity = 255
-    paper =build_dxt_zp_A5(latv,longv,place, time_zone, f_south=False)
+    g_share.set_f_south(False)
+    paper =build_dxt_zp_A5(latv,longv,place, time_zone)
     
     fnx='dxt_zp_%s_%s_%s_fn_A5.pdf' % (latv,longv,place)
     fn = 'd:/kcf/dxtc2/%s' % fnx
@@ -261,7 +259,8 @@ def testA5_fs():
     place='香港'
     time_zone='Asia/Hong_Kong'
     config.hor_cir_opacity = 255
-    paper =build_dxt_zp_A5(latv,longv,place, time_zone, f_south=True)
+    g_share.set_f_south(True)
+    paper =build_dxt_zp_A5(latv,longv,place, time_zone)
     
     fnx='dxt_zp_%s_%s_%s_fs_A5.pdf' % (latv,longv,place)
     fn = 'd:/kcf/dxtc2/%s' % fnx

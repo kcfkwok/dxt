@@ -1,5 +1,6 @@
 from def_font import *
 from ut_cal import *
+from g_share import g_share
 
 
 def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
@@ -34,12 +35,7 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
         nd = cal_d_w_hm(s_year,1,1,-tz,0)
         Obl = g_share.Obl
         
-    try:
-        f_south = g_share.f_south
-    except:
-        from g_share import g_share
-        f_south = g_share.f_south
-    if f_south:
+    if g_share.f_south:
         txt_ang=90 +5 +90
     else:
         txt_ang=270 -5 -90
@@ -60,7 +56,7 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
         if day==1:
             draw.line([(x1,y1),(x2,y2)],fill=FCOLOR,width=LW)
             if small:
-                if f_south:
+                if g_share.f_south:
                     sin_n = sn(ang+4)
                     cos_n = r_cs(ang+4)
                 else:
@@ -77,7 +73,7 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
                 
             xnc = int(cos_n * r3d + xc)
             ync = int(sin_n * r3d + yc)   
-            if f_south:
+            if g_share.f_south:
                 txt_ang = 90 + (ang+3)
             else:
                 txt_ang = 270 - (ang+3)
@@ -87,7 +83,7 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
             draw_text(im, '%d月' % month, font,xnc,ync,txt_ang)
             if month==1:
                 if small:
-                    if f_south:
+                    if g_share.f_south:
                         ofs_ang=12
                     else:
                         ofs_ang=13
@@ -97,7 +93,7 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
                 cos_ny = r_cs(ang+ ofs_ang)
                 xnyc = int(cos_ny * r3d + xc)
                 ynyc = int(sin_ny * r3d + yc)   
-                if f_south:
+                if g_share.f_south:
                     txt_ang = 90 + (ang+ ofs_ang)
                 else:
                     txt_ang = 270 - (ang+ ofs_ang)
@@ -106,7 +102,7 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
                 draw_text(im, '%d年' % s_year, font,xnyc,ynyc,txt_ang)
 
                 if small:
-                    if f_south:
+                    if g_share.f_south:
                         ofs_ang=12+ 12
                     else:
                         ofs_ang = 13+12
@@ -116,7 +112,7 @@ def draw_date_mark(im,draw,xc,yc,rx,s_year,tz,rr,requ,small=False):
                 cos_ny = r_cs(ang+ ofs_ang)
                 xnyc = int(cos_ny * r3d + xc)
                 ynyc = int(sin_ny * r3d + yc)   
-                if f_south:
+                if g_share.f_south:
                     txt_ang = 90 + (ang+ ofs_ang)
                 else:
                     txt_ang = 270 - (ang+ ofs_ang)

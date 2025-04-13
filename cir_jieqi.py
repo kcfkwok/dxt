@@ -6,7 +6,7 @@ from config import config
 from g_share import g_share
 from ut_misc import *
 
-def draw_jieqi_color(im0,draw0,xc,yc,r4,r5,f_south, ras):
+def draw_jieqi_color(im0,draw0,xc,yc,r4,r5,ras):
     w_px = xc + r4
     h_px = yc + r4
     bgcolor=(255,255,255)
@@ -22,12 +22,12 @@ def draw_jieqi_color(im0,draw0,xc,yc,r4,r5,f_south, ras):
         if j1 >=360:
             j1= j1-360
         e_ra = ras[j1]
-        if f_south:
+        if g_share.f_south:
             e_ra = -ras[j]
             s_ra = -ras[j1]
         s_ang= s_ra+ config.ari_ang
         e_ang = e_ra + config.ari_ang
-        if f_south:
+        if g_share.f_south:
             #print('i:%s s_ra:%s s_ang:%s e_ra:%s e_ang:%s' % 
              # (i,s_ra,s_ang, e_ra,e_ang))
             if s_ang < 0:
@@ -72,12 +72,7 @@ def draw_jieqi_mark(im,draw,xc,yc,rx, year,tz, fill_yellow=False,small=False):
         nd = cal_d_w_hm(year,1,1,-tz,0)
         Obl = g_share.Obl
         
-    try:
-        f_south = g_share.f_south
-    except:
-        from g_share import g_share
-        f_south = g_share.f_south
-    if f_south:
+    if g_share.f_south:
         txt_ang=90 +5 +90
     else:
         txt_ang=270 -5 -90  # kcf test
@@ -96,7 +91,7 @@ def draw_jieqi_mark(im,draw,xc,yc,rx, year,tz, fill_yellow=False,small=False):
             ras.append(ra)
         g_share.ras = ras
         
-    draw_jieqi_color(im,draw,xc,yc,r4,r5,f_south,ras)
+    draw_jieqi_color(im,draw,xc,yc,r4,r5,ras)
     for j in range(360):
         ra = ras[j]
         ang= ra+ config.ari_ang
@@ -147,7 +142,7 @@ def draw_jieqi_mark(im,draw,xc,yc,rx, year,tz, fill_yellow=False,small=False):
         
         draw_text(im, JIE_QIS[i], font,xnc,ync,txt_ang) 
         
-        if f_south:
+        if g_share.f_south:
             txt_ang +=15
         else:
             txt_ang -= 15
