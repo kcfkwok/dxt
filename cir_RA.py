@@ -2,7 +2,7 @@ from def_color import *
 from def_font import *
 from ut_cal import *
 
-def draw_hour_angle_marking(im,draw,xc,yc,r5,f_south=False,fgcolor=BLACK,lw=2,
+def draw_hour_angle_marking(im,draw,xc,yc,r5,f_south,fgcolor=BLACK,lw=2,
                             small=False):
     # plot hour angle marking
     if small:
@@ -65,7 +65,7 @@ def add_cir_RA(paper,xc,yc,r,im=None,draw=None,small=False):
         f_south = g_share.f_south
     if im is not None:
         draw.circle((xc,yc),r,outline=(0,0,0,255),width=LW)
-        draw_hour_angle_marking(im,draw,xc,yc,r, f_south=f_south,small=small)
+        draw_hour_angle_marking(im,draw,xc,yc,r, f_south,small=small)
         return
     
     MAX_X = paper.max_x
@@ -76,4 +76,4 @@ def add_cir_RA(paper,xc,yc,r,im=None,draw=None,small=False):
     layer = paper.add_layer(name='RA_circle')
     layer.draw.circle((xc,yc),r,outline=(0,0,0,255),width=LW)
     
-    draw_hour_angle_marking(layer.im,layer.draw,xc,yc,r, f_south=f_south,small=small)
+    draw_hour_angle_marking(layer.im,layer.draw,xc,yc,r, f_south,small=small)

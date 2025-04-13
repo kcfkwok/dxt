@@ -1,8 +1,12 @@
 from flask import Flask, request, render_template, render_template_string, send_file, Response, redirect, session, jsonify
+from csts import CSTS
+from cstcn import cstcn
+from read_star_list import parse_star_list, find_stars_in_constellation, find_star_by_hr
 from flask_sqlalchemy import SQLAlchemy
 from flask_babel import Babel, gettext
 from secret_key import secret_key
 from config import config
+from g_share import g_share
 from image_generator import dxt_rl_img, dxt_kz_img, dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp, re_kz0, re_kz1
 from pdf_generator import dxt_rl_pdf, dxt_xt_pdf, dxt_zp_pdf, dxt_kz_pdf
 from default_info import default_info
@@ -198,7 +202,9 @@ def dxt_kz():
         day=day,
         hour=hour,
         minute=minute,
-        config=template_config)
+        config=template_config,
+        csts=CSTS,
+        cstcn=cstcn)
 
 
 @app.route('/dxt_rl_img_rq', methods=['GET'])
@@ -237,6 +243,7 @@ def xy_to_radec():
     rr = config.rr
     from ut_cal import xyplot_to_ra_dec
     from ut_star import get_cst_from_ra_dec
+    print('xy_to_radec f_south:', g_share.f_south)
     ra, dec = xyplot_to_ra_dec(x, y, xc, yc, rr)
     cst, star, dist = get_cst_from_ra_dec(ra, dec)
     return jsonify({
@@ -344,6 +351,71 @@ def set_location():
 
 # 将 get_first_created_username 函数注册到 Jinja2 环境中
 #app.jinja_env.globals.update(get_first_created_username=get_admin_location_info)
+
+@app.route('/get_stars')
+def get_stars():
+    constellation = request.args.get('constellation')
+    if not constellation:
+        return jsonify([])
+    
+    # Load star data
+    stars = parse_star_list(config.star_list_path)
+    
+    # Get Chinese constellation name
+    cn_name = cstcn.get(constellation, constellation)
+    
+    # Find stars in constellation
+    constellation_stars = find_stars_in_constellation(stars, cn_name)
+    
+    # Prepare response data
+    response_data = []
+    for star in constellation_stars:
+        response_data.append({
+            'hr_id': star['hr_id'],
+            'bayer_name': star['bayer_name'],
+            'ra': star['ra'],
+            'dec': star['dec'],
+            'chinese_name':star['chinese_name']
+        })
+    
+    return jsonify(response_data)
+
+@app.route('/get_star_coords')
+def get_star_coords():
+    hr_id = request.args.get('hr_id')
+    if not hr_id:
+        return jsonify({'error': 'HR ID required'}), 400
+    
+    try:
+        hr_id = int(hr_id)
+    except ValueError:
+        return jsonify({'error': 'Invalid HR ID'}), 400
+    
+    # Load star data
+    stars = parse_star_list(config.star_list_path)
+    star = find_star_by_hr(stars, hr_id)
+    
+    if not star:
+        return jsonify({'error': 'Star not found'}), 404
+    
+    return jsonify({
+        'ra': star['ra'],
+        'dec': star['dec']
+    })
+
+@app.route('/radec_to_xy', methods=['POST'])
+def radec_to_xy():
+    data = request.get_json()
+    ra = float(data['ra'])
+    dec = float(data['dec'])
+    
+    from ut_cal import ra_dec_to_xyplot
+    x, y = ra_dec_to_xyplot(ra, dec, config.xckz, config.yckz, config.rr)
+    print('radec_to_xy: x:%s y:%s' % (x,y))
+    return jsonify({
+        'x': x,
+        'y': y
+    })
 
 if __name__=='__main__':
     app.run(debug=True)

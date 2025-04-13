@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-12 17:07+0800\n"
+"POT-Creation-Date: 2025-04-13 09:46+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -75,10 +75,10 @@ msgid "Save Style"
 msgstr "保存风格"
 
 #: templates/dxt_kz.html:6
-msgid "DongXingTu - Check Other Times"
-msgstr "动手造星图 - 看看其他時間"
+msgid "DongXingTu - Explore"
+msgstr "动手造星图 - 探索"
 
-#: templates/dxt_kz.html:33 templates/index.html:62
+#: templates/dxt_kz.html:33
 msgid "Check Other Times"
 msgstr "看看其他時間"
 
@@ -182,6 +182,10 @@ msgstr "英文"
 msgid "Capture this moment"
 msgstr "留住這一刻"
 
+#: templates/index.html:62
+msgid "Explore"
+msgstr "探索"
+
 #: templates/set_location.html:7
 msgid "DongXingTu - Set Location"
 msgstr "动手造星图 - 設定位置"
@@ -283,6 +287,6 @@ msgstr "設定位置"
 #~ msgid "DongXingTu - Register"
 #~ msgstr "动手造星图 - 注册"
 
-#~ msgid "去看看"
-#~ msgstr ""
+#~ msgid "DongXingTu - Check Other Times"
+#~ msgstr "动手造星图 - 看看其他時間"
 

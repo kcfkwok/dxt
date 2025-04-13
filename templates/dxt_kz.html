@@ -3,7 +3,7 @@
   <head>
    <meta charset="UTF-8">
     <link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
-	<title>{{ gettext('DongXingTu - Check Other Times') }}</title>
+    <title>{{ gettext('DongXingTu - Explore') }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,102 +15,100 @@
             border: 1px solid #ccc;
             padding: 5px;
         }
-		#dxt_kz-img {
-			max-width: 100%;
-			max-height: 100%;
-		}
-		canvas {
+        #dxt_kz-img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        canvas {
             border: 1px solid #000;
             margin-top: 20px;
-			max-width: 100%;
+            max-width: 100%;
             max-height: 100%;
         }
     </style>
-	{% include 'styles.html' %}
+    {% include 'styles.html' %}
 </head>
 <body>
-    <!--<h1>DongXingTu</h1>-->
     {{ gettext('Check Other Times') }} &nbsp;&nbsp;&nbsp;
     {{ gettext('Month') }}:
-	    <select id="month">
+        <select id="month">
         {% for i in range(1, 13) %}
             <option value="{{ i }}" {% if i == month|int %}selected{% endif %}>{{ i }}</option>
         {% endfor %}
     </select>
-	{{ gettext('Day') }}:
-	    <select id="day">
+    {{ gettext('Day') }}:
+        <select id="day">
         {% for i in range(1, 32) %}
             <option value="{{ i }}" {% if i == day|int %}selected{% endif %}>{{ i }}</option>
         {% endfor %}
     </select>
-	{{ gettext('Hour') }}:
-	    <select id="hour">
+    {{ gettext('Hour') }}:
+        <select id="hour">
         {% for i in range(0, 24) %}
             <option value="{{ i }}" {% if i == hour|int %}selected{% endif %}>{{ i }}</option>
         {% endfor %}
     </select>
-	{{ gettext('Minute') }}:
-	    <select id="minute">
+    {{ gettext('Minute') }}:
+        <select id="minute">
         {% for i in range(0, 60) %}
             <option value="{{ i }}" {% if i == minute|int %}selected{% endif %}>{{ i }}</option>
         {% endfor %}
     </select>
-    <button id="go-button" onclick="goToDxtKz()">{{ gettext('Go') }}</button>	&nbsp;&nbsp;&nbsp;  <button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
-	<!--
-    <div id="dxt_kz-image">
-	<img src="{{ url_for('dxt_kz_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}" alt="DXT KZ" id="dxt_kz-img">
+    <button id="go-button" onclick="goToDxtKz()">{{ gettext('Go') }}</button>    &nbsp;&nbsp;&nbsp;  <button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
+    
+    <div style="margin-top: 20px;">
+        <label>{{ gettext('Constellation') }}:</label>
+        <select id="constellation">
+            {% for abbr in csts %}
+            <option value="{{ abbr }}">{{ abbr }} - {{ cstcn[abbr] }}</option>
+            {% endfor %}
+        </select>
+        
+        <label style="margin-left: 10px;">{{ gettext('Star') }}:</label>
+        <select id="star" disabled>
+            <option value="">-- Select constellation first --</option>
+        </select>
+        
+        <button id="locate-star" style="margin-left: 10px;">{{ gettext('Locate Star') }}</button>
     </div>
-	-->
-	<canvas id="dxt_kz-canvas" width="800" height="600"></canvas>
+
+    <canvas id="dxt_kz-canvas" width="800" height="600"></canvas>
     <script>
         // Get config values from template
         const config = JSON.parse('{{ config|tojson }}');
-		const canvas = document.getElementById('dxt_kz-canvas');
+        const canvas = document.getElementById('dxt_kz-canvas');
         const ctx = canvas.getContext('2d');
         const img = new Image();
 
         // Set image source
-        //img.src = "{{ url_for('static', filename='image.png') }}";
-		//img.src = "{{url_for('dxt_xt_img_rq', content='xt-' +  year ) }}";
-		img.src = "{{ url_for('dxt_kz_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}"
-		
+        img.src = "{{ url_for('dxt_kz_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}"
+        
         // Wait for image to load
         img.onload = function() {
-            // Set canvas size to match image
             canvas.width = img.width;
             canvas.height = img.height;
-
-            // Draw image on canvas
             ctx.drawImage(img, 0, 0);
         };
-		
-		// Mouse down event handler
+        
+        // Mouse down event handler
         canvas.addEventListener('mousedown', function(e) {
-            // Get mouse position relative to canvas
             const rect = canvas.getBoundingClientRect();
-            // Account for CSS scaling between displayed size and actual canvas size
             const scaleX = canvas.width / rect.width;
             const scaleY = canvas.height / rect.height;
             const x = (e.clientX - rect.left) * scaleX;
             const y = (e.clientY - rect.top) * scaleY;
 
-            // Clear previous drawings
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(img, 0, 0);
 
-            // Use configured center point and radius
             const centerX = config.xckz;
             const centerY = config.yckz;
             const radius = config.r5;
-
-            // Calculate distance from click to center
             const dx = x - centerX;
             const dy = y - centerY;
             const distance = Math.sqrt(dx*dx + dy*dy);
 
-            // Only draw if within circle radius
             if (distance <= radius) {
-                // Draw line from center to mouse position
                 ctx.beginPath();
                 ctx.moveTo(centerX, centerY);
                 ctx.lineTo(x, y);
@@ -118,89 +116,63 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // Draw crosshair at mouse position
                 ctx.beginPath();
-                // Vertical line
                 ctx.moveTo(x, 0);
                 ctx.lineTo(x, canvas.height);
-                // Horizontal line
                 ctx.moveTo(0, y);
                 ctx.lineTo(canvas.width, y);
                 ctx.strokeStyle = 'blue';
                 ctx.lineWidth = 1;
                 ctx.stroke();
-            
-			
-			             // Convert to RA/Dec and display
-			             fetch('/xy_to_radec', {
-			                 method: 'POST',
-			                 headers: {
-			                     'Content-Type': 'application/json',
-			                 },
-			                 body: JSON.stringify({x: x, y: y})
-			             })
-			             .then(response => response.json())
-			             .then(data => {
-			                 // Format RA/Dec nicely
-			                 const raH = Math.floor(data.ra/15);
-			                 const raM = Math.floor((data.ra/15 - raH)*60);
-			                 const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
-			                 
-			                 const decSign = data.dec >= 0 ? '+' : '-';
-			                 const decAbs = Math.abs(data.dec);
-			                 const decD = Math.floor(decAbs);
-			                 const decM = Math.floor((decAbs - decD)*60);
-			                 const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
-			                 
-			                 ctx.font = '40px Arial';
-			                 ctx.fillStyle = 'red';
-			                 // Adjust text position based on click location to ensure visibility
-			                 let textY = y;
-			                 if (y > canvas.height - 160) {
-			                     textY = y - 160; // Move text up if near bottom
-			                 }
-			                 /*
-			                 ctx.fillText(`RA: ${raH}h ${raM}m ${raS}s`, x + 10, textY + 30);
-			                 ctx.fillText(`Dec: ${decSign}${decD}° ${decM}' ${decS}"`, x + 10, textY + 70);
-			                 
-			                 // Display constellation and star info if available
-			                 if (data.constellation) {
-			                     ctx.fillText(`Constellation: ${data.constellation}`, x + 10, textY + 110);
-			                 }
-							 
-			                 if (data.star) {
-			                     ctx.fillText(`Nearest Star: ${data.star}`, x + 10, textY + 150);
-			                 }
-							 */
-							 
-							 const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
-							 ctx.fillText(raText, x + 10, textY + 30);
-							             
-							 const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
-							 ctx.fillText(decText, x + 10, textY + 70);
-							             
-							 // Display constellation and star info if available
-							 if (data.constellation) {
-							                 const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
-							                 ctx.fillText(constellationText, x + 10, textY + 110);
-							             }
-			                 if (data.star) {
-			                     const nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
-			                     ctx.fillText(nearestStarText, x + 10, textY + 150);
-			                 } 
-
-			             });
-			        }
-			    });
-			
-	
+                
+                fetch('/xy_to_radec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({x: x, y: y})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const raH = Math.floor(data.ra/15);
+                    const raM = Math.floor((data.ra/15 - raH)*60);
+                    const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                    
+                    const decSign = data.dec >= 0 ? '+' : '-';
+                    const decAbs = Math.abs(data.dec);
+                    const decD = Math.floor(decAbs);
+                    const decM = Math.floor((decAbs - decD)*60);
+                    const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                    
+                    ctx.font = '40px Arial';
+                    ctx.fillStyle = 'red';
+                    let textY = y > canvas.height - 160 ? y - 160 : y;
+                    
+                    const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+                    ctx.fillText(raText, x + 10, textY + 30);
+                    
+                    const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+                    ctx.fillText(decText, x + 10, textY + 70);
+                    
+                    if (data.constellation) {
+                        const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+                        ctx.fillText(constellationText, x + 10, textY + 110);
+                    }
+                    if (data.star) {
+                        const nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
+                        ctx.fillText(nearestStarText, x + 10, textY + 150);
+                    } 
+                });
+            }
+        });
+        
         function downloadPDF() {
-            // 假设 content 参数需要根据实际情况生成
             const content = 'kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-{{ month }}-{{ day }};{{ hour }}-{{ minute }}'; 
             const downloadUrl = `/download?content=${content}`;
             window.location.href = downloadUrl;
         }
-		function goToDxtKz() {
+        
+        function goToDxtKz() {
             const month = document.getElementById('month').value;
             const day = document.getElementById('day').value;
             const hour = document.getElementById('hour').value;
@@ -209,6 +181,93 @@
             const url = `/dxt_kz?content=${content}`;
             window.location.href = url;
         }
+
+        // Load stars when constellation changes
+        document.getElementById('constellation').addEventListener('change', function() {
+            const constellation = this.value;
+            const starSelect = document.getElementById('star');
+            
+            if (!constellation) {
+                starSelect.disabled = true;
+                starSelect.innerHTML = '<option value="">-- Select constellation first --</option>';
+                return;
+            }
+            
+            fetch('/get_stars?constellation=' + constellation)
+                .then(response => response.json())
+                .then(stars => {
+                    starSelect.disabled = false;
+                    starSelect.innerHTML = '';
+                    starSelect.add(new Option('-- Select star --', ''));
+                    
+                    stars.forEach(star => {
+                        let displayName = star.hr_id;
+                        if (star.bayer_name) {
+                            displayName += ' (' + star.bayer_name + ')';
+                        }
+                        if (star.chinese_name) {
+                            displayName += ' - ' + star.chinese_name;
+                        }
+                        starSelect.add(new Option(displayName, star.hr_id));
+                    });
+                });
+        });
+        
+        // Locate star button click handler
+        document.getElementById('locate-star').addEventListener('click', function() {
+            const hrId = document.getElementById('star').value;
+            if (!hrId) return;
+
+            fetch('/get_star_coords?hr_id=' + hrId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ra && data.dec) {
+                        return fetch('/radec_to_xy', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ra: data.ra, dec: data.dec})
+                        });
+                    }
+                    throw new Error('Invalid star coordinates');
+                })
+                .then(response => response.json())
+                .then(coords => {
+                    if (coords.x && coords.y) {
+						// test codes
+						const rect = canvas.getBoundingClientRect();
+						const scaleX = canvas.width / rect.width;
+						const scaleY = canvas.height / rect.height;
+						ctx.clearRect(0, 0, canvas.width, canvas.height);
+						ctx.drawImage(img, 0, 0);
+						const centerX = config.xckz;
+						const centerY = config.yckz;
+						const x = coords.x;
+						const y = coords.y;
+						ctx.beginPath();
+						ctx.moveTo(centerX, centerY);
+						ctx.lineTo(x, y);
+						ctx.strokeStyle = 'red';
+						ctx.lineWidth = 2;
+						ctx.stroke();
+						
+		                ctx.beginPath();
+						ctx.moveTo(x, 0);
+						ctx.lineTo(x, canvas.height);
+						ctx.moveTo(0, y);
+						ctx.lineTo(canvas.width, y);
+						ctx.strokeStyle = 'blue';
+						ctx.lineWidth = 1;
+						ctx.stroke();
+					}
+					
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                });
+				
+        });
     </script>
 </body>
 </html>

@@ -175,9 +175,10 @@ def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_south=None):
         
     sin_phi = sn(angx)
     cos_phi = r_cs(angx)
-    x1 = int(cos_phi * r + xc)
-    y1 = int(sin_phi * r + yc)
-    return x1,y1
+    x = int(cos_phi * r + xc)
+    y = int(sin_phi * r + yc)
+    print('ra_dec_to_xyplot ra:%.2f dec:%.2f f_south:%s x:%s y:%s' % (ra,dec,f_south,x,y))
+    return x,y
 
 
 def equ_to_hor(H, Dec, lat): # H: Hr ang,
@@ -323,8 +324,8 @@ def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_south=None):
         dec = (r - requ) * rr
     else:
         dec = (requ - r) * rr
-    print('dec in:',dec)
-    # Constrain declination to valid range
+        
+    print('xyplot_to_ra_dec x:%s y:%s f_south:%s ra:%s dec:%.2f' % (x, y, f_south, ra,dec))
     
     return ra, dec
 

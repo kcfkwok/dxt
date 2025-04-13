@@ -157,7 +157,6 @@ def add_cir_date(paper,xc,yc,rx,year,tz,rr,requ,im=None,draw=None,small=False):
     #layer.draw.circle((xc,yc),r,outline=(0,0,0,255),fill=(255,255,255),width=LW)
     layer.draw.circle((xc,yc),rx,outline=(0,0,0,255),width=LW)
     
-    #draw_hour_angle_marking(layer.im,layer.draw,xc,yc,r,ra)
     draw_date_mark(layer.im,layer.draw,xc,yc,rx,year,tz,rr,requ,small=small)
 	
 	

@@ -25,7 +25,7 @@
             top: 10px;
             right: 10px;
         }
-		#other-time-button {
+		#explore-button {
             position: absolute; 
             top: 50px; /* 可以根據需要調整按鈕的垂直位置 */
             right: 10px;
@@ -59,7 +59,7 @@
     <div id="clock-image">
         <img src="/clock" alt="Current Time" id="clock-img">
 		<button id="save-moment-button">{{ gettext('Capture this moment') }}</button> 
-		<button id="other-time-button">{{ gettext('Check Other Times') }}</button>
+		<button id="explore-button">{{ gettext('Explore') }}</button>
     </div>
 
     <script>
@@ -67,7 +67,7 @@
         const clockImg = document.getElementById('clock-img');
         const intervalSelect = document.getElementById('interval');
         const saveMomentButton = document.getElementById('save-moment-button'); 
-		const otherTimeButton = document.getElementById('other-time-button');
+		const exploreButton = document.getElementById('explore-button');
 		
         function updateClock() {
             // Add timestamp to prevent caching
@@ -124,8 +124,8 @@
             var downloadUrl = `/download?content=${content}`;
             window.location.href = downloadUrl;
         });
-		// Add event listener for the other-time-button
-        otherTimeButton.addEventListener('click', function() {
+		// Add event listener for the explore-button
+        exploreButton.addEventListener('click', function() {
             var latitude = "{{ user_info[0] }}";
             var longitude = "{{ user_info[1] }}";
             var location = "{{ user_info[2] }}";

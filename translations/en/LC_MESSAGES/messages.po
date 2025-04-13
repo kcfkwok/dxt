@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-12 17:07+0800\n"
+"POT-Creation-Date: 2025-04-13 09:46+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -75,10 +75,10 @@ msgid "Save Style"
 msgstr ""
 
 #: templates/dxt_kz.html:6
-msgid "DongXingTu - Check Other Times"
+msgid "DongXingTu - Explore"
 msgstr ""
 
-#: templates/dxt_kz.html:33 templates/index.html:62
+#: templates/dxt_kz.html:33
 msgid "Check Other Times"
 msgstr ""
 
@@ -180,6 +180,10 @@ msgstr ""
 
 #: templates/index.html:61
 msgid "Capture this moment"
+msgstr ""
+
+#: templates/index.html:62
+msgid "Explore"
 msgstr ""
 
 #: templates/set_location.html:7
@@ -299,5 +303,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "去看看"
+#~ msgstr ""
+
+#~ msgid "DongXingTu - Check Other Times"
 #~ msgstr ""
 
