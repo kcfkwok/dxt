@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-13 09:46+0800\n"
+"POT-Creation-Date: 2025-04-14 10:04+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -78,55 +78,71 @@ msgstr ""
 msgid "DongXingTu - Explore"
 msgstr ""
 
-#: templates/dxt_kz.html:33
+#: templates/dxt_kz.html:32
 msgid "Check Other Times"
 msgstr ""
 
-#: templates/dxt_kz.html:34
+#: templates/dxt_kz.html:33
 msgid "Month"
 msgstr ""
 
-#: templates/dxt_kz.html:40
+#: templates/dxt_kz.html:39
 msgid "Day"
 msgstr ""
 
-#: templates/dxt_kz.html:46
+#: templates/dxt_kz.html:45
 msgid "Hour"
 msgstr ""
 
-#: templates/dxt_kz.html:52 templates/index.html:43 templates/index.html:44
+#: templates/dxt_kz.html:51 templates/index.html:43 templates/index.html:44
 #: templates/index.html:45
 msgid "Minute"
 msgstr ""
 
-#: templates/dxt_kz.html:58
+#: templates/dxt_kz.html:57
 msgid "Go"
 msgstr ""
 
-#: templates/dxt_kz.html:58 templates/dxt_rl.html:27 templates/dxt_xt.html:28
+#: templates/dxt_kz.html:57 templates/dxt_rl.html:27 templates/dxt_xt.html:28
 #: templates/dxt_zp.html:27
 msgid "download pdf"
 msgstr ""
 
-#: templates/dxt_kz.html:58 templates/dxt_rl.html:27 templates/dxt_xt.html:28
+#: templates/dxt_kz.html:57 templates/dxt_rl.html:27 templates/dxt_xt.html:28
 #: templates/dxt_zp.html:27 templates/navbar.html:5
 msgid "Home"
 msgstr ""
 
-#: templates/dxt_kz.html:176
-msgid "RA"
-msgstr ""
-
-#: templates/dxt_kz.html:179
-msgid "Dec"
-msgstr ""
-
-#: templates/dxt_kz.html:184
+#: templates/dxt_kz.html:60 templates/dxt_kz.html:186
 msgid "Constellation"
 msgstr ""
 
-#: templates/dxt_kz.html:188
+#: templates/dxt_kz.html:67
+msgid "Star"
+msgstr ""
+
+#: templates/dxt_kz.html:69
+msgid "-- Select constellation first --"
+msgstr ""
+
+#: templates/dxt_kz.html:72
+msgid "Locate Star"
+msgstr ""
+
+#: templates/dxt_kz.html:179
+msgid "RA"
+msgstr ""
+
+#: templates/dxt_kz.html:182
+msgid "Dec"
+msgstr ""
+
+#: templates/dxt_kz.html:190 templates/dxt_kz.html:192
 msgid "Nearest Star"
+msgstr ""
+
+#: templates/dxt_kz.html:232
+msgid "-- Select star --"
 msgstr ""
 
 #: templates/dxt_rl.html:6
