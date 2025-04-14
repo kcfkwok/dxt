@@ -204,14 +204,24 @@
             }
             
             function goToDxtKz() {
-                const month = document.getElementById('month').value;
-                const day = document.getElementById('day').value;
-                const hour = document.getElementById('hour').value;
-                const minute = document.getElementById('minute').value;
-                const content = `kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-${month}-${day};${hour}-${minute}`;
-                const url = `/dxt_kz?content=${content}`;
-                window.location.href = url;
+                try {
+                    const month = document.getElementById('month').value.padStart(2, '0');
+                    const day = document.getElementById('day').value.padStart(2, '0');
+                    const hour = document.getElementById('hour').value.padStart(2, '0');
+                    const minute = document.getElementById('minute').value.padStart(2, '0');
+                    
+                    const content = `kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-${month}-${day};${hour}-${minute}`;
+                    const url = `/dxt_kz?content=${encodeURIComponent(content)}`;
+                    console.log('Navigating to:', url);
+                    window.location.href = url;
+                } catch (error) {
+                    console.error('Error in goToDxtKz:', error);
+                    alert('{{ gettext("Failed to process request. Please try again.") }}');
+                }
             }
+
+            // Ensure button click handler is properly bound
+            document.getElementById('go-button').addEventListener('click', goToDxtKz);
 
             // Load stars when constellation changes
             document.getElementById('constellation').addEventListener('change', function() {
