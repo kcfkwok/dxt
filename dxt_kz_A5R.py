@@ -1,7 +1,7 @@
 from PIL import Image, ImageColor,ImageDraw,ImageFont,ImageOps
 from config import config
 from g_share import g_share
-from datetime import datetime
+from datetime import datetime, UTC
 import pytz
 from astropy.time import Time
 from astropy import units as u

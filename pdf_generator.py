@@ -9,6 +9,7 @@ from dxt_xt import make_dxt_xt_A4
 from dxt_zp import build_dxt_zp_A4L, build_dxt_zp_A5
 from dxt_kz_A4L import make_dxt_kz_A4L
 from config import config
+from g_share import g_share
 from table_plnt_info import table_plnt_info
 import re
 
@@ -191,7 +192,7 @@ def dxt_zp_pdf(content):
     config.debug = False
     
     try:
-        config.hor_cir_opacity = 255
+        g_share.hor_cir_opacity = 255
         # build A4L
         paper = build_dxt_zp_A4L(latv,longv,location,timezone)
         x = config.banner_x
@@ -375,7 +376,7 @@ def dxt_kz_pdf(content):
         #utc_now = datetime.datetime.utcnow()
         #now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
         dt = datetime_w_timezone(year,month,day,hour,minute,0,timezone)
-        config.hor_cir_opacity=128
+        g_share.hor_cir_opacity=128
         paper = make_dxt_kz_A4L(dt, latv, longv, location, timezone)
         x = config.banner_x
         y = config.banner_y

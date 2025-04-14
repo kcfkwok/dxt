@@ -81,7 +81,7 @@ class SEGMENTS:
         polygon_points = self.data.get(azi,None)
         if polygon_points is not None:
             outline=None
-            draw.polygon(polygon_points, fill=(255, 255, 0, config.hor_cir_opacity),outline=outline, width=2)
+            draw.polygon(polygon_points, fill=(255, 255, 0, g_share.hor_cir_opacity),outline=outline, width=2)
         
 
 def draw_hor_mask(im, draw, xc,yc,rr, latv,lst, longv, place):

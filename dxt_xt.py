@@ -345,7 +345,7 @@ if __name__=='__main__':
     
     timezone = 'Asia/Hong_Kong'
     hktz = pytz.timezone(timezone)
-    utc_now = datetime.datetime.utcnow()
+    utc_now = datetime.datetime.now(datetime.UTC)
     now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
     year = now.year
     

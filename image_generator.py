@@ -7,6 +7,7 @@ from dxt_kz_A5R import make_dxt_kz_A5R
 from dxt_xt import make_dxt_xt_A4
 from dxt_zp import build_dxt_zp_A4L
 from config import config
+from g_share import g_share
 from table_plnt_info import table_plnt_info
 import re
 
@@ -119,7 +120,7 @@ def dxt_kz_img(content):
     
     config.debug = False
     dt = datetime_w_timezone(year,month,day,hour,minute,0,timezone)
-    config.hor_cir_opacity=128
+    g_share.hor_cir_opacity=128
     paper = make_dxt_kz_A5R(dt, latv, longv, location, timezone)
     x = config.banner_x
     y = config.banner_y
@@ -144,7 +145,7 @@ def dxt_kz_img_wu(user_info):
     hktz = pytz.timezone(timezone)
     utc_now = datetime.datetime.utcnow()
     now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
-    config.hor_cir_opacity=128
+    g_share.hor_cir_opacity=128
     paper = make_dxt_kz_A5R(now, latv, longv, place, timezone)
     x = config.banner_x
     y = config.banner_y
@@ -202,7 +203,7 @@ def dxt_zp_img(content=None):
         
     config.debug = False
     try:
-        config.hor_cir_opacity = 255
+        g_share.hor_cir_opacity = 255
         paper =build_dxt_zp_A4L(latv,longv,location, timezone)
         x = config.banner_x
         y = config.banner_y

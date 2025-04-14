@@ -229,7 +229,7 @@ def testA4L():
     longv=114
     place='香港'
     time_zone='Asia/Hong_Kong'
-    config.hor_cir_opacity = 255
+    g_share.hor_cir_opacity = 255
     paper =build_dxt_zp_A4L(latv,longv,place, time_zone)
     
     fnx='dxt_zp_%s_%s_%s_A4.pdf' % (latv,longv,place)
@@ -243,7 +243,7 @@ def testA5_fn():
     longv=114
     place='香港'
     time_zone='Asia/Hong_Kong'
-    config.hor_cir_opacity = 255
+    g_share.hor_cir_opacity = 255
     g_share.set_f_south(False)
     paper =build_dxt_zp_A5(latv,longv,place, time_zone)
     
@@ -258,7 +258,7 @@ def testA5_fs():
     longv=114
     place='香港'
     time_zone='Asia/Hong_Kong'
-    config.hor_cir_opacity = 255
+    g_share.hor_cir_opacity = 255
     g_share.set_f_south(True)
     paper =build_dxt_zp_A5(latv,longv,place, time_zone)
     
