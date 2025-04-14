@@ -86,6 +86,8 @@ def get_star_info():
     y = float(data['y'])
     return jsonify({'result': x + y})
 
+
+
 @app.route('/clock')
 def clock():
     if 'location_info' in session:
@@ -415,13 +417,17 @@ def get_star_coords():
     # Load star data
     stars = parse_star_list(config.star_list_path)
     star = find_star_by_hr(stars, hr_id)
-    
+    bayer_name = star['bayer_name']
+    print('get_star_coords bayer_name:',bayer_name)
+    cst = bayer_name.split('/')[1]
+    print('cst:',cst)
     if not star:
         return jsonify({'error': 'Star not found'}), 404
     
     return jsonify({
         'ra': star['ra'],
-        'dec': star['dec']
+        'dec': star['dec'],
+        'cst':cst
     })
 
 @app.route('/radec_to_xy', methods=['POST'])
@@ -429,14 +435,42 @@ def radec_to_xy():
     data = request.get_json()
     ra = float(data['ra'])
     dec = float(data['dec'])
+    cst = data['cst']
     
     from ut_cal import ra_dec_to_xyplot
     x, y = ra_dec_to_xyplot(ra, dec, config.xckz, config.yckz, config.rr)
     print('radec_to_xy: x:%s y:%s' % (x,y))
     return jsonify({
         'x': x,
-        'y': y
+        'y': y,
+        'cst': cst
     })
+
+@app.route('/get_cstbnd_polygon', methods=['POST'])
+def get_cstbnd_polygon():
+    import random
+    import math
+    from ut_cstbnd import cstbnd_to_xyplot
+    data = request.get_json()
+    x = float(data['x'])
+    y = float(data['y'])
+    cst = data['cst']
+    print('get_cstbnd_polygon: ',cst)
+    points = cstbnd_to_xyplot(cst,config.xckz,config.yckz,config.rr)
+    print('points:', points)
+    skip="""
+    # Generate a polygon with 5-8 sides around the point
+    sides = random.randint(5, 8)
+    radius = 50 + random.random() * 50  # Random radius between 50-100
+    points = []
+    
+    for i in range(sides):
+        angle = 2 * math.pi * i / sides
+        px = x + radius * math.cos(angle)
+        py = y + radius * math.sin(angle)
+        points.append({'x': px, 'y': py})
+    """
+    return jsonify({'points': points})
 
 if __name__=='__main__':
     app.run(debug=True)
