@@ -187,6 +187,6 @@ secret_key.py
 win_user_home.py
 AstroModule.py
 plnt.py
-./static/dxt_*.pdf
-./static/dxt_*.png
+static/dxt*.pdf
+static/dxt*.png
 
