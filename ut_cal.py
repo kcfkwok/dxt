@@ -177,8 +177,8 @@ def ra_dec_to_xyplot(ra, dec,xc,yc,rr,requ=None,f_s=None):
     cos_phi = r_cs(angx)
     x = int(cos_phi * r + xc)
     y = int(sin_phi * r + yc)
-    print('ra_dec_to_xyplot ra:%.2f dec:%.2f xc:%s yc:%s rr:%s f_south:%s x:%s y:%s' % 
-    (ra,dec,xc,yc,rr,f_s,x,y))
+    #print('ra_dec_to_xyplot ra:%.2f dec:%.2f xc:%s yc:%s rr:%s f_south:%s x:%s y:%s' % 
+    #(ra,dec,xc,yc,rr,f_s,x,y))
     return x,y
 
 
@@ -315,7 +315,7 @@ def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_s=None):
     dx = x - xc
     dy = y - yc
     r = math.sqrt(dx*dx + dy*dy)
-    print('r: %s requ:%s rr:%s r_90:%s' % (r, requ,rr,r_90))
+    #print('r: %s requ:%s rr:%s r_90:%s' % (r, requ,rr,r_90))
     # Calculate angle
     ang = math.atan2(dy, dx) * 180/math.pi
     ra = (ang - ari_ang) % 360
@@ -326,7 +326,7 @@ def xyplot_to_ra_dec(x, y, xc, yc, rr, requ=None, f_s=None):
     else:
         dec = (requ - r) * rr
         
-    print('xyplot_to_ra_dec x:%s y:%s f_south:%s ra:%s dec:%.2f' % (x, y, f_s, ra,dec))
+    #print('xyplot_to_ra_dec x:%s y:%s f_south:%s ra:%s dec:%.2f' % (x, y, f_s, ra,dec))
     
     return ra, dec
 
