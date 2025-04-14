@@ -14,6 +14,7 @@ from io import BytesIO
 from timezonefinder import TimezoneFinder
 import pytz
 import datetime
+from pathlib import Path
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -238,13 +239,31 @@ def xy_to_radec():
     data = request.get_json()
     x = float(data['x'])
     y = float(data['y'])
-    xc = config.xckz
-    yc = config.yckz
-    rr = config.rr
-    from ut_cal import xyplot_to_ra_dec
+    
     from ut_star import get_cst_from_ra_dec
-    print('xy_to_radec f_south:', g_share.f_south)
-    ra, dec = xyplot_to_ra_dec(x, y, xc, yc, rr)
+    
+    # Load appropriate star coordinates file
+    fn = 'star_coords_south.txt' if g_share.f_south else 'star_coords_north.txt'
+    filename = Path(config.staticpath, fn)
+    print('xy_to_radec using:', filename)
+    
+    # Find closest star match
+    min_dist = float('inf')
+    ra, dec = 0, 0
+    
+    with open(filename, 'r', encoding='utf-8') as f:
+        next(f)  # Skip header
+        for line in f:
+            parts = line.strip().split('\t')
+            star_x = float(parts[5])
+            star_y = float(parts[6])
+            dist = (x - star_x)**2 + (y - star_y)**2
+            
+            if dist < min_dist:
+                min_dist = dist
+                ra = float(parts[3])
+                dec = float(parts[4])
+    
     cst, star, dist, hr_id = get_cst_from_ra_dec(ra, dec)
     print('cst:%s star:%s ra:%.2f dec:%.2f' % (cst,star,ra,dec))
     return jsonify({
