@@ -200,12 +200,14 @@ def get_cst_from_ra_dec(ra, dec):
         
     if closest_star_info:
         # Build star name combining bayer_name and chinese_name
-        star_name = closest_star_info['bayer_name']
+        bayer_name = closest_star_info['bayer_name']
+        chinese_name=''
         if closest_star_info['chinese_name']:
-            star_name += f" ({closest_star_info['chinese_name']})"
-        print('closest star: %s' % star_name)
-        return (closest_star_info['constellation'], star_name, min_dist, closest_star_info['hr_id'])
+            #star_name += f" ({closest_star_info['chinese_name']})"
+            chinese_name= closest_star_info['chinese_name']
+        print('closest star: %s' % bayer_name)
+        return (closest_star_info['constellation'], bayer_name,chinese_name, min_dist, closest_star_info['hr_id'])
     print('closest star info:None')
     
-    return (None, None, min_dist)
+    return (None, None, None, min_dist,None)
 

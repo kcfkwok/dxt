@@ -186,23 +186,60 @@
                             const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
                             ctx.fillText(constellationText, x + 15, textY + 150);
                         }
-                        if (data.star) {
-                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.star;
+                        if (data.bayer_name) {
+                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name + ' ' + data.chinese_name;
                             if (data.hr_id) {
-                                nearestStarText = '{{ gettext("Nearest Star") }}: HR ' + data.hr_id + ' - ' + data.star;
+                                nearestStarText = '{{ gettext("Nearest Star") }}: HR ' + data.hr_id + ' - ' + data.bayer_name + ' ' + data.chinese_name;
                             }
                             ctx.fillText(nearestStarText, x + 15, textY + 200);
                         } 
+						
+						if (data.cst) {
+						// Draw polygon around crosshair
+								fetch('/get_cstbnd_polygon', {
+									method: 'POST',
+									headers: {
+									'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({x: x, y: y, cst:data.cst})
+								})
+								.then(response => response.json())
+								.then(data => {
+									const points = data.points;
+									if (points.length > 0) {
+										ctx.beginPath();
+										ctx.moveTo(points[0].x, points[0].y);
+										for (let i = 1; i < points.length; i++) {
+											ctx.lineTo(points[i].x, points[i].y);
+										}
+										ctx.closePath();
+										ctx.strokeStyle = 'orange';
+										ctx.lineWidth = 2;
+										ctx.stroke();
+									}
+								});
+						}
+						
+						
                     });
                 }
             });
             
             function downloadPDF() {
-                const content = 'kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-{{ month }}-{{ day }};{{ hour }}-{{ minute }}'; 
-                const downloadUrl = `/download?content=${content}`;
-                window.location.href = downloadUrl;
+				try {
+					const content = 'kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-{{ month }}-{{ day }};{{ hour }}-{{ minute }}'; 
+					const downloadUrl = `/download?content=${content}`;
+					window.location.href = downloadUrl;
+				} catch (error) {
+                    console.error('Error in downloadPDF:', error);
+                    alert('{{ gettext("Failed to process request. Please try again.") }}');
+                }
             }
             
+			// Ensure button click handler is properly bound
+            document.getElementById('download-button').addEventListener('click', downloadPDF);
+
+
             function goToDxtKz() {
                 try {
                     const month = document.getElementById('month').value.padStart(2, '0');

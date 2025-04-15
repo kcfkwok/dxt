@@ -266,13 +266,16 @@ def xy_to_radec():
                 ra = float(parts[3])
                 dec = float(parts[4])
     
-    cst, star, dist, hr_id = get_cst_from_ra_dec(ra, dec)
-    print('cst:%s star:%s ra:%.2f dec:%.2f' % (cst,star,ra,dec))
+    constellation, bayer_name,chinese_name, dist, hr_id = get_cst_from_ra_dec(ra, dec)
+    cst = bayer_name.split('/')[1]
+    print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f' % (constellation,bayer_name,ra,dec))
     return jsonify({
         'ra': ra,
         'dec': dec,
-        'constellation': cst,
-        'star': star,
+        'constellation': constellation,
+        'cst':cst,
+        'bayer_name': bayer_name,
+        'chinese_name': chinese_name,
         'distance': dist,
         'hr_id': hr_id
     })
@@ -457,7 +460,7 @@ def get_cstbnd_polygon():
     cst = data['cst']
     print('get_cstbnd_polygon: ',cst)
     points = cstbnd_to_xyplot(cst,config.xckz,config.yckz,config.rr)
-    print('points:', points)
+    #print('points:', points)
     skip="""
     # Generate a polygon with 5-8 sides around the point
     sides = random.randint(5, 8)
