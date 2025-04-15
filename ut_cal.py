@@ -241,6 +241,24 @@ def deg_to_hms(deg):
     hr = deg/15
     return hms(hr)
 
+def ra_dec_to_deg(ra_hms, dec_dms):
+    # e.g ra_hms = '05h23m34.5s'
+    # e.g dec = '-69d45m22s'
+    from astropy import units as u
+    from astropy.coordinates import SkyCoord
+    # 创建SkyCoord对象
+    coord = SkyCoord(ra=ra_hms, dec=dec_dms, frame='icrs')
+
+    # 获取以度为单位的赤经
+    ra_deg = coord.ra.degree
+    dec_deg = coord.dec.degree
+    print('ra_dec_to_deg %s %s -> %s %s' % (ra_hms,dec_dms, ra_deg,dec_deg))
+    return ra_deg, dec_deg
+    
+def dms_to_deg(d,m,s):
+    deg =((s/60.0) + m)/6.0 + d
+    return deg
+    
 def datetime_w_timezone(year,month,day,hour,minute,second,timezone):
     # 创建时区对象
     tz = pytz.timezone(timezone)

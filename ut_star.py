@@ -48,6 +48,11 @@ def SP_to_color(sp):
         return SP_COLORS[sp]
     return (255,255,255,0)
 
+def draw_obj(draw, ra,dec, r_deg, color, xc,yc,rr):
+    r = round(r_deg)
+    x,y =ra_dec_to_xyplot(ra,dec,xc,yc,rr)
+    draw.circle((x,y),r,fill=color)
+    print('draw_obj x:%s y:%s r_deg:%s r:%s' % (x,y,r_deg,r))
 
 def draw_star(draw, star,xc,yc,rr,
               small=False,color_f=True):
