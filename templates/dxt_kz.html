@@ -389,47 +389,47 @@
 								const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
 								ctx.fillText(raText, xx, textY);
 						
-						textY +=ystep;
-                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
-                        ctx.fillText(decText, xx, textY);
+								textY +=ystep;
+								const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+								ctx.fillText(decText, xx, textY);
                         
-						textY +=ystep;            
-                        if (data.constellation) {
-                            const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
-                            ctx.fillText(constellationText, xx, textY);
-							textY +=ystep;                                    	
-                        }
-                        if (data.bayer_name) {
-                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
-                            if (data.hr_id) {
-                                nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
-                            }
-                            ctx.fillText(nearestStarText, xx, textY);
-							textY +=ystep;
-                        } 
-						if (data.chinese_name) {
-							let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
-							data.chinese_name;
-							ctx.fillText(chinesenameStarText, xx, textY);
-							textY +=ystep;
-						}
-						if (data.magnitude) {
-							let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
-							ctx.fillText(magnitudeStarText, xx, textY);
-							textY +=ystep;
-						}
-						if (data.spectrum) {
-							let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
-							data.spectrum;
-							ctx.fillText(spectrumStarText, xx, textY);
-							textY +=ystep;							
-						}
-						if (data.distance_ly) {
-							let distanceStarText ='{{ gettext("Distance") }}: ' +
-							data.distance_ly + ' lyr';
-							ctx.fillText(distanceStarText, xx, textY);
-							textY +=ystep;							
-						}
+								textY +=ystep;            
+								if (data.constellation) {
+									const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+									ctx.fillText(constellationText, xx, textY);
+									textY +=ystep;                                    	
+								}
+								if (data.bayer_name) {
+									let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
+									if (data.hr_id) {
+										nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
+									}
+									ctx.fillText(nearestStarText, xx, textY);
+									textY +=ystep;
+								} 
+								if (data.chinese_name) {
+									let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
+									data.chinese_name;
+									ctx.fillText(chinesenameStarText, xx, textY);
+									textY +=ystep;
+								}
+								if (data.magnitude) {
+									let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
+									ctx.fillText(magnitudeStarText, xx, textY);
+									textY +=ystep;
+								}
+								if (data.spectrum) {
+									let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
+									data.spectrum;
+									ctx.fillText(spectrumStarText, xx, textY);
+									textY +=ystep;							
+								}
+								if (data.distance_ly) {
+									let distanceStarText ='{{ gettext("Distance") }}: ' +
+									data.distance_ly + ' lyr';
+									ctx.fillText(distanceStarText, xx, textY);
+									textY +=ystep;							
+								}
 
 						
 								// Draw polygon around crosshair
