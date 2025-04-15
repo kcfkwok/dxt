@@ -156,7 +156,7 @@ def draw_fix_stars(draw,xc,yc,rr,small=False,color_f=True):
     for star in stars:
         if star not in g_share.stars_plotted:
             draw_star(draw, star,xc,yc,rr,small=small,color_f=color_f)
-def get_cst_from_ra_dec(ra, dec):
+def get_star_from_ra_dec(ra, dec):
     """Find constellation and closest star from RA and DEC coordinates.
     
     Args:
@@ -201,12 +201,15 @@ def get_cst_from_ra_dec(ra, dec):
     if closest_star_info:
         # Build star name combining bayer_name and chinese_name
         bayer_name = closest_star_info['bayer_name']
+        magnitude = closest_star_info['magnitude']
+        distance_ly = closest_star_info['distance_ly']
+        spectrum = closest_star_info['spectrum']
         chinese_name=''
         if closest_star_info['chinese_name']:
             #star_name += f" ({closest_star_info['chinese_name']})"
             chinese_name= closest_star_info['chinese_name']
         print('closest star: %s' % bayer_name)
-        return (closest_star_info['constellation'], bayer_name,chinese_name, min_dist, closest_star_info['hr_id'])
+        return (closest_star_info['constellation'], bayer_name,chinese_name, min_dist, closest_star_info['hr_id'], magnitude, spectrum, distance_ly)
     print('closest star info:None')
     
     return (None, None, None, min_dist,None)

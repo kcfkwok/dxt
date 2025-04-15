@@ -175,25 +175,53 @@
                         ctx.font = 'bold 40px Arial';
                         ctx.fillStyle = 'red';
                         let textY = y > canvas.height - 160 ? y - 160 : y;
-                        
+                        const xx = 2980;  // x+15
+						const ystep=50;
+						textY +=ystep;
                         const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
-                        ctx.fillText(raText, x + 15, textY + 50);
+                        ctx.fillText(raText, xx, textY);
                         
+						textY +=ystep;
                         const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
-                        ctx.fillText(decText, x + 15, textY + 100);
+                        ctx.fillText(decText, xx, textY);
                         
+						textY +=ystep;            
                         if (data.constellation) {
                             const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
-                            ctx.fillText(constellationText, x + 15, textY + 150);
+                            ctx.fillText(constellationText, xx, textY);
+							textY +=ystep;                                    	
                         }
                         if (data.bayer_name) {
-                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name + ' ' + data.chinese_name;
+                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
                             if (data.hr_id) {
-                                nearestStarText = '{{ gettext("Nearest Star") }}: HR ' + data.hr_id + ' - ' + data.bayer_name + ' ' + data.chinese_name;
+                                nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
                             }
-                            ctx.fillText(nearestStarText, x + 15, textY + 200);
+                            ctx.fillText(nearestStarText, xx, textY);
+							textY +=ystep;
                         } 
-						
+						if (data.chinese_name) {
+							let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
+							data.chinese_name;
+							ctx.fillText(chinesenameStarText, xx, textY);
+							textY +=ystep;
+						}
+						if (data.magnitude) {
+							let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
+							ctx.fillText(magnitudeStarText, xx, textY);
+							textY +=ystep;
+						}
+						if (data.spectrum) {
+							let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
+							data.spectrum;
+							ctx.fillText(spectrumStarText, xx, textY);
+							textY +=ystep;							
+						}
+						if (data.distance_ly) {
+							let distanceStarText ='{{ gettext("Distance") }}: ' +
+							data.distance_ly + ' lyr';
+							ctx.fillText(distanceStarText, xx, textY);
+							textY +=ystep;							
+						}
 						if (data.cst) {
 						// Draw polygon around crosshair
 								fetch('/get_cstbnd_polygon', {

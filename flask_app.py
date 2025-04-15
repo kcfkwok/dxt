@@ -242,7 +242,7 @@ def xy_to_radec():
     x = float(data['x'])
     y = float(data['y'])
     
-    from ut_star import get_cst_from_ra_dec
+    from ut_star import get_star_from_ra_dec
     
     # Load appropriate star coordinates file
     fn = 'star_coords_south.txt' if g_share.f_south else 'star_coords_north.txt'
@@ -266,7 +266,7 @@ def xy_to_radec():
                 ra = float(parts[3])
                 dec = float(parts[4])
     
-    constellation, bayer_name,chinese_name, dist, hr_id = get_cst_from_ra_dec(ra, dec)
+    constellation, bayer_name,chinese_name, dist, hr_id, magnitude, spectrum, distance_ly = get_star_from_ra_dec(ra, dec)
     cst = bayer_name.split('/')[1]
     print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f' % (constellation,bayer_name,ra,dec))
     return jsonify({
@@ -277,6 +277,9 @@ def xy_to_radec():
         'bayer_name': bayer_name,
         'chinese_name': chinese_name,
         'distance': dist,
+        'magnitude': magnitude,
+        'spectrum': spectrum,
+        'distance_ly': distance_ly,
         'hr_id': hr_id
     })
 
@@ -461,18 +464,6 @@ def get_cstbnd_polygon():
     print('get_cstbnd_polygon: ',cst)
     points = cstbnd_to_xyplot(cst,config.xckz,config.yckz,config.rr)
     #print('points:', points)
-    skip="""
-    # Generate a polygon with 5-8 sides around the point
-    sides = random.randint(5, 8)
-    radius = 50 + random.random() * 50  # Random radius between 50-100
-    points = []
-    
-    for i in range(sides):
-        angle = 2 * math.pi * i / sides
-        px = x + radius * math.cos(angle)
-        py = y + radius * math.sin(angle)
-        points.append({'x': px, 'y': py})
-    """
     return jsonify({'points': points})
 
 if __name__=='__main__':

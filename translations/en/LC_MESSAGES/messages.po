@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-04-14 10:04+0800\n"
+"POT-Creation-Date: 2025-04-15 10:20+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: templates/dxt_kz.html:60 templates/dxt_kz.html:186
+#: templates/dxt_kz.html:60 templates/dxt_kz.html:190
 msgid "Constellation"
 msgstr ""
 
@@ -129,20 +129,40 @@ msgstr ""
 msgid "Locate Star"
 msgstr ""
 
-#: templates/dxt_kz.html:179
+#: templates/dxt_kz.html:88 templates/dxt_kz.html:307
+msgid "-- Select star --"
+msgstr ""
+
+#: templates/dxt_kz.html:181
 msgid "RA"
 msgstr ""
 
-#: templates/dxt_kz.html:182
+#: templates/dxt_kz.html:185
 msgid "Dec"
 msgstr ""
 
-#: templates/dxt_kz.html:190 templates/dxt_kz.html:192
+#: templates/dxt_kz.html:195 templates/dxt_kz.html:197
 msgid "Nearest Star"
 msgstr ""
 
-#: templates/dxt_kz.html:232
-msgid "-- Select star --"
+#: templates/dxt_kz.html:203
+msgid "Chinese Name"
+msgstr ""
+
+#: templates/dxt_kz.html:209
+msgid "Magnitude"
+msgstr ""
+
+#: templates/dxt_kz.html:214
+msgid "Spectrum"
+msgstr ""
+
+#: templates/dxt_kz.html:220
+msgid "Distance"
+msgstr ""
+
+#: templates/dxt_kz.html:263 templates/dxt_kz.html:284
+msgid "Failed to process request. Please try again."
 msgstr ""
 
 #: templates/dxt_rl.html:6
