@@ -156,6 +156,8 @@ def draw_fix_stars(draw,xc,yc,rr,small=False,color_f=True):
     for star in stars:
         if star not in g_share.stars_plotted:
             draw_star(draw, star,xc,yc,rr,small=small,color_f=color_f)
+            
+            
 def get_star_from_ra_dec(ra, dec):
     """Find constellation and closest star from RA and DEC coordinates.
     
@@ -178,17 +180,6 @@ def get_star_from_ra_dec(ra, dec):
     
     # Parse star list data
     stars = parse_star_list(config.star_list_path)
-
-    skip="""
-    for cst in CSTS:
-        for star_list in starsln[cst]:
-            for star in star_list:
-                star_ra, star_dec, _, _ = starsi[star]
-                dist = ((ra - star_ra)**2 + (dec - star_dec)**2)**0.5
-                if dist < min_dist:
-                    min_dist = dist
-                    closest_star_info = find_star_by_hr(stars, star)
-            """
             
     for star_hr in stars:
         star_ra, star_dec, _,_ = starsi[star_hr]
@@ -213,4 +204,40 @@ def get_star_from_ra_dec(ra, dec):
     print('closest star info:None')
     
     return (None, None, None, min_dist,None)
+
+
+def get_star_from_hr_id(hr_id):
+    """Find constellation and closest star from HR id.
+    
+    Args:
+        HR id
+        
+    Returns:
+        tuple: (constellation, star_name, distance)
+               where constellation is the Chinese constellation name
+               star_name combines bayer_name and chinese_name if available
+               distance is the angular distance in degrees
+    """
+    # Import star catalog functions
+    from read_star_list import parse_star_list, find_star_by_hr
+    
+    # Parse star list data
+    stars = parse_star_list(config.star_list_path)
+            
+    star_info = stars.get(hr_id,None)
+    
+    if star_info:
+        bayer_name = star_info['bayer_name']
+        magnitude = star_info['magnitude']
+        distance_ly = star_info['distance_ly']
+        spectrum = star_info['spectrum']
+        chinese_name=''
+        if star_info['chinese_name']:
+            chinese_name= star_info['chinese_name']
+        print('star: %s' % bayer_name)
+        return (star_info['constellation'], bayer_name,chinese_name, star_info['hr_id'], magnitude, spectrum, distance_ly)
+    print('star info:None')
+    
+    return None
+
 

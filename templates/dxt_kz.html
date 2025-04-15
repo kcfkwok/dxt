@@ -326,23 +326,23 @@
                     const hrId = document.getElementById('star').value;
                     if (!hrId) return;
 
-                    fetch('/get_star_coords?hr_id=' + hrId)
+                    fetch('/get_star_info?hr_id=' + hrId)
                         .then(response => response.json())
-                        .then(data => {
-                            if (data.ra && data.dec && data.cst) {
+                        .then(info => {
+                            if (info.ra && info.dec && info.cst) {
                                 return fetch('/radec_to_xy', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
-                                    body: JSON.stringify({ra: data.ra, dec: data.dec, cst: data.cst})
+                                    body: JSON.stringify({ra: info.ra, dec: info.dec, cst: info.cst, star: info})
                                 });
                             }
                             throw new Error('Invalid star coordinates');
                         })
                         .then(response => response.json())
                         .then(coords => {
-                            if (coords.x && coords.y && coords.cst) {
+                            if (coords.x && coords.y && coords.cst && coords.star) {
                                 const rect = canvas.getBoundingClientRect();
                                 const scaleX = canvas.width / rect.width;
                                 const scaleY = canvas.height / rect.height;
@@ -369,6 +369,69 @@
                                 ctx.lineWidth = 1;
                                 ctx.stroke();
 								
+								const data = coords.star;
+								const raH = Math.floor(data.ra/15);
+								const raM = Math.floor((data.ra/15 - raH)*60);
+								const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                        
+								const decSign = data.dec >= 0 ? '+' : '-';
+								const decAbs = Math.abs(data.dec);
+								const decD = Math.floor(decAbs);
+								const decM = Math.floor((decAbs - decD)*60);
+								const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                        
+								ctx.font = 'bold 40px Arial';
+								ctx.fillStyle = 'red';
+								let textY = y > canvas.height - 160 ? y - 160 : y;
+								const xx = 2980;  // x+15
+								const ystep=50;
+								textY +=ystep;
+								const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+								ctx.fillText(raText, xx, textY);
+						
+						textY +=ystep;
+                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+                        ctx.fillText(decText, xx, textY);
+                        
+						textY +=ystep;            
+                        if (data.constellation) {
+                            const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+                            ctx.fillText(constellationText, xx, textY);
+							textY +=ystep;                                    	
+                        }
+                        if (data.bayer_name) {
+                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
+                            if (data.hr_id) {
+                                nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
+                            }
+                            ctx.fillText(nearestStarText, xx, textY);
+							textY +=ystep;
+                        } 
+						if (data.chinese_name) {
+							let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
+							data.chinese_name;
+							ctx.fillText(chinesenameStarText, xx, textY);
+							textY +=ystep;
+						}
+						if (data.magnitude) {
+							let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
+							ctx.fillText(magnitudeStarText, xx, textY);
+							textY +=ystep;
+						}
+						if (data.spectrum) {
+							let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
+							data.spectrum;
+							ctx.fillText(spectrumStarText, xx, textY);
+							textY +=ystep;							
+						}
+						if (data.distance_ly) {
+							let distanceStarText ='{{ gettext("Distance") }}: ' +
+							data.distance_ly + ' lyr';
+							ctx.fillText(distanceStarText, xx, textY);
+							textY +=ystep;							
+						}
+
+						
 								// Draw polygon around crosshair
 								fetch('/get_cstbnd_polygon', {
 									method: 'POST',

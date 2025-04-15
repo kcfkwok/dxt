@@ -79,12 +79,7 @@ def calculate_sum():
     y = float(data['y'])
     return jsonify({'result': x + y})
 
-@app.route('/get_star_info', methods=['POST'])
-def get_star_info():
-    data = request.get_json()
-    x = float(data['x'])
-    y = float(data['y'])
-    return jsonify({'result': x + y})
+
 
 
 
@@ -436,12 +431,53 @@ def get_star_coords():
         'cst':cst
     })
 
+@app.route('/get_star_info')
+def get_star_info():
+    hr_id = request.args.get('hr_id')
+    if not hr_id:
+        return jsonify({'error': 'HR ID required'}), 400
+    
+    try:
+        hr_id = int(hr_id)
+    except ValueError:
+        return jsonify({'error': 'Invalid HR ID'}), 400
+    from ut_star import get_star_from_hr_id
+    
+    # Load star data
+    stars = parse_star_list(config.star_list_path)
+    star = find_star_by_hr(stars, hr_id)
+    
+    ra = star['ra']
+    dec = star['dec']
+    bayer_name = star['bayer_name']
+    constellation = star['constellation']
+    chinese_name = star['chinese_name']
+    magnitude = star['magnitude']
+    spectrum = star['spectrum']
+    distance_ly = star['distance_ly']   
+    cst = bayer_name.split('/')[1]
+    print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f' % (constellation,bayer_name,ra,dec))
+    return jsonify({
+        'ra': ra,
+        'dec': dec,
+        'constellation': constellation,
+        'cst':cst,
+        'bayer_name': bayer_name,
+        'chinese_name': chinese_name,
+        'magnitude': magnitude,
+        'spectrum': spectrum,
+        'distance_ly': distance_ly,
+        'hr_id': hr_id
+    })
+    
+
 @app.route('/radec_to_xy', methods=['POST'])
 def radec_to_xy():
     data = request.get_json()
     ra = float(data['ra'])
     dec = float(data['dec'])
     cst = data['cst']
+    star = data['star']
     
     from ut_cal import ra_dec_to_xyplot
     x, y = ra_dec_to_xyplot(ra, dec, config.xckz, config.yckz, config.rr)
@@ -449,7 +485,8 @@ def radec_to_xy():
     return jsonify({
         'x': x,
         'y': y,
-        'cst': cst
+        'cst': cst,
+        'star':star
     })
 
 @app.route('/get_cstbnd_polygon', methods=['POST'])
