@@ -71,7 +71,25 @@
 		
         function updateClock() {
             // Add timestamp to prevent caching
+            const startTime = performance.now();
             clockImg.src = '/clock?' + new Date().getTime();
+            
+            clockImg.onload = function() {
+                const loadTime = performance.now() - startTime;
+                console.log(`Image loaded in ${loadTime.toFixed(2)}ms`);
+                // Send performance data to server for tracking
+                fetch('/perf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: 'image_load',
+                        duration: loadTime,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            };
         }
 
         function startTimer(interval) {

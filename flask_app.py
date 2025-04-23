@@ -72,6 +72,23 @@ def index():
 
     return render_template('index.html', username=username, style=style, user_info=user_info, location_text=location_text)
 
+@app.route('/perf', methods=['POST'])
+def track_performance():
+    data = request.get_json()
+    perf_type = data.get('type')
+    duration = data.get('duration')
+    timestamp = data.get('timestamp')
+    
+    # Log performance metrics
+    print(f'Performance: {perf_type} took {duration}ms at {timestamp}')
+    
+    # Here you could also:
+    # - Store metrics in a database
+    # - Calculate running averages
+    # - Trigger alerts if performance degrades
+    
+    return jsonify({'status': 'success'})
+
 @app.route('/calculate_sum', methods=['POST'])
 def calculate_sum():
     data = request.get_json()

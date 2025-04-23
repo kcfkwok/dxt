@@ -2,6 +2,18 @@ from PIL import Image
 from io import BytesIO
 import datetime
 import pytz
+import time
+from functools import lru_cache
+
+# Cache for banner image to avoid repeated disk reads
+_banner_cache = None
+
+def get_banner():
+    global _banner_cache
+    if _banner_cache is None:
+        banner_path = config.fpng_banner
+        _banner_cache = Image.open(banner_path)
+    return _banner_cache
 from dxt_rl import *
 from dxt_kz_A5R import make_dxt_kz_A5R
 from dxt_xt import make_dxt_xt_A4
@@ -30,6 +42,7 @@ from flask import render_template_string
 import os
 
 def dxt_rl_img(content=None):
+    start_time = time.time()
     year = 0
     timezone = 'Asia/Hong_Kong'
     
@@ -55,8 +68,7 @@ def dxt_rl_img(content=None):
         x = config.banner_x
         y = config.banner_y
         layer = paper.add_layer(name='banner')
-        banner_path=config.fpng_banner
-        banner = Image.open(banner_path)
+        banner = get_banner()
         layer.im.paste(banner, (x,y))
         
         hour=0
@@ -73,6 +85,16 @@ def dxt_rl_img(content=None):
     
         paper.commit_image()
         img = paper.im
+        duration = int((time.time() - start_time) * 1000)  # Convert to ms
+        try:
+            import requests
+            requests.post('http://localhost:5000/perf', json={
+                'type': 'dxt_rl_img',
+                'duration': duration,
+                'timestamp': datetime.datetime.utcnow().isoformat()
+            }, timeout=0.1)  # Non-blocking with short timeout
+        except:
+            pass  # Don't fail if metrics can't be sent
         return img
     except FileNotFoundError:
         # 返回一个提示信息的 HTML 页面
@@ -81,6 +103,7 @@ def dxt_rl_img(content=None):
         
 
 def dxt_kz_img(content):
+    start_time = time.time()
     location = None
     if content is not None:
         m1 = re_kz1.match(content)
@@ -125,13 +148,24 @@ def dxt_kz_img(content):
     x = config.banner_x
     y = config.banner_y
     layer = paper.add_layer(name='banner')
-    banner_path=config.fpng_banner
-    banner = Image.open(banner_path)
+    banner = get_banner()
     layer.im.paste(banner, (x,y))
     paper.commit_image()
-    return paper.im
+    img = paper.im
+    duration = int((time.time() - start_time) * 1000)  # Convert to ms
+    try:
+        import requests
+        requests.post('http://localhost:5000/perf', json={
+            'type': 'dxt_kz_img', 
+            'duration': duration,
+            'timestamp': datetime.datetime.utcnow().isoformat()
+        }, timeout=0.1)  # Non-blocking with short timeout
+    except:
+        pass  # Don't fail if metrics can't be sent
+    return img
     
 def dxt_kz_img_wu(user_info):
+    start_time = time.time()
     config.debug = False
     latv = user_info[0]
     longv = user_info[1]
@@ -150,15 +184,25 @@ def dxt_kz_img_wu(user_info):
     x = config.banner_x
     y = config.banner_y
     layer = paper.add_layer(name='banner')
-    banner_path=config.fpng_banner
-    banner = Image.open(banner_path)
+    banner = get_banner()
     layer.im.paste(banner, (x,y))
     paper.commit_image()
-    return paper.im
+    img = paper.im
+    duration = int((time.time() - start_time) * 1000)  # Convert to ms
+    try:
+        import requests
+        requests.post('http://localhost:5000/perf', json={
+            'type': 'dxt_kz_img_wu',
+            'duration': duration,
+            'timestamp': datetime.datetime.utcnow().isoformat()
+        }, timeout=0.1)  # Non-blocking with short timeout
+    except:
+        pass  # Don't fail if metrics can't be sent
+    return img
    
 
 def dxt_xt_img(content):
-    
+    start_time = time.time()
     year = 0
     if content is not None:
         m = re_xt.match(content)
@@ -178,11 +222,20 @@ def dxt_xt_img(content):
         x = config.banner_x
         y = config.banner_y
         layer = paper.add_layer(name='banner')
-        banner_path=config.fpng_banner
-        banner = Image.open(banner_path)
+        banner = get_banner()
         layer.im.paste(banner, (x,y))
         paper.commit_image()
         img = paper.im
+        duration = int((time.time() - start_time) * 1000)  # Convert to ms
+        try:
+            import requests
+            requests.post('http://localhost:5000/perf', json={
+                'type': 'dxt_xt_img',
+                'duration': duration,
+                'timestamp': datetime.datetime.utcnow().isoformat()
+            }, timeout=0.1)  # Non-blocking with short timeout
+        except:
+            pass  # Don't fail if metrics can't be sent
         return img
     except FileNotFoundError:
         # 返回一个提示信息的 HTML 页面
@@ -190,6 +243,7 @@ def dxt_xt_img(content):
         return render_template_string(error_html)
         
 def dxt_zp_img(content=None):
+    start_time = time.time()
     location = None
     if content is not None:
         m = re_zp.match(content)
@@ -208,14 +262,22 @@ def dxt_zp_img(content=None):
         x = config.banner_x
         y = config.banner_y
         layer = paper.add_layer(name='banner')
-        banner_path=config.fpng_banner
-        banner = Image.open(banner_path)
+        banner = get_banner()
         layer.im.paste(banner, (x,y))
         paper.commit_image()
         img = paper.im
+        duration = int((time.time() - start_time) * 1000)  # Convert to ms
+        try:
+            import requests
+            requests.post('http://localhost:5000/perf', json={
+                'type': 'dxt_zp_img',
+                'duration': duration,
+                'timestamp': datetime.datetime.utcnow().isoformat()
+            }, timeout=0.1)  # Non-blocking with short timeout
+        except:
+            pass  # Don't fail if metrics can't be sent
         return img
     except FileNotFoundError:
         # 返回一个提示信息的 HTML 页面
         error_html = '<html><body><h1>該location暫未支持</h1></body></html>'
         return render_template_string(error_html)
-        
