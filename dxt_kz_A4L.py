@@ -1,7 +1,7 @@
 from PIL import Image, ImageColor,ImageDraw,ImageFont,ImageOps
 from config import config
 from g_share import g_share
-from datetime import datetime, UTC
+from datetime import datetime
 import pytz
 from astropy.time import Time
 from astropy import units as u
@@ -161,7 +161,7 @@ if __name__=='__main__':
     timezone='Asia/Hong_Kong'    
     loc_tz = pytz.timezone(timezone)
     if use_current_time:
-        utc_now = datetime.datetime.now(datetime.UTC)
+        utc_now = datetime.datetime.now(datetime.timezone.utc)
         # Convert the UTC time to the specified timezone
         dt = utc_now.replace(tzinfo=pytz.utc).astimezone(loc_tz)
     else:

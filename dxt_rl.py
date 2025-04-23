@@ -220,7 +220,7 @@ if __name__=='__main__':
     import datetime
     timezone = 'Asia/Hong_Kong'
     hktz = pytz.timezone(timezone)
-    utc_now = datetime.datetime.now(datetime.UTC)
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
     now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
     year = now.year
     month = now.month
