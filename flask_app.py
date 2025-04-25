@@ -7,7 +7,7 @@ from flask_babel import Babel, gettext
 from secret_key import secret_key
 from config import config
 from g_share import g_share
-from image_generator import dxt_rl_img, dxt_kz_img, dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp, re_kz0, re_kz1
+from image_generator import dxt_rl_img, dxt_kz_img, dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp, re_kz0, re_kz1,re_rl
 from pdf_generator import dxt_rl_pdf, dxt_xt_pdf, dxt_zp_pdf, dxt_kz_pdf
 from default_info import default_info
 from io import BytesIO
