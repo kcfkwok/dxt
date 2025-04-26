@@ -25,10 +25,11 @@ def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2,f_s=None,name=
     pt3 = (L1+W1,L1 *2)
     pt4 = (L1-W0,L1 *2)
     x2= int(1 * MM_UNIT)
-    draw2.polygon([pt1,pt2,pt3,pt4,pt1], outline=(0,0,0,255))
+    draw2.polygon([pt1,pt2,pt3,pt4,pt1], outline=(0,0,0,255), width=3)
     draw2.line([(L1,L1-L0),(L1,L1*2)],fill=color1,width=5)
     draw2.line([(L1-x2,L1),(L1+x2,L1)],fill=color1,width=5)
     
+    skip="""
     mm_px = int(1* MM_UNIT)
     x1_5mm_px = int(1.5 * MM_UNIT)
     # *** for cut out 
@@ -36,7 +37,7 @@ def draw_pointer(image, x0,y0,rr,L0,L1,W0,W1,iangle,color1,color2,f_s=None,name=
     draw2.line([(L1-mm_px,L1-L0),(L1-mm_px,L1+ x1_5mm_px)],fill=BLACK,width=3)
     draw2.line([(L1+mm_px,L1-L0),(L1+mm_px,L1+ x1_5mm_px)],fill=BLACK,width=3)
     draw2.line([(L1-mm_px,L1+x1_5mm_px),(L1+mm_px,L1+ x1_5mm_px)],fill=BLACK,width=3)
-
+    """
 
     # test line
     #draw2.line([(0,0),(D,D)],fill=(0,0,0,255),width=2)
