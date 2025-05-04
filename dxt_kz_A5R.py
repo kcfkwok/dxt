@@ -8,7 +8,7 @@ from astropy import units as u
 from astropy.coordinates import EarthLocation
 from astropy.utils.iers import conf
 conf.iers_degraded_accuracy = 'warn'
-
+conf.auto_max_age = None
 
 from dxt_rl import *
 from dxt_zp import build_dxt_zp

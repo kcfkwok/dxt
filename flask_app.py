@@ -280,7 +280,15 @@ def xy_to_radec():
     
     constellation, bayer_name,chinese_name, dist, hr_id, magnitude, spectrum, distance_ly = get_star_from_ra_dec(ra, dec)
     cst = bayer_name.split('/')[1]
-    print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f' % (constellation,bayer_name,ra,dec))
+    print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f min_dist:%s' % (constellation,bayer_name,ra,dec,min_dist))
+    if min_dist>100:
+        bayer_name=None
+        chinese_name=None
+        magnitude=None
+        spectrum=None
+        distance_ly=None
+        hr_id = None
+        
     return jsonify({
         'ra': ra,
         'dec': dec,

@@ -61,6 +61,7 @@ def build_dxt_zp_A4L(latv, longv, place, time_zone, debug=False):
     from astropy import units as u
     from astropy.utils.iers import conf
     conf.iers_degraded_accuracy = 'warn'
+    conf.auto_max_age = None
 
     from config import config
     import pytz
@@ -160,6 +161,7 @@ def build_dxt_zp_A5(latv, longv, place, time_zone, debug=False):
     from astropy import units as u
     from astropy.utils.iers import conf
     conf.iers_degraded_accuracy = 'warn'
+    conf.auto_max_age = None
 
     from config import config
     import pytz
