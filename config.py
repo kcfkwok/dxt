@@ -40,7 +40,8 @@ class CONFIG:
     fxt_pdf=Path(staticpath,'dxt_xt_A4.pdf')
     frl_png=Path(staticpath, 'dxt_rl_A4.png')
     frl_pdf=Path(staticpath,'dxt_rl_A4.pdf')
-
+    lin_dxt_png=Path(staticpath,'lin_dxt_A4.png')
+    lin_dxt_pdf=Path(staticpath,'lin_dxt_A4.pdf')
     
     # json file
     mw_path =Path(interpath, "mw.json")

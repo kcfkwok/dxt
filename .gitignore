@@ -189,4 +189,5 @@ AstroModule.py
 plnt.py
 static/dxt*.pdf
 static/dxt*.png
-
+static/lin_dxt*.png
+static/lin_dxt*.pdf
