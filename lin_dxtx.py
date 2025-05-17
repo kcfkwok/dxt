@@ -18,8 +18,19 @@ from ut_lin_star import draw_fix_stars
 from lin_frame import build_lin_frame
 
 if __name__=='__main__':
-    year=2025
-    tz=8
+    import pytz
+    import datetime
+    from ut_geo_tz import get_timezone_offset
+    #tz=8
+
+    timezone = 'Asia/Hong_Kong'
+    tz = get_timezone_offset(timezone)
+    print("tz:", tz)
+    hktz = pytz.timezone(timezone)
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
+    now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
+    year = now.year
+
     paper = PAPER("A4L")
     build_lin_frame(paper, year-1, tz)
     draw_milkyway_lin(paper)
