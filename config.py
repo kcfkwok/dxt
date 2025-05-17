@@ -68,6 +68,12 @@ class CONFIG:
     r_90=r5
     rr = 180/r_90
     
+    lin_x0= int(10*MM_UNIT) # 236
+    lin_y00= int(16*MM_UNIT) #377
+    lin_xr_end= 6694
+    lin_y01= 4255
+    lin_y_equ= 2316
+
     banner_x = int(10*MM_UNIT)
     banner_y = int(4*MM_UNIT)
 

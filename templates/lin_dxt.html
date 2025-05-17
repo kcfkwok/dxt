@@ -65,21 +65,26 @@
                 ctx.drawImage(img, 0, 0);
 
                 // Hardcoded values for static image
-                const centerX = 1500;  // Approximate center X of static image
-                const centerY = 1500;  // Approximate center Y of static image 
-                const radius = 1200;   // Approximate radius of star chart
-                const dx = x - centerX;
-                const dy = y - centerY;
-                const distance = Math.sqrt(dx*dx + dy*dy);
+                //const centerX = 1500;  // Approximate center X of static image
+                //const centerY = 1500;  // Approximate center Y of static image 
+                //const radius = 1200;   // Approximate radius of star chart
+                //const dx = x - centerX;
+                //const dy = y - centerY;
+                //const distance = Math.sqrt(dx*dx + dy*dy);
+				const x_left=236;
+				const y_up=377;
+				const x_right=6694;
+				const y_down = 4255;
 
-                if (distance <= radius) {
+                if (x < x_right && x > x_left && y > y_up && y < y_down) { //distance <= radius) {
+					/*
                     ctx.beginPath();
                     ctx.moveTo(centerX, centerY);
                     ctx.lineTo(x, y);
                     ctx.strokeStyle = 'red';
                     ctx.lineWidth = 2;
                     ctx.stroke();
-
+					*/
                     ctx.beginPath();
                     ctx.moveTo(x, 0);
                     ctx.lineTo(x, canvas.height);
@@ -111,9 +116,23 @@
                         ctx.font = 'bold 40px Arial';
                         ctx.fillStyle = 'red';
                         let textY = y > canvas.height - 160 ? y - 160 : y;
-                        const xx = 2980;  // x+15
+                        const xx = data.x; //2980;  // x+15
                         const ystep=50;
+						
+						
                         textY +=ystep;
+						if (data.x) {
+							const xText = '{{ gettext("x") }}: ' + data.x;
+							ctx.fillText(xText, xx, textY);
+							textY +=ystep;
+                        }
+						
+                        if (data.y) {
+							const yText = '{{ gettext("y") }}: ' + data.y;
+							ctx.fillText(decText, xx, textY);
+							textY +=ystep;
+						}
+						
                         const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
                         ctx.fillText(raText, xx, textY);
                         

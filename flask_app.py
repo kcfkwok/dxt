@@ -1,3 +1,7 @@
+import sys
+# 将子模块的路径添加到 Python 的模块搜索路径中
+sys.path.append('../lin_dxt')
+
 from flask import Flask, request, render_template, render_template_string, send_file, Response, redirect, session, jsonify
 from csts import CSTS
 from cstcn import cstcn
@@ -15,6 +19,7 @@ from timezonefinder import TimezoneFinder
 import pytz
 import datetime
 from pathlib import Path
+from lin_base import x_to_RA, y_to_dec
 
 app = Flask(__name__)
 app.secret_key = secret_key
@@ -308,9 +313,15 @@ def xy_to_lin_radec():
     data = request.get_json()
     x = float(data['x'])
     y = float(data['y'])
+    sx = data['x']
+    sy = data['y']
+    ra =x_to_RA(x)
+    dec = y_to_dec(y)
+    print('xy_to_lin_radec x:%.2f y:%.2f ra:%.2f dec:%.2f' % (x,y,ra,dec))
+    
     
     from ut_star import get_star_from_ra_dec
-    
+    skip="""
     # Load appropriate star coordinates file
     fn = 'star_coords_south.txt' if g_share.f_south else 'star_coords_north.txt'
     filename = Path(config.staticpath, fn)
@@ -332,11 +343,12 @@ def xy_to_lin_radec():
                 min_dist = dist
                 ra = float(parts[3])
                 dec = float(parts[4])
+    """
     
     constellation, bayer_name,chinese_name, dist, hr_id, magnitude, spectrum, distance_ly = get_star_from_ra_dec(ra, dec)
     cst = bayer_name.split('/')[1]
-    print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f min_dist:%s' % (constellation,bayer_name,ra,dec,min_dist))
-    if min_dist>100:
+    print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f dist:%s' % (constellation,bayer_name,ra,dec,dist))
+    if dist>100:
         bayer_name=None
         chinese_name=None
         magnitude=None
@@ -355,7 +367,9 @@ def xy_to_lin_radec():
         'magnitude': magnitude,
         'spectrum': spectrum,
         'distance_ly': distance_ly,
-        'hr_id': hr_id
+        'hr_id': hr_id,
+        'x':sx,
+        'y':sy
     })
 
 @app.route('/dxt_xt_img_rq')
