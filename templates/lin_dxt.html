@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+  <head>
+   <meta charset="UTF-8">
+    <link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+    <title>{{ gettext('DongXingTu - Explore') }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+        #dxt_kz-image {
+            margin: 5px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+        #dxt_kz-img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        canvas {
+            border: 1px solid #000;
+            margin-top: 20px;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+    {% include 'styles.html' %}
+</head>
+<body>
+    <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
+    
+
+    <canvas id="dxt_kz-canvas" width="800" height="600"></canvas>
+    <script>
+
+        // Wait for DOM to be fully loaded before executing JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get config values from template
+    // Static image version - no config needed
+            const canvas = document.getElementById('dxt_kz-canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+
+            // Set image source to static file
+            img.src = "static/lin_dxt_A4.png";
+            
+            // Wait for image to load
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+            };
+            
+            // Mouse down event handler
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+
+                // Hardcoded values for static image
+                const centerX = 1500;  // Approximate center X of static image
+                const centerY = 1500;  // Approximate center Y of static image 
+                const radius = 1200;   // Approximate radius of star chart
+                const dx = x - centerX;
+                const dy = y - centerY;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+
+                if (distance <= radius) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    
+                    fetch('/xy_to_lin_radec', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({x: x, y: y})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const raH = Math.floor(data.ra/15);
+                        const raM = Math.floor((data.ra/15 - raH)*60);
+                        const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                        
+                        const decSign = data.dec >= 0 ? '+' : '-';
+                        const decAbs = Math.abs(data.dec);
+                        const decD = Math.floor(decAbs);
+                        const decM = Math.floor((decAbs - decD)*60);
+                        const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                        
+                        ctx.font = 'bold 40px Arial';
+                        ctx.fillStyle = 'red';
+                        let textY = y > canvas.height - 160 ? y - 160 : y;
+                        const xx = 2980;  // x+15
+                        const ystep=50;
+                        textY +=ystep;
+                        const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+                        ctx.fillText(raText, xx, textY);
+                        
+                        textY +=ystep;
+                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+                        ctx.fillText(decText, xx, textY);
+                        
+                        textY +=ystep;            
+                        if (data.constellation) {
+                            const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+                            ctx.fillText(constellationText, xx, textY);
+                            textY +=ystep;                                        
+                        }
+                        if (data.bayer_name) {
+                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
+                            if (data.hr_id) {
+                                nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
+                            }
+                            ctx.fillText(nearestStarText, xx, textY);
+                            textY +=ystep;
+                        } 
+                        if (data.chinese_name) {
+                            let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
+                            data.chinese_name;
+                            ctx.fillText(chinesenameStarText, xx, textY);
+                            textY +=ystep;
+                        }
+                        if (data.magnitude) {
+                            let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
+                            ctx.fillText(magnitudeStarText, xx, textY);
+                            textY +=ystep;
+                        }
+                        if (data.spectrum) {
+                            let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
+                            data.spectrum;
+                            ctx.fillText(spectrumStarText, xx, textY);
+                            textY +=ystep;                            
+                        }
+                        if (data.distance_ly) {
+                            let distanceStarText ='{{ gettext("Distance") }}: ' +
+                            data.distance_ly + ' lyr';
+                            ctx.fillText(distanceStarText, xx, textY);
+                            textY +=ystep;                            
+                        }
+                        if (data.cst) {
+                        // Draw polygon around crosshair
+                                fetch('/get_lin_cstbnd_polygon', {
+                                    method: 'POST',
+                                    headers: {
+                                    'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({x: x, y: y, cst:data.cst})
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    const points = data.points;
+                                    if (points.length > 0) {
+                                        ctx.beginPath();
+                                        ctx.moveTo(points[0].x, points[0].y);
+                                        for (let i = 1; i < points.length; i++) {
+                                            ctx.lineTo(points[i].x, points[i].y);
+                                        }
+                                        ctx.closePath();
+                                        ctx.strokeStyle = 'orange';
+                                        ctx.lineWidth = 2;
+                                        ctx.stroke();
+                                    }
+                                });
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

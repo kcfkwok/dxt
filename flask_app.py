@@ -303,6 +303,60 @@ def xy_to_radec():
         'hr_id': hr_id
     })
 
+@app.route('/xy_to_lin_radec', methods=['POST'])
+def xy_to_lin_radec():
+    data = request.get_json()
+    x = float(data['x'])
+    y = float(data['y'])
+    
+    from ut_star import get_star_from_ra_dec
+    
+    # Load appropriate star coordinates file
+    fn = 'star_coords_south.txt' if g_share.f_south else 'star_coords_north.txt'
+    filename = Path(config.staticpath, fn)
+    print('xy_to_radec using:', filename)
+    
+    # Find closest star match
+    min_dist = float('inf')
+    ra, dec = 0, 0
+    
+    with open(filename, 'r', encoding='utf-8') as f:
+        next(f)  # Skip header
+        for line in f:
+            parts = line.strip().split('\t')
+            star_x = float(parts[5])
+            star_y = float(parts[6])
+            dist = (x - star_x)**2 + (y - star_y)**2
+            
+            if dist < min_dist:
+                min_dist = dist
+                ra = float(parts[3])
+                dec = float(parts[4])
+    
+    constellation, bayer_name,chinese_name, dist, hr_id, magnitude, spectrum, distance_ly = get_star_from_ra_dec(ra, dec)
+    cst = bayer_name.split('/')[1]
+    print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f min_dist:%s' % (constellation,bayer_name,ra,dec,min_dist))
+    if min_dist>100:
+        bayer_name=None
+        chinese_name=None
+        magnitude=None
+        spectrum=None
+        distance_ly=None
+        hr_id = None
+        
+    return jsonify({
+        'ra': ra,
+        'dec': dec,
+        'constellation': constellation,
+        'cst':cst,
+        'bayer_name': bayer_name,
+        'chinese_name': chinese_name,
+        'distance': dist,
+        'magnitude': magnitude,
+        'spectrum': spectrum,
+        'distance_ly': distance_ly,
+        'hr_id': hr_id
+    })
 
 @app.route('/dxt_xt_img_rq')
 def dxt_xt_img_rq():
@@ -527,6 +581,25 @@ def get_cstbnd_polygon():
     points = cstbnd_to_xyplot(cst,config.xckz,config.yckz,config.rr)
     #print('points:', points)
     return jsonify({'points': points})
+
+@app.route('/get_lin_cstbnd_polygon', methods=['POST'])
+def get_lin_cstbnd_polygon():
+    import random
+    import math
+    from ut_cstbnd import cstbnd_to_xyplot
+    data = request.get_json()
+    x = float(data['x'])
+    y = float(data['y'])
+    cst = data['cst']
+    print('get_cstbnd_polygon: ',cst)
+    points = cstbnd_to_xyplot(cst,config.xckz,config.yckz,config.rr)
+    #print('points:', points)
+    return jsonify({'points': points})
+
+@app.route('/lin_dxt')
+def lin_dxt():
+    return render_template('lin_dxt.html')
+
 
 if __name__=='__main__':
     app.run(debug=True)
