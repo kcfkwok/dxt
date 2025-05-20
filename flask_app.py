@@ -315,7 +315,7 @@ def xy_to_lin_radec():
     y = float(data['y'])
     sx = data['x']
     sy = data['y']
-    ra =x_to_RA(x)
+    ra =(x_to_RA(x) * 15) % 360  # to degree
     dec = y_to_dec(y)
     print('xy_to_lin_radec x:%.2f y:%.2f ra:%.2f dec:%.2f' % (x,y,ra,dec))
     
@@ -348,7 +348,7 @@ def xy_to_lin_radec():
     constellation, bayer_name,chinese_name, dist, hr_id, magnitude, spectrum, distance_ly = get_star_from_ra_dec(ra, dec)
     cst = bayer_name.split('/')[1]
     print('constellation:%s bayer_name:%s ra:%.2f dec:%.2f dist:%s' % (constellation,bayer_name,ra,dec,dist))
-    if dist>100:
+    if dist>2:
         bayer_name=None
         chinese_name=None
         magnitude=None
@@ -582,6 +582,27 @@ def radec_to_xy():
         'star':star
     })
 
+@app.route('/lin_radec_to_xy', methods=['POST'])
+def lin_radec_to_xy():
+    data = request.get_json()
+    ra = float(data['ra']) / 15.0  # to ra_hr
+    if ra < 18:
+        ra+=24
+    dec = float(data['dec'])
+    cst = data['cst']
+    star = data['star']
+    
+    from lin_base import RA_to_x, dec_to_y
+    x = RA_to_x(g_share.x0, ra)
+    y = dec_to_y(dec)
+    print('lin_radec_to_xy: ra:%.2f dec:%.2f x:%s y:%s' % (ra,dec,x,y))
+    return jsonify({
+        'x': x,
+        'y': y,
+        'cst': cst,
+        'star': star
+    })
+
 @app.route('/get_cstbnd_polygon', methods=['POST'])
 def get_cstbnd_polygon():
     import random
@@ -598,21 +619,23 @@ def get_cstbnd_polygon():
 
 @app.route('/get_lin_cstbnd_polygon', methods=['POST'])
 def get_lin_cstbnd_polygon():
-    import random
     import math
-    from ut_cstbnd import cstbnd_to_xyplot
+    from ut_lin_cstbnd import lin_cstbnd_to_xyplot
     data = request.get_json()
     x = float(data['x'])
     y = float(data['y'])
     cst = data['cst']
     print('get_cstbnd_polygon: ',cst)
-    points = cstbnd_to_xyplot(cst,config.xckz,config.yckz,config.rr)
+    points = lin_cstbnd_to_xyplot(cst)
     #print('points:', points)
     return jsonify({'points': points})
 
 @app.route('/lin_dxt')
 def lin_dxt():
-    return render_template('lin_dxt.html')
+    
+    return render_template('lin_dxt.html',
+                           csts=CSTS,
+                           cstcn=cstcn)
 
 
 if __name__=='__main__':

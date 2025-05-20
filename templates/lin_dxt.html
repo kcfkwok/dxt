@@ -31,10 +31,50 @@
 <body>
     <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
     
+    <div style="margin-top: 20px;">
+        <label>{{ gettext('Constellation') }}:</label>
+        <select id="constellation">
+            {% for abbr in csts %}
+            <option value="{{ abbr }}" {% if abbr == 'And' %}selected{% endif %}>{{ abbr }} - {{ cstcn[abbr] }}</option>
+            {% endfor %}
+        </select>
+        
+        <label style="margin-left: 10px;">{{ gettext('Star') }}:</label>
+        <select id="star" disabled>
+            <option value="">{{ gettext('-- Select constellation first --') }}</option>
+        </select>
+        
+        <button id="locate-star" style="margin-left: 10px;">{{ gettext('Locate Star') }}</button>
+    </div>
 
     <canvas id="dxt_kz-canvas" width="800" height="600"></canvas>
     <script>
-
+       // Load stars for Andromeda on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const constellationSelect = document.getElementById('constellation');
+            const starSelect = document.getElementById('star');
+            
+            if (constellationSelect.value === 'And') {
+                starSelect.disabled = false;
+                fetch('/get_stars?constellation=And')
+                    .then(response => response.json())
+                    .then(stars => {
+                        starSelect.innerHTML = '';
+                        starSelect.add(new Option('{{ gettext("-- Select star --") }}', ''));
+                        
+                        stars.forEach(star => {
+                            let displayName = star.hr_id;
+                            if (star.bayer_name) {
+                                displayName += ' (' + star.bayer_name + ')';
+                            }
+                            if (star.chinese_name) {
+                                displayName += ' - ' + star.chinese_name;
+                            }
+                            starSelect.add(new Option(displayName, star.hr_id));
+                        });
+                    });
+            }
+        });
         // Wait for DOM to be fully loaded before executing JavaScript
         document.addEventListener('DOMContentLoaded', function() {
             // Get config values from template
@@ -113,31 +153,33 @@
                         const decM = Math.floor((decAbs - decD)*60);
                         const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
                         
-                        ctx.font = 'bold 40px Arial';
+                        ctx.font = 'bold 60px Arial';  //'bold 40px Arial';
                         ctx.fillStyle = 'red';
                         let textY = y > canvas.height - 160 ? y - 160 : y;
                         const xx = data.x; //2980;  // x+15
-                        const ystep=50;
+                        const ystep=60; //50;
 						
 						
                         textY +=ystep;
+						/*
 						if (data.x) {
 							const xText = '{{ gettext("x") }}: ' + data.x;
 							ctx.fillText(xText, xx, textY);
 							textY +=ystep;
                         }
-						
+						*/
+                        const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+                        /*
                         if (data.y) {
 							const yText = '{{ gettext("y") }}: ' + data.y;
-							ctx.fillText(decText, xx, textY);
+							ctx.fillText(yText, xx, textY);
 							textY +=ystep;
 						}
-						
-                        const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+						*/
                         ctx.fillText(raText, xx, textY);
                         
                         textY +=ystep;
-                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
                         ctx.fillText(decText, xx, textY);
                         
                         textY +=ystep;            
@@ -204,6 +246,170 @@
                         }
                     });
                 }
+            });
+
+            // Load stars when constellation changes
+            document.getElementById('constellation').addEventListener('change', function() {
+                const constellation = this.value;
+                const starSelect = document.getElementById('star');
+                
+                if (!constellation) {
+                    starSelect.disabled = true;
+                    starSelect.innerHTML = '<option value="">-- Select constellation first --</option>';
+                    return;
+                }
+                
+                fetch('/get_stars?constellation=' + constellation)
+                    .then(response => response.json())
+                    .then(stars => {
+                        starSelect.disabled = false;
+                        starSelect.innerHTML = '';
+                        starSelect.add(new Option('{{ gettext("-- Select star --") }}', ''));
+                        
+                        stars.forEach(star => {
+                            let displayName = star.hr_id;
+                            if (star.bayer_name) {
+                                displayName += ' (' + star.bayer_name + ')';
+                            }
+                            if (star.chinese_name) {
+                                displayName += ' - ' + star.chinese_name;
+                            }
+                            starSelect.add(new Option(displayName, star.hr_id));
+                        });
+                    });
+            });
+            
+            // Locate star button click handler
+            document.getElementById('locate-star').addEventListener('click', function() {
+                const hrId = document.getElementById('star').value;
+                if (!hrId) return;
+
+                fetch('/get_star_info?hr_id=' + hrId)
+                    .then(response => response.json())
+                    .then(info => {
+                        if (info.ra && info.dec && info.cst) {
+                            return fetch('/lin_radec_to_xy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ra: info.ra, dec: info.dec, cst: info.cst, star: info})
+                            });
+                        }
+                        throw new Error('Invalid star coordinates');
+                    })
+                    .then(response => response.json())
+                    .then(coords => {
+                        if (coords.x && coords.y && coords.cst && coords.star) {
+                            const rect = canvas.getBoundingClientRect();
+                            const scaleX = canvas.width / rect.width;
+                            const scaleY = canvas.height / rect.height;
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, 0, 0);
+                            const x = coords.x;
+                            const y = coords.y;
+                            const cst = coords.cst;
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(x, 0);
+                            ctx.lineTo(x, canvas.height);
+                            ctx.moveTo(0, y);
+                            ctx.lineTo(canvas.width, y);
+                            ctx.strokeStyle = 'blue';
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                            
+                            const data = coords.star;
+                            const raH = Math.floor(data.ra/15);
+                            const raM = Math.floor((data.ra/15 - raH)*60);
+                            const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                    
+                            const decSign = data.dec >= 0 ? '+' : '-';
+                            const decAbs = Math.abs(data.dec);
+                            const decD = Math.floor(decAbs);
+                            const decM = Math.floor((decAbs - decD)*60);
+                            const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                    
+                            ctx.font = 'bold 60px Arial';
+                            ctx.fillStyle = 'red';
+                            let textY = y > canvas.height - 160 ? y - 160 : y;
+                            const xx = data.x;
+                            const ystep=60;
+                            
+                            textY +=ystep;
+                            const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+                            ctx.fillText(raText, xx, textY);
+                            
+                            textY +=ystep;
+                            const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+                            ctx.fillText(decText, xx, textY);
+                    
+                            textY +=ystep;            
+                            if (data.constellation) {
+                                const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+                                ctx.fillText(constellationText, xx, textY);
+                                textY +=ystep;                                        
+                            }
+                            if (data.bayer_name) {
+                                let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
+                                if (data.hr_id) {
+                                    nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
+                                }
+                                ctx.fillText(nearestStarText, xx, textY);
+                                textY +=ystep;
+                            } 
+                            if (data.chinese_name) {
+                                let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
+                                data.chinese_name;
+                                ctx.fillText(chinesenameStarText, xx, textY);
+                                textY +=ystep;
+                            }
+                            if (data.magnitude) {
+                                let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
+                                ctx.fillText(magnitudeStarText, xx, textY);
+                                textY +=ystep;
+                            }
+                            if (data.spectrum) {
+                                let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
+                                data.spectrum;
+                                ctx.fillText(spectrumStarText, xx, textY);
+                                textY +=ystep;                            
+                            }
+                            if (data.distance_ly) {
+                                let distanceStarText ='{{ gettext("Distance") }}: ' +
+                                data.distance_ly + ' lyr';
+                                ctx.fillText(distanceStarText, xx, textY);
+                                textY +=ystep;                            
+                            }
+
+                            // Draw polygon around crosshair
+                            fetch('/get_lin_cstbnd_polygon', {
+                                method: 'POST',
+                                headers: {
+                                'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({x: x, y: y, cst:cst})
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const points = data.points;
+                                if (points.length > 0) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(points[0].x, points[0].y);
+                                    for (let i = 1; i < points.length; i++) {
+                                        ctx.lineTo(points[i].x, points[i].y);
+                                    }
+                                    ctx.closePath();
+                                    ctx.strokeStyle = 'orange';
+                                    ctx.lineWidth = 2;
+                                    ctx.stroke();
+                                }
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                    });
             });
 
         });
