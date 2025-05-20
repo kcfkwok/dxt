@@ -131,7 +131,7 @@
                     ctx.moveTo(0, y);
                     ctx.lineTo(canvas.width, y);
                     ctx.strokeStyle = 'blue';
-                    ctx.lineWidth = 1;
+                    ctx.lineWidth = 4;
                     ctx.stroke();
                     
                     fetch('/xy_to_lin_radec', {
@@ -238,8 +238,8 @@
                                             ctx.lineTo(points[i].x, points[i].y);
                                         }
                                         ctx.closePath();
-                                        ctx.strokeStyle = 'orange';
-                                        ctx.lineWidth = 2;
+                                        ctx.strokeStyle = 'green'; //'orange';
+                                        ctx.lineWidth = 5;
                                         ctx.stroke();
                                     }
                                 });
@@ -316,7 +316,7 @@
                             ctx.moveTo(0, y);
                             ctx.lineTo(canvas.width, y);
                             ctx.strokeStyle = 'blue';
-                            ctx.lineWidth = 1;
+                            ctx.lineWidth = 4;
                             ctx.stroke();
                             
                             const data = coords.star;
@@ -333,7 +333,7 @@
                             ctx.font = 'bold 60px Arial';
                             ctx.fillStyle = 'red';
                             let textY = y > canvas.height - 160 ? y - 160 : y;
-                            const xx = data.x;
+                            const xx = x; //data.x;
                             const ystep=60;
                             
                             textY +=ystep;
@@ -400,8 +400,8 @@
                                         ctx.lineTo(points[i].x, points[i].y);
                                     }
                                     ctx.closePath();
-                                    ctx.strokeStyle = 'orange';
-                                    ctx.lineWidth = 2;
+                                    ctx.strokeStyle = 'green';
+                                    ctx.lineWidth = 5;
                                     ctx.stroke();
                                 }
                             });

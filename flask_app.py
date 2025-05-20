@@ -622,12 +622,12 @@ def get_lin_cstbnd_polygon():
     import math
     from ut_lin_cstbnd import lin_cstbnd_to_xyplot
     data = request.get_json()
-    x = float(data['x'])
-    y = float(data['y'])
+    #x = float(data['x'])
+    #y = float(data['y'])
     cst = data['cst']
     print('get_cstbnd_polygon: ',cst)
     points = lin_cstbnd_to_xyplot(cst)
-    #print('points:', points)
+    print('points:', points)
     return jsonify({'points': points})
 
 @app.route('/lin_dxt')
