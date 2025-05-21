@@ -22,7 +22,7 @@ class CONFIG:
     fpng_banner=Path(staticpath, 'image/banner.png')
 
     # star list path
-    star_list_path = Path(staticpath, 'star_list1.md')
+    star_list_path = Path(staticpath, 'star_list.md')
     
     # inter path for graphics
     fbg_rl = 'skyl_rl_bg_y%s.png' # % year <- sky_rl_bg.py

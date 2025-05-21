@@ -17,7 +17,30 @@ from lin_sky_mw import draw_milkyway_lin
 from ut_lin_star import draw_fix_stars
 from lin_frame import build_lin_frame
 
+
+def add_qrcode(im, draw, x,y, title, url):
+    import qrcode
+    #url='https://kcfkwok.pythonanywhere.com/?content=xt-0'
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=9,
+        border=1,
+    )
+    
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color=(0,0,0), back_color=(255,255,255))
+    
+    sw,sh =img.size
+    im.paste(img,(x,y,x+sw,y+sh))
+    
+    #text = '更新星圖'
+    #draw_title(draw,x+int(1*MM_UNIT),y-100,title)
+    
 if __name__=='__main__':
+    
     import pytz
     import datetime
     from ut_geo_tz import get_timezone_offset
@@ -61,4 +84,11 @@ if __name__=='__main__':
     fn_png = config.lin_dxt_png
     fn_pdf = config.lin_dxt_pdf
     paper.commit_image(fn_png)
+    
+    title = '探索'
+    x= int(12* MM_UNIT)
+    y= int(config.MARGIN+ 16 * MM_UNIT)
+    url = 'https://kcfkwok.pythonanywhere.com/lin_dxt'
+    add_qrcode(layer.im, layer.draw, x,y, title, url)
+    
     paper.commit_image(fn_pdf)

@@ -10,7 +10,7 @@ BAYER_TO_GREEK = {
     'zet': 'ζ', 'eta': 'η', 'the': 'θ', 'tet':'θ', 'iot': 'ι', 'kap': 'κ',
     'lam': 'λ', 'mu': 'μ', 'nu': 'ν', 'xi': 'ξ', 'omi': 'ο',
     'pi': 'π', 'rho': 'ρ', 'sig': 'σ', 'tau': 'τ', 'ups': 'υ',
-    'phi': 'φ', 'chi': 'χ', 'psi': 'ψ', 'ome': 'ω'
+    'phi': 'φ', 'chi': 'χ', 'psi': 'ψ', 'ome': 'ω', 'Sigma': 'Σ',
 }
 
 def parse_star_list(file_path: str) -> Dict:
