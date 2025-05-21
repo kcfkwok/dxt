@@ -1,6 +1,10 @@
+import platform
 import sys
 # 将子模块的路径添加到 Python 的模块搜索路径中
-sys.path.append('../lin_dxt')
+if platform.system()=='Linux':
+    sys.path.append('/home/kcfkwok/lin_dxt')
+else:
+    sys.path.append('../lin_dxt')
 
 from flask import Flask, request, render_template, render_template_string, send_file, Response, redirect, session, jsonify
 from csts import CSTS
