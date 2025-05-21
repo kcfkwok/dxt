@@ -65,10 +65,35 @@ if __name__=='__main__':
 
     layer_cald = paper.add_layer(name='calendar')
     x = int(106 * MM_UNIT)
-    y = int(18 * MM_UNIT)
-    title = '%s年 全天星圖' % (year, )
+    y =  int(config.MARGIN+ 5* MM_UNIT)
+    title = '%s年 全天星图' % (year, )
     layer_cald.draw.text((x,y), text=title, font=unicode_font_112,fill=(0,0,0))
+    
+    x= int(config.MARGIN+ 2*MM_UNIT)
+    y= int(config.MARGIN+ 15*MM_UNIT)
+    layer_cald.draw.text((x,y), text='南', font=unicode_font_112,fill=(0,0,0))
+    
+    x= int(g_share.xr_end+ int(0.5*MM_UNIT))
+    y= int(config.MARGIN+ 15*MM_UNIT)
+    layer_cald.draw.text((x,y), text='南', font=unicode_font_112,fill=(0,0,0))
+    
+    
+    x= int(config.MARGIN+ 2*MM_UNIT)
+    y= int(config.MARGIN+ 90*MM_UNIT)
+    layer_cald.draw.text((x,y), text='西', font=unicode_font_112,fill=(0,0,0))
+    
+    x= int(config.MARGIN+ 2*MM_UNIT)
+    y= int(config.MARGIN+ 170*MM_UNIT)
+    layer_cald.draw.text((x,y), text='北', font=unicode_font_112,fill=(0,0,0))
 
+    x= int(g_share.xr_end+ int(0.5*MM_UNIT))
+    y= int(config.MARGIN+ 170*MM_UNIT)
+    layer_cald.draw.text((x,y), text='北', font=unicode_font_112,fill=(0,0,0))
+    
+    x= int(g_share.xr_end+ int(0.5*MM_UNIT))
+    y= int(config.MARGIN+ 90*MM_UNIT)
+    layer_cald.draw.text((x,y), text='东', font=unicode_font_112,fill=(0,0,0))
+    
     #layer = paper.add_layer(name='test')
     #draw = layer.draw
     #draw_cst(draw,'Tuc')
