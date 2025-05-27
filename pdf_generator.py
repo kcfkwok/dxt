@@ -12,6 +12,7 @@ from config import config
 from g_share import g_share
 from table_plnt_info import table_plnt_info
 import re
+from events import EVENTS, show_events
 
 r_rl = r'rl-(\d+)-(\d+)-(\d+)'
 re_rl = re.compile(r_rl)
@@ -384,6 +385,12 @@ def dxt_kz_pdf(content):
         banner_path=config.fpng_banner
         banner = Image.open(banner_path)
         layer.im.paste(banner, (x+ int(paper.w_px/2.0),y))
+        
+        events = EVENTS(year, month)
+        evs = events.get_evs(day)
+        #print('evs:', evs)
+        show_events(layer.draw, evs,x=config.xc1+int(paper.w_px/2.0)+50)
+    
         paper.commit_image()
 
         image = paper.im

@@ -4,6 +4,7 @@ import datetime
 import pytz
 import time
 from functools import lru_cache
+from events import EVENTS, show_events
 
 # Cache for banner image to avoid repeated disk reads
 _banner_cache = None
@@ -150,6 +151,12 @@ def dxt_kz_img(content):
     layer = paper.add_layer(name='banner')
     banner = get_banner()
     layer.im.paste(banner, (x,y))
+    
+    events = EVENTS(year, month)
+    evs = events.get_evs(day)
+    #print('evs:', evs)
+    show_events(layer.draw, evs)
+    
     paper.commit_image()
     img = paper.im
     duration = int((time.time() - start_time) * 1000)  # Convert to ms
@@ -186,6 +193,12 @@ def dxt_kz_img_wu(user_info):
     layer = paper.add_layer(name='banner')
     banner = get_banner()
     layer.im.paste(banner, (x,y))
+    
+    events = EVENTS(now.year, now.month)
+    evs = events.get_evs(now.day)
+    #print('evs:', evs)
+    show_events(layer.draw, evs)
+    
     paper.commit_image()
     img = paper.im
     duration = int((time.time() - start_time) * 1000)  # Convert to ms

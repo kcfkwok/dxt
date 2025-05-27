@@ -24,6 +24,9 @@ class CONFIG:
     # star list path
     star_list_path = Path(staticpath, 'star_list.md')
     
+    # events file path under staticpath
+    fevs_path = 'ev%d%02d.txt'
+    
     # inter path for graphics
     fbg_rl = 'skyl_rl_bg_y%s.png' # % year <- sky_rl_bg.py
     fbg_a5r_yw_n = 'skyl_bg_n_y%s_A5R_yw.png' # % year <- sky_rl_bg.py
