@@ -13,6 +13,9 @@ from g_share import g_share
 from table_plnt_info import table_plnt_info
 import re
 from events import EVENTS, show_events
+from ut_qrcode import add_qrcode
+from def_font import *
+
 
 r_rl = r'rl-(\d+)-(\d+)-(\d+)'
 re_rl = re.compile(r_rl)
@@ -390,6 +393,14 @@ def dxt_kz_pdf(content):
         evs = events.get_evs(day)
         #print('evs:', evs)
         show_events(layer.draw, evs,x=config.xc1+int(paper.w_px/2.0)+50)
+    
+        x= int(20* config.MM_UNIT)
+        y= int(20* config.MM_UNIT)
+        url = 'https://kcfkwok.pythonanywhere.com/'
+        add_qrcode(layer.im, layer.draw, x,y, url, box_size=20)
+        
+        text = '記住這一刻'
+        layer.draw.text((x+int(5*MM_UNIT),y-100),text,font=unicode_font_96,fill=BLACK)
     
         paper.commit_image()
 
