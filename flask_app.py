@@ -634,6 +634,53 @@ def get_lin_cstbnd_polygon():
     print('points:', points)
     return jsonify({'points': points})
 
+@app.route('/astronomical_image')
+def astronomical_image():
+    ra = request.args.get('ra')
+    dec = request.args.get('dec')
+    name = request.args.get('name', 'Astronomical Object')
+    
+    from ut_astro_img import get_astronomical_image
+    img_base64 = get_astronomical_image(ra, dec, name)
+    
+    if not img_base64:
+        return render_template_string('''
+            <h1>Error retrieving astronomical image</h1>
+            <p>Could not retrieve image for coordinates:</p>
+            <p>RA: {{ra}}</p>
+            <p>Dec: {{dec}}</p>
+        ''', ra=ra, dec=dec)
+    
+    return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Astronomical Image - {{name}}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    padding: 20px;
+                }
+                h1 {
+                    margin-bottom: 20px;
+                }
+                img {
+                    max-width: 90%;
+                    max-height: 80vh;
+                    border: 1px solid #ccc;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+            </style>
+        </head>
+        <body>
+            <h1>{{name}}</h1>
+            <p>RA: {{ra}} | Dec: {{dec}}</p>
+            <img src="data:image/png;base64,{{img_base64}}" alt="Astronomical Image">
+        </body>
+        </html>
+    ''', ra=ra, dec=dec, name=name, img_base64=img_base64)
+
 @app.route('/lin_dxt')
 def lin_dxt():
     
