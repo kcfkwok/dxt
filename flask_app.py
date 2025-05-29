@@ -639,9 +639,10 @@ def astronomical_image():
     ra = request.args.get('ra')
     dec = request.args.get('dec')
     name = request.args.get('name', 'Astronomical Object')
+    survey = 'DSS'  # or '2MASS'
     
     from ut_astro_img import get_astronomical_image
-    img_base64 = get_astronomical_image(ra, dec, name)
+    img_base64 = get_astronomical_image(ra, dec, name, survey)
     
     if not img_base64:
         return render_template_string('''
@@ -651,6 +652,17 @@ def astronomical_image():
             <p>Dec: {{dec}}</p>
         ''', ra=ra, dec=dec)
     
+    # 根据不同的巡天项目添加出处说明
+    if survey == 'DSS':
+        source_info=gettext("The image data in this document is sourced from the Digital Sky Survey (DSS). This data can be used provided that it complies with its terms of use.")
+        #    source_info = "本图像数据来源于 Digital Sky Survey (DSS)，该数据可在符合其使用条款的前提下使用。"
+    elif survey == '2MASS':
+        source_info=gettext("The image data is sourced from the Two Micron All Sky Survey (2MASS). Please comply with its relevant usage licenses.")
+        # source_info = "本图像数据来源于 Two Micron All Sky Survey (2MASS)，请遵循其相关使用许可。"
+    else:
+        source_info=gettext("The image data is sourced from ") + f"{survey}. " + gettext("Please comply with its relevant usage licenses.")
+        #source_info = f"本图像数据来源于 {survey}，请遵循其相关使用许可。"
+            
     return render_template_string('''
         <!DOCTYPE html>
         <html>
@@ -677,9 +689,10 @@ def astronomical_image():
             <h1>{{name}}</h1>
             <p>RA: {{ra}} | Dec: {{dec}}</p>
             <img src="data:image/png;base64,{{img_base64}}" alt="Astronomical Image">
+            <p>{{source_info}}</p>
         </body>
         </html>
-    ''', ra=ra, dec=dec, name=name, img_base64=img_base64)
+    ''', ra=ra, dec=dec, name=name, img_base64=img_base64, source_info=source_info)
 
 @app.route('/lin_dxt')
 def lin_dxt():

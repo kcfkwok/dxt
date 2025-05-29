@@ -63,7 +63,7 @@ def get_astronomical_image(ra_hms, dec_dms, object_name="目标", survey='DSS', 
         
         # 在图像上标记指定坐标位置
         ax.scatter(coords.ra.deg, coords.dec.deg, transform=ax.get_transform('world'),
-                  s=100, edgecolor='red', facecolor='none', label='指定坐标')
+                  s=100, marker='+', color='red', label='指定坐标')
         ax.legend()
         
         # 保存图像到缓冲区

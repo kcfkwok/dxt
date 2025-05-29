@@ -49,44 +49,52 @@
 
     <div style="position: relative; display: inline-block;">
         <canvas id="dxt_kz-canvas" width="800" height="600"></canvas>
-        <div id="astro-button" style="position: absolute; width: 400px; height: 80px; 
-             background: rgba(0,0,255,0.3); display: none; cursor: pointer; z-index: 100;
-             border: 2px solid white; border-radius: 5px;"></div>
     </div>
     <script>
-       // Load stars for Andromeda on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const constellationSelect = document.getElementById('constellation');
-            const starSelect = document.getElementById('star');
-            
-            if (constellationSelect.value === 'And') {
-                starSelect.disabled = false;
-                fetch('/get_stars?constellation=And')
-                    .then(response => response.json())
-                    .then(stars => {
-                        starSelect.innerHTML = '';
-                        starSelect.add(new Option('{{ gettext("-- Select star --") }}', ''));
-                        
-                        stars.forEach(star => {
-                            let displayName = star.hr_id;
-                            if (star.bayer_name) {
-                                displayName += ' (' + star.bayer_name + ')';
-                            }
-                            if (star.chinese_name) {
-                                displayName += ' - ' + star.chinese_name;
-                            }
-                            starSelect.add(new Option(displayName, star.hr_id));
-                        });
+        // Global variables
+        const constellationSelect = document.getElementById('constellation');
+        const starSelect = document.getElementById('star');
+        const canvas = document.getElementById('dxt_kz-canvas');
+        const img = new Image();
+        let ctx;
+
+        function loadStarsForConstellation(constellation) {
+            starSelect.disabled = false;
+            fetch('/get_stars?constellation=' + constellation)
+                .then(response => response.json())
+                .then(stars => {
+                    starSelect.innerHTML = '';
+                    starSelect.add(new Option('{{ gettext("-- Select star --") }}', ''));
+                    
+                    stars.forEach(star => {
+                        let displayName = star.hr_id;
+                        if (star.bayer_name) {
+                            displayName += ' (' + star.bayer_name + ')';
+                        }
+                        if (star.chinese_name) {
+                            displayName += ' - ' + star.chinese_name;
+                        }
+                        starSelect.add(new Option(displayName, star.hr_id));
                     });
-            }
-        });
+                });
+        }
 
-        // Main canvas functionality
+        // Main page initialization
         document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.getElementById('dxt_kz-canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
+            // Load stars for initial constellation
+            if (constellationSelect.value) {
+                loadStarsForConstellation(constellationSelect.value);
+            }
+            
+            // Handle constellation selection changes
+            constellationSelect.addEventListener('change', function() {
+                if (this.value) {
+                    loadStarsForConstellation(this.value);
+                }
+            });
 
+            // Canvas initialization
+            ctx = canvas.getContext('2d');
             img.src = "static/lin_dxt_A4.png";
             
             img.onload = function() {
@@ -94,7 +102,7 @@
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
             };
-            
+
             // Mouse down event handler
             canvas.addEventListener('mousedown', function(e) {
                 const rect = canvas.getBoundingClientRect();
@@ -111,157 +119,99 @@
                 const x_right=6694;
                 const y_down = 4255;
 
-                if (x < x_right && x > x_left && y > y_up && y < y_down) {
-                    // Draw crosshair
-                    ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvas.height);
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(canvas.width, y);
-                    ctx.strokeStyle = 'blue';
-                    ctx.lineWidth = 4;
-                    ctx.stroke();
-                    
-                    // Get coordinates and star info
-                    fetch('/xy_to_lin_radec', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({x: x, y: y})
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        // Format RA/Dec coordinates
-                        const raH = Math.floor(data.ra/15);
-                        const raM = Math.floor((data.ra/15 - raH)*60);
-                        const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
-                        
-                        const decSign = data.dec >= 0 ? '+' : '-';
-                        const decAbs = Math.abs(data.dec);
-                        const decD = Math.floor(decAbs);
-                        const decM = Math.floor((decAbs - decD)*60);
-                        const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
-                        
-                        // Display coordinates
-                        ctx.font = 'bold 60px Arial';
-                        ctx.fillStyle = 'red';
-                        let textY = y > canvas.height - 160 ? y - 160 : y;
-                        const xx = data.x;
-                        const ystep=60;
-                        
-                        textY +=ystep;
-                        const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
-                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
-                        
-                        ctx.fillText(raText, xx, textY);
-                        textY +=ystep;
-                        ctx.fillText(decText, xx, textY);
-                        
-                        // Display additional info if available
-                        textY +=ystep;            
-                        if (data.constellation) {
-                            const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
-                            ctx.fillText(constellationText, xx, textY);
-                            textY +=ystep;                                        
-                        }
-                        if (data.bayer_name) {
-                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
-                            if (data.hr_id) {
-                                nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
-                            }
-                            ctx.fillText(nearestStarText, xx, textY);
-                            textY +=ystep;
-                        } 
-                        if (data.chinese_name) {
-                            let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + data.chinese_name;
-                            ctx.fillText(chinesenameStarText, xx, textY);
-                            textY +=ystep;
-                        }
-                        if (data.magnitude) {
-                            let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
-                            ctx.fillText(magnitudeStarText, xx, textY);
-                            textY +=ystep;
-                        }
-                        if (data.spectrum) {
-                            let spectrumStarText ='{{ gettext("Spectrum") }}: ' + data.spectrum;
-                            ctx.fillText(spectrumStarText, xx, textY);
-                            textY +=ystep;                            
-                        }
-                        if (data.distance_ly) {
-                            let distanceStarText ='{{ gettext("Distance") }}: ' + data.distance_ly + ' lyr';
-                            ctx.fillText(distanceStarText, xx, textY);
-                            textY +=ystep;                            
-                        }
-
-                        // Position button centered above crosshair
-                        const buttonWidth = 100; // Match overlay button width
-                        const buttonHeight = 30; // Match overlay button height
-                        const buttonX = x - buttonWidth/2; // Center horizontally
-                        const buttonY = y - buttonHeight - 10; // Position above crosshair
-                        
-                        // Draw canvas button (fixed size)
-                        //ctx.fillStyle = 'blue';
-                        //ctx.fillRect(buttonX, buttonY, buttonWidth, buttonHeight);
-                        ctx.fillStyle = 'black'; //'white';
-                        ctx.font = 'bold 64px Arial';
-                        ctx.fillText('{{ gettext("View Astronomical Image") }}', 
-                            buttonX - 320, buttonY -100); // Centered text +10, + 35
-                        
-                        // Position overlay button div with fixed size
-                        const buttonDiv = document.getElementById('astro-button');
-                        const fixedWidth = 100; //200; // Fixed width in pixels
-                        const fixedHeight = 25; //60; // Fixed height in pixels
-                        // Calculate center position accounting for fixed size
-                        const canvasRect = canvas.getBoundingClientRect();
-                        buttonDiv.style.left = `${(e.clientX - canvasRect.left) - fixedWidth/2}px`;
-                        buttonDiv.style.top = `${(e.clientY - canvasRect.top) - fixedHeight + 10}px`;  //-20
-                        buttonDiv.style.width = `${fixedWidth}px`;
-                        buttonDiv.style.height = `${fixedHeight}px`;
-                        buttonDiv.style.display = 'block';
-                        buttonDiv.style.pointerEvents = 'auto';
-                        console.log('Button positioned at:', 
-                            buttonDiv.style.left, buttonDiv.style.top,
-                            'with size:', buttonDiv.style.width, buttonDiv.style.height);
-                        
-                        // Store coordinates for button click
-                        canvas.dataset.currentX = x;
-                        canvas.dataset.currentY = y;
-                        canvas.dataset.currentRa = data.ra;
-                        canvas.dataset.currentDec = data.dec;
-                        canvas.dataset.currentConstellation = data.constellation;
-                        canvas.dataset.currentStar = data.bayer_name || data.hr_id || '';
-                        console.log('Stored button coordinates:', 
-                            `x=${x} y=${y} buttonX=${buttonX} buttonY=${buttonY}`);
-                    });
+                // Hide button if outside valid area
+				/*
+                const buttonDiv = document.getElementById('astro-button');
+                if (!(x < x_right && x > x_left && y > y_up && y < y_down)) {
+                    buttonDiv.style.display = 'none';
+                    return;
                 }
+*/
+                // Draw crosshair
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.strokeStyle = 'blue';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                
+                // Get coordinates and star info
+                fetch('/xy_to_lin_radec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({x: x, y: y})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Format and display coordinates
+                    const raH = Math.floor(data.ra/15);
+                    const raM = Math.floor((data.ra/15 - raH)*60);
+                    const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                    
+                    const decSign = data.dec >= 0 ? '+' : '-';
+                    const decAbs = Math.abs(data.dec);
+                    const decD = Math.floor(decAbs);
+                    const decM = Math.floor((decAbs - decD)*60);
+                    const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                    
+                    ctx.font = 'bold 60px Arial';
+                    ctx.fillStyle = 'red';
+                    let textY = y > canvas.height - 160 ? y - 160 : y;
+                    const xx = data.x;
+                    const ystep=60;
+                    
+                    textY +=ystep;
+                    ctx.fillText('{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's', xx, textY);
+                    textY +=ystep;
+                    ctx.fillText('{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"', xx, textY);
+                    
+                    // Display additional info if available
+                    if (data.constellation) {
+                        textY +=ystep;
+                        ctx.fillText('{{ gettext("Constellation") }}: ' + data.constellation, xx, textY);
+                    }
+                    if (data.bayer_name) {
+                        textY +=ystep;
+                        ctx.fillText('{{ gettext("Nearest Star") }}: ' + (data.hr_id ? data.hr_id + ' - ' : '') + data.bayer_name, xx, textY);
+                    }
+                    if (data.chinese_name) {
+                        textY +=ystep;
+                        ctx.fillText('{{ gettext("Chinese Name") }}: ' + data.chinese_name, xx, textY);
+                    }
+                    if (data.magnitude) {
+                        textY +=ystep;
+                        ctx.fillText('{{ gettext("Magnitude") }}: ' + data.magnitude, xx, textY);
+                    }
+                    if (data.spectrum) {
+                        textY +=ystep;
+                        ctx.fillText('{{ gettext("Spectrum") }}: ' + data.spectrum, xx, textY);
+                    }
+                    if (data.distance_ly) {
+                        textY +=ystep;
+                        ctx.fillText('{{ gettext("Distance") }}: ' + data.distance_ly + ' lyr', xx, textY);
+                    }
+
+                    // Store coordinates for double click
+                    canvas.dataset.currentRa = data.ra;
+                    canvas.dataset.currentDec = data.dec;
+                    canvas.dataset.currentConstellation = data.constellation;
+                    canvas.dataset.currentStar = data.bayer_name || data.hr_id || '';
+                });
             });
 
-            // Add click handler for astronomical image button
-            const buttonDiv = document.getElementById('astro-button');
-            if (!buttonDiv) {
-                console.error('Could not find astro-button element');
-                return;
-            }
-            
-            console.log('Adding click handler to button div:', buttonDiv);
-            console.log('Button div styles:', window.getComputedStyle(buttonDiv));
-            
-            buttonDiv.addEventListener('click', function(e) {
-                console.log('Button div dimensions:', 
-                    buttonDiv.offsetWidth, buttonDiv.offsetHeight);
-                console.log('Astro button clicked at:', e.clientX, e.clientY);
-                console.log('Button position:', buttonDiv.style.left, buttonDiv.style.top);
-                console.log('Stored coordinates:', 
-                    canvas.dataset.currentRa, canvas.dataset.currentDec);
-                
+            // Handle double click to show astronomical image
+            canvas.addEventListener('dblclick', function(e) {
                 const ra = canvas.dataset.currentRa;
                 const dec = canvas.dataset.currentDec;
                 const constellation = canvas.dataset.currentConstellation;
                 const star = canvas.dataset.currentStar;
 
                 if (ra && dec) {
-                    // Format RA in hms and Dec in dms for API
+                    // Format coordinates
                     const raH = Math.floor(ra/15);
                     const raM = Math.floor((ra/15 - raH)*60);
                     const raS = ((ra/15 - raH - raM/60)*3600).toFixed(1);
@@ -274,122 +224,108 @@
                     const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
                     const decDms = `${decSign}${decD}d${decM}m${decS}s`;
                     
-                    // Open new window with astronomical image
+                    // Open astronomical image
                     window.open(`/astronomical_image?ra=${raHms}&dec=${decDms}&name=${encodeURIComponent(star || constellation)}`, '_blank');
-                } else {
-                    console.log('Button clicked but missing coordinates');
                 }
-                e.stopPropagation(); // Prevent crosshair from appearing
+                e.stopPropagation();
                 e.preventDefault();
-                return false;
             });
-        });
 
-        // Locate star button click handler
-        document.getElementById('locate-star').addEventListener('click', function() {
-            const hrId = document.getElementById('star').value;
-            if (!hrId) return;
+            // Locate star button click handler
+            document.getElementById('locate-star').addEventListener('click', function() {
+                const hrId = document.getElementById('star').value;
+                if (!hrId) return;
 
-            fetch('/get_star_info?hr_id=' + hrId)
-                .then(response => response.json())
-                .then(info => {
-                    if (info.ra && info.dec && info.cst) {
-                        return fetch('/lin_radec_to_xy', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ra: info.ra, dec: info.dec, cst: info.cst, star: info})
-                        });
-                    }
-                    throw new Error('Invalid star coordinates');
-                })
-                .then(response => response.json())
-                .then(coords => {
-                    if (coords.x && coords.y && coords.cst && coords.star) {
-                        const rect = canvas.getBoundingClientRect();
-                        const scaleX = canvas.width / rect.width;
-                        const scaleY = canvas.height / rect.height;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(img, 0, 0);
-                        const x = coords.x;
-                        const y = coords.y;
-                        const cst = coords.cst;
-                        
-                        ctx.beginPath();
-                        ctx.moveTo(x, 0);
-                        ctx.lineTo(x, canvas.height);
-                        ctx.moveTo(0, y);
-                        ctx.lineTo(canvas.width, y);
-                        ctx.strokeStyle = 'blue';
-                        ctx.lineWidth = 4;
-                        ctx.stroke();
-                        
-                        const data = coords.star;
-                        const raH = Math.floor(data.ra/15);
-                        const raM = Math.floor((data.ra/15 - raH)*60);
-                        const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
-                
-                        const decSign = data.dec >= 0 ? '+' : '-';
-                        const decAbs = Math.abs(data.dec);
-                        const decD = Math.floor(decAbs);
-                        const decM = Math.floor((decAbs - decD)*60);
-                        const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
-                
-                        ctx.font = 'bold 60px Arial';
-                        ctx.fillStyle = 'red';
-                        let textY = y > canvas.height - 160 ? y - 160 : y;
-                        const xx = x;
-                        const ystep=60;
-                        
-                        textY +=ystep;
-                        const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
-                        ctx.fillText(raText, xx, textY);
-                        
-                        textY +=ystep;
-                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
-                        ctx.fillText(decText, xx, textY);
-                
-                        textY +=ystep;            
-                        if (data.constellation) {
-                            const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
-                            ctx.fillText(constellationText, xx, textY);
-                            textY +=ystep;                                        
+                fetch('/get_star_info?hr_id=' + hrId)
+                    .then(response => response.json())
+                    .then(info => {
+                        if (info.ra && info.dec && info.cst) {
+                            return fetch('/lin_radec_to_xy', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    ra: info.ra, 
+                                    dec: info.dec, 
+                                    cst: info.cst, 
+                                    star: info
+                                })
+                            });
                         }
-                        if (data.bayer_name) {
-                            let nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.bayer_name;
-                            if (data.hr_id) {
-                                nearestStarText = '{{ gettext("Nearest Star") }}: ' + data.hr_id + ' - ' + data.bayer_name;
+                        throw new Error('Invalid star coordinates');
+                    })
+                    .then(response => response.json())
+                    .then(coords => {
+                        if (coords.x && coords.y && coords.cst && coords.star) {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, 0, 0);
+                            
+                            // Draw crosshair
+                            ctx.beginPath();
+                            ctx.moveTo(coords.x, 0);
+                            ctx.lineTo(coords.x, canvas.height);
+                            ctx.moveTo(0, coords.y);
+                            ctx.lineTo(canvas.width, coords.y);
+                            ctx.strokeStyle = 'blue';
+                            ctx.lineWidth = 4;
+                            ctx.stroke();
+                            
+                            // Display star info
+                            const data = coords.star;
+                            const raH = Math.floor(data.ra/15);
+                            const raM = Math.floor((data.ra/15 - raH)*60);
+                            const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                    
+                            const decSign = data.dec >= 0 ? '+' : '-';
+                            const decAbs = Math.abs(data.dec);
+                            const decD = Math.floor(decAbs);
+                            const decM = Math.floor((decAbs - decD)*60);
+                            const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                    
+                            ctx.font = 'bold 60px Arial';
+                            ctx.fillStyle = 'red';
+                            let textY = coords.y > canvas.height - 160 ? coords.y - 160 : coords.y;
+                            const xx = coords.x;
+                            const ystep=60;
+                            
+                            textY +=ystep;
+                            ctx.fillText('{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's', xx, textY);
+                            textY +=ystep;
+                            ctx.fillText('{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"', xx, textY);
+                            
+                            // Display additional info if available
+                            if (data.constellation) {
+                                textY +=ystep;
+                                ctx.fillText('{{ gettext("Constellation") }}: ' + data.constellation, xx, textY);
                             }
-                            ctx.fillText(nearestStarText, xx, textY);
-                            textY +=ystep;
-                        } 
-                        if (data.chinese_name) {
-                            let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + data.chinese_name;
-                            ctx.fillText(chinesenameStarText, xx, textY);
-                            textY +=ystep;
+                            if (data.bayer_name) {
+                                textY +=ystep;
+                                ctx.fillText('{{ gettext("Nearest Star") }}: ' + (data.hr_id ? data.hr_id + ' - ' : '') + data.bayer_name, xx, textY);
+                            }
+                            if (data.chinese_name) {
+                                textY +=ystep;
+                                ctx.fillText('{{ gettext("Chinese Name") }}: ' + data.chinese_name, xx, textY);
+                            }
+                            if (data.magnitude) {
+                                textY +=ystep;
+                                ctx.fillText('{{ gettext("Magnitude") }}: ' + data.magnitude, xx, textY);
+                            }
+                            if (data.spectrum) {
+                                textY +=ystep;
+                                ctx.fillText('{{ gettext("Spectrum") }}: ' + data.spectrum, xx, textY);
+                            }
+                            if (data.distance_ly) {
+                                textY +=ystep;
+                                ctx.fillText('{{ gettext("Distance") }}: ' + data.distance_ly + ' lyr', xx, textY);
+                            }
                         }
-                        if (data.magnitude) {
-                            let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
-                            ctx.fillText(magnitudeStarText, xx, textY);
-                            textY +=ystep;
-                        }
-                        if (data.spectrum) {
-                            let spectrumStarText ='{{ gettext("Spectrum") }}: ' + data.spectrum;
-                            ctx.fillText(spectrumStarText, xx, textY);
-                            textY +=ystep;                            
-                        }
-                        if (data.distance_ly) {
-                            let distanceStarText ='{{ gettext("Distance") }}: ' + data.distance_ly + ' lyr';
-                            ctx.fillText(distanceStarText, xx, textY);
-                            textY +=ystep;                            
-                        }
-                    }
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                });
-        });
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                    });
+            });
+        }); // End of DOMContentLoaded
     </script>
 </body>
 </html>
