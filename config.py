@@ -20,7 +20,8 @@ class CONFIG:
     
     # image path
     fpng_banner=Path(staticpath, 'image/banner.png')
-
+    fpng_flow_moment = Path(staticpath, 'image/flow_moment.png')
+    
     # star list path
     star_list_path = Path(staticpath, 'star_list.md')
     

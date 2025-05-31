@@ -402,6 +402,12 @@ def dxt_kz_pdf(content):
         text = '記住這一刻'
         layer.draw.text((x+int(5*MM_UNIT),y-100),text,font=unicode_font_96,fill=BLACK)
     
+        flowchart_path = config.fpng_flow_moment
+        flowchart = Image.open(flowchart_path)
+        w,h = flowchart.size
+        flowchart1 = flowchart.resize((w*5,h*5))
+        layer.im.paste(flowchart1, (x+ int(30*MM_UNIT), y + 100))
+        
         paper.commit_image()
 
         image = paper.im
@@ -440,8 +446,9 @@ def dxt_kz_pdf(content):
         os.remove(temp_image_path)
         
         return pdf_content, fn
-    except FileNotFoundError:
+    except Exception as e: #FileNotFoundError:
         # 返回一个提示信息的 HTML 页面
+        print(f'dxt_kz_pdf exception: {e}' )
         error_html = '<html><body><h1>該location暫未支持</h1></body></html>'
         return render_template_string(error_html), None
         
