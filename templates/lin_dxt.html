@@ -194,7 +194,31 @@
                         textY +=ystep;
                         ctx.fillText('{{ gettext("Distance") }}: ' + data.distance_ly + ' lyr', xx, textY);
                     }
-
+					if (data.cst) {
+							// Draw polygon around crosshair
+								fetch('/get_lin_cstbnd_polygon', {
+									method: 'POST',
+									headers: {
+									'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({x: x, y: y, cst:data.cst})
+								})
+								.then(response => response.json())
+								.then(data => {
+									const points = data.points;
+									if (points.length > 0) {
+										ctx.beginPath();
+										ctx.moveTo(points[0].x, points[0].y);
+										for (let i = 1; i < points.length; i++) {
+											ctx.lineTo(points[i].x, points[i].y);
+										}
+										ctx.closePath();
+										ctx.strokeStyle = 'orange';
+										ctx.lineWidth = 4;
+										ctx.stroke();
+									}
+								});
+					}	
                     // Store coordinates for double click
                     canvas.dataset.currentRa = data.ra;
                     canvas.dataset.currentDec = data.dec;
@@ -319,6 +343,33 @@
                                 textY +=ystep;
                                 ctx.fillText('{{ gettext("Distance") }}: ' + data.distance_ly + ' lyr', xx, textY);
                             }
+							
+							if (data.cst) {
+							// Draw polygon around crosshair
+								fetch('/get_lin_cstbnd_polygon', {
+									method: 'POST',
+									headers: {
+									'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({x: coords.x, y: coords.y, cst:data.cst})
+								})
+								.then(response => response.json())
+								.then(data => {
+									const points = data.points;
+									if (points.length > 0) {
+										ctx.beginPath();
+										ctx.moveTo(points[0].x, points[0].y);
+										for (let i = 1; i < points.length; i++) {
+											ctx.lineTo(points[i].x, points[i].y);
+										}
+										ctx.closePath();
+										ctx.strokeStyle = 'orange';
+										ctx.lineWidth = 4;
+										ctx.stroke();
+									}
+								});
+							}	
+							
                         }
                     })
                     .catch(err => {

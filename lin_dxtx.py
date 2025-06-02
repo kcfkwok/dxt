@@ -110,6 +110,18 @@ if __name__=='__main__':
     fn_pdf = config.lin_dxt_pdf
     paper.commit_image(fn_png)
     
+    from ut_lin_cstbnd import lin_cstbnd_to_xyplot
+    from zodiac import zodiac
+    for cst in zodiac:
+        print('get_cstbnd_polygon: ',cst)
+        points = lin_cstbnd_to_xyplot(cst,form='tuple')
+        layer.draw.polygon(points, outline=ORANGE,width=3)
+    for cst in ['Sgr','Cap','Aqr']:
+        print('get_cstbnd_polygon: ',cst)
+        points = lin_cstbnd_to_xyplot(cst,form='tuple', totalshift=True)
+        layer.draw.polygon(points, outline=ORANGE,width=3)
+    
+            
     title = '探索'
     x= int(12* MM_UNIT)
     y= int(config.MARGIN+ 16 * MM_UNIT)
