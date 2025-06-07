@@ -52,19 +52,19 @@ def get_astronomical_image(ra_hms, dec_dms, object_name="目标", survey='DSS', 
         ax = fig.add_subplot(111, projection=wcs)
         plt.title(f"{object_name} - {survey}")
         plt.imshow(images[0][0].data, cmap='gray')
-        plt.colorbar(label='亮度')
+        plt.colorbar(label='Brightness') #'亮度')
         
         # 设置坐标轴标签为RA和Dec
-        ax.set_xlabel('赤经 (J2000)')
-        ax.set_ylabel('赤纬 (J2000)')
+        ax.set_xlabel('RA (J2000)')
+        ax.set_ylabel('Dec (J2000)')
         
         # 添加网格线
         ax.grid(True, color='yellow', alpha=0.5)
         
         # 在图像上标记指定坐标位置
-        ax.scatter(coords.ra.deg, coords.dec.deg, transform=ax.get_transform('world'),
-                  s=100, marker='+', color='red', label='指定坐标')
-        ax.legend()
+        #ax.scatter(coords.ra.deg, coords.dec.deg, transform=ax.get_transform('world'),
+        #          s=100, marker='+', color='red', label='Designated coordinates')
+        #ax.legend()
         
         # 保存图像到缓冲区
         img = io.BytesIO()

@@ -87,6 +87,11 @@ class CONFIG:
     color_sky_night= (0, 0, 100)
     color_cst_line = (192, 192, 192)
     color_cst_line_day = (255, 255, 204)
+    #color_cstbnd = (255, 165, 0) #橙黄色
+    #color_cstbnd = (75, 0, 130) #深紫色
+    #color_cstbnd = (0, 112, 192)#深蓝色  #0070c0
+    color_cstbnd = (255, 255, 255,200)#深蓝色  #0070c0
+    
 
     EQU_LINE_COLOR=(255,0,0,255)
     ECL_LINE_COLOR=(200,200,0,255)

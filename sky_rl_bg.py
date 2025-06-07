@@ -196,8 +196,8 @@ if __name__=='__main__':
     #paper.draw.text((paper.min_x,paper.min_y), fnx, font=unicode_font_36,fill=RED)
     fnx = config.fbg_rl % year
     fn = '%s/%s' % (config.fskyl, fnx)
-    paper.commit_image()
-    paper.im.save(fn, dpi=(600,600))
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     #paper.commit_image(fn)
 
@@ -216,8 +216,8 @@ if __name__=='__main__':
     #paper.draw.text((paper.min_x,paper.min_y), fnx, font=unicode_font_36,fill=RED)
     fnx = config.fbg_a5r_yw_n % year
     fn = '%s/%s' % (config.fskyl, fnx)
-    paper.commit_image()
-    paper.im.save(fn, dpi=(600,600))
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
     g_share.set_f_south(True)
@@ -225,8 +225,8 @@ if __name__=='__main__':
     #paper.draw.text((paper.min_x,paper.min_y), fnx, font=unicode_font_36,fill=RED)
     fnx = config.fbg_a5r_yw_s % year
     fn = '%s/%s' % (config.fskyl, fnx)
-    paper.commit_image()
-    paper.im.save(fn, dpi=(600,600))
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
     

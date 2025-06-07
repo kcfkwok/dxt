@@ -84,22 +84,22 @@ if __name__=='__main__':
     
     paper= make_dxt_rl_A4_bg(year)
     fn = Path(config.interpath, config.fbg_rl % year) 
-    paper.commit_image()
-    paper.im.save(fn, dpi=(600,600))
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
     g_share.set_f_south(False)
     paper= make_dxt_rl_A5R_bg(year)
     fn = Path(config.interpath, config.fbg_a5r_yw_n % year) 
-    paper.commit_image()
-    paper.im.save(fn, dpi=(600,600))
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
     g_share.set_f_south(True)
     paper= make_dxt_rl_A5R_bg(year)
     fn = Path(config.interpath, config.fbg_a5r_yw_s % year) 
-    paper.commit_image()
-    paper.im.save(fn, dpi=(600,600))
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
     # dxt_xt -> dxt_xt_A4.png , pdf

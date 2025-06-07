@@ -84,8 +84,7 @@ def dxt_rl_img(content=None):
         y=int(145* MM_UNIT)
         table_jieqi_to_zod_and_zhemonth(paper, x,y,sun_lon=sun_lon)
     
-        paper.commit_image()
-        img = paper.im
+        img =paper.commit_image()
         duration = int((time.time() - start_time) * 1000)  # Convert to ms
         try:
             import requests
@@ -157,8 +156,7 @@ def dxt_kz_img(content):
     #print('evs:', evs)
     show_events(layer.draw, evs)
     
-    paper.commit_image()
-    img = paper.im
+    img =paper.commit_image()
     duration = int((time.time() - start_time) * 1000)  # Convert to ms
     try:
         import requests
@@ -199,8 +197,7 @@ def dxt_kz_img_wu(user_info):
     #print('evs:', evs)
     show_events(layer.draw, evs)
     
-    paper.commit_image()
-    img = paper.im
+    img = paper.commit_image()
     duration = int((time.time() - start_time) * 1000)  # Convert to ms
     try:
         import requests
@@ -237,8 +234,7 @@ def dxt_xt_img(content):
         layer = paper.add_layer(name='banner')
         banner = get_banner()
         layer.im.paste(banner, (x,y))
-        paper.commit_image()
-        img = paper.im
+        img =paper.commit_image()
         duration = int((time.time() - start_time) * 1000)  # Convert to ms
         try:
             import requests
@@ -277,8 +273,7 @@ def dxt_zp_img(content=None):
         layer = paper.add_layer(name='banner')
         banner = get_banner()
         layer.im.paste(banner, (x,y))
-        paper.commit_image()
-        img = paper.im
+        img =paper.commit_image()
         duration = int((time.time() - start_time) * 1000)  # Convert to ms
         try:
             import requests

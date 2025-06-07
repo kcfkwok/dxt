@@ -77,9 +77,8 @@ def dxt_rl_pdf(content):
         y=int(145* MM_UNIT)
         table_jieqi_to_zod_and_zhemonth(paper, x,y,sun_lon=sun_lon)
     
-        paper.commit_image()
-        image = paper.im
-
+        image =paper.commit_image()
+        
         pdf = FPDF(orientation='L', unit='mm', format='A4')
         pdf.add_page()
         page_width = pdf.w
@@ -141,9 +140,8 @@ def dxt_xt_pdf(content):
         banner_path=config.fpng_banner
         banner = Image.open(banner_path)
         layer.im.paste(banner, (x,y))
-        paper.commit_image()
-        image = paper.im
-
+        image =paper.commit_image()
+        
         pdf = FPDF(orientation='L', unit='mm', format='A4')
         pdf.add_page()
         page_width = pdf.w
@@ -205,9 +203,8 @@ def dxt_zp_pdf(content):
         banner_path=config.fpng_banner
         banner = Image.open(banner_path)
         layer.im.paste(banner, (x,y))
-        paper.commit_image()
-        image = paper.im
-
+        image =paper.commit_image()
+        
         pdf = FPDF(orientation='L', unit='mm', format='A4')
         pdf.add_page()
         page_width = pdf.w
@@ -408,9 +405,7 @@ def dxt_kz_pdf(content):
         flowchart1 = flowchart.resize((w*5,h*5))
         layer.im.paste(flowchart1, (x+ int(30*MM_UNIT), y + 100))
         
-        paper.commit_image()
-
-        image = paper.im
+        image =paper.commit_image()
 
         pdf = FPDF(orientation='L', unit='mm', format='A4')
         pdf.add_page()

@@ -1,6 +1,7 @@
 from layer import *
 from dprint import dprint
 from def_color import *
+import copy
 
 DPI=600
 MARGIN= DPI/8
@@ -107,13 +108,20 @@ class PAPER(PAPER_TYPE):
     def get_last_layer(self):
         return self.layers[-1]
     
-    def commit_image(self, fn=None):
+    def commit_image(self, fn=None, excludes=[]):
+        im = copy.copy(self.im)
         for layer in self.layers:
-            self.im.paste(layer.im, (layer.ofs_px, layer.ofs_py),layer.im)
+            if layer in excludes:
+                print('excluded:',layer.name)
+                continue
+            #self.im.paste(layer.im, (layer.ofs_px, layer.ofs_py),layer.im)
+            im.paste(layer.im, (layer.ofs_px, layer.ofs_py),layer.im)
+            
         if fn is not None:
-            self.im.save(fn, dpi=(600,600))
+            #self.im.save(fn, dpi=(600,600))
+            im.save(fn, dpi=(600,600))
             print('saved to %s' % fn)
-        return self.im
+        return im
 
 if __name__=='__main__':
     paper = PAPER("B6")

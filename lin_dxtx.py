@@ -44,6 +44,7 @@ if __name__=='__main__':
     import pytz
     import datetime
     from ut_geo_tz import get_timezone_offset
+    from ut_cal import cal_planet_at
     #tz=8
 
     timezone = 'Asia/Hong_Kong'
@@ -53,20 +54,34 @@ if __name__=='__main__':
     utc_now = datetime.datetime.now(datetime.timezone.utc)
     now = utc_now.replace(tzinfo=pytz.utc).astimezone(hktz)
     year = now.year
-
+    month = now.month
+    date = now.day
+    ihour=0
+    minute=0
+    tz= 8
+    cal_planet_at(year,month,date,ihour,minute,tz)
+    sun_ra = g_share.sun_0.ra / 15.0 + 24
+    print('sun_ra:', sun_ra)
+    
     paper = PAPER("A4L")
-    build_lin_frame(paper, year-1, tz)
+    y7=build_lin_frame(paper, year-1, tz)
+    
     draw_milkyway_lin(paper)
     layer_equ= paper.add_layer(name='equ')
     # draw equator again
     layer_equ.draw.line([(g_share.x0,g_share.y_equ),(g_share.xr_end,g_share.y_equ)],fill=RED,width=2)
+    
+    layer_sun = paper.add_layer(name='sun')
+    sun_x = RA_to_x(g_share.x0, sun_ra)
+    layer_sun.draw.line(((sun_x,g_share.y00),(sun_x,y7+int(3*MM_UNIT))),fill=RED,width=5)
+    
     draw_sky_ecl(paper, year, tz)
     draw_fix_stars(paper)
 
     layer_cald = paper.add_layer(name='calendar')
     x = int(106 * MM_UNIT)
     y =  int(config.MARGIN+ 5* MM_UNIT)
-    title = '%s年 全天星图' % (year, )
+    title = '%s年 星图年历' % (year, )
     layer_cald.draw.text((x,y), text=title, font=unicode_font_112,fill=(0,0,0))
     
     x= int(config.MARGIN+ 2*MM_UNIT)
@@ -112,15 +127,16 @@ if __name__=='__main__':
     
     from ut_lin_cstbnd import lin_cstbnd_to_xyplot
     from zodiac import zodiac
+    color_cstbnd = config.color_cstbnd
     for cst in zodiac:
         print('get_cstbnd_polygon: ',cst)
         points = lin_cstbnd_to_xyplot(cst,form='tuple')
-        layer.draw.polygon(points, outline=ORANGE,width=3)
+        layer.draw.polygon(points, outline=color_cstbnd,width=3)
     for cst in ['Sgr','Cap','Aqr']:
         print('get_cstbnd_polygon: ',cst)
         points = lin_cstbnd_to_xyplot(cst,form='tuple', totalshift=True)
-        layer.draw.polygon(points, outline=ORANGE,width=3)
-    
+        layer.draw.polygon(points, outline=color_cstbnd,width=3)
+
             
     title = '探索'
     x= int(12* MM_UNIT)
@@ -128,4 +144,4 @@ if __name__=='__main__':
     url = 'https://kcfkwok.pythonanywhere.com/lin_dxt'
     add_qrcode(layer.im, layer.draw, x,y, title, url)
     
-    paper.commit_image(fn_pdf)
+    paper.commit_image(fn_pdf, excludes=[layer_sun])
