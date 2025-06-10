@@ -126,16 +126,44 @@ if __name__=='__main__':
     paper.commit_image(fn_png)
     
     from ut_lin_cstbnd import lin_cstbnd_to_xyplot
-    from zodiac import zodiac
     color_cstbnd = config.color_cstbnd
+    from csts import CSTS
+    from zodiac import zodiac
+
+    CSTS.remove('Ser')
+    CSTS.append('Ser1')
+    CSTS.append('Ser2')
+    for cst in CSTS:
+        if cst in zodiac:
+            continue
+        print('get_cstbnd_polygon: ',cst)
+        points = lin_cstbnd_to_xyplot(cst,form='tuple')
+        try:
+            layer.draw.polygon(points, outline=color_cstbnd,width=3)
+        except Exception as e:
+            print('points:',points)
+            print('Exception:',str(e))
+
+    for cst in ['Aps','Ara','Cep','CrA','Cyg','Del','Dra','Equ','Gru','Her','Ind','Lac','Lyr','Mic','Pav','Peg','PsA','Sge','Tel','Tuc','Vul']:
+        if cst in zodiac:
+            continue
+        print('get_cstbnd_polygon: ',cst)
+        points = lin_cstbnd_to_xyplot(cst,form='tuple', totalshift=True)
+        try:
+            layer.draw.polygon(points, outline=color_cstbnd,width=3)
+        except Exception as e:
+            print('points:',points)
+            print('Exception:',str(e))
+            
+    color_cstbnd_zodiac = config.color_cstbnd_zodiac
     for cst in zodiac:
         print('get_cstbnd_polygon: ',cst)
         points = lin_cstbnd_to_xyplot(cst,form='tuple')
-        layer.draw.polygon(points, outline=color_cstbnd,width=3)
+        layer.draw.polygon(points, outline=color_cstbnd_zodiac,width=3)
     for cst in ['Sgr','Cap','Aqr']:
         print('get_cstbnd_polygon: ',cst)
         points = lin_cstbnd_to_xyplot(cst,form='tuple', totalshift=True)
-        layer.draw.polygon(points, outline=color_cstbnd,width=3)
+        layer.draw.polygon(points, outline=color_cstbnd_zodiac,width=3)
 
             
     title = '探索'

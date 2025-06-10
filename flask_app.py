@@ -630,7 +630,7 @@ def get_lin_cstbnd_polygon():
     #y = float(data['y'])
     cst = data['cst']
     print('get_cstbnd_polygon: ',cst)
-    points = lin_cstbnd_to_xyplot(cst)
+    points = lin_cstbnd_to_xyplot(cst, excludes=[])
     print('points:', points)
     return jsonify({'points': points})
 

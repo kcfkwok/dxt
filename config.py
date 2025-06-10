@@ -90,7 +90,8 @@ class CONFIG:
     #color_cstbnd = (255, 165, 0) #橙黄色
     #color_cstbnd = (75, 0, 130) #深紫色
     #color_cstbnd = (0, 112, 192)#深蓝色  #0070c0
-    color_cstbnd = (255, 255, 255,200)#深蓝色  #0070c0
+    color_cstbnd = (255, 255, 255,200)
+    color_cstbnd_zodiac=(255, 165, 0) #橙黄色
     
 
     EQU_LINE_COLOR=(255,0,0,255)
