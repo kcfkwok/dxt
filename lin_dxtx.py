@@ -16,7 +16,7 @@ from lin_sky_ecl import draw_sky_ecl
 from lin_sky_mw import draw_milkyway_lin
 from ut_lin_star import draw_fix_stars
 from lin_frame import build_lin_frame
-
+from lin_sky_objs import add_objs
 
 def add_qrcode(im, draw, x,y, title, url):
     import qrcode
@@ -76,12 +76,14 @@ if __name__=='__main__':
     layer_sun.draw.line(((sun_x,g_share.y00),(sun_x,y7+int(3*MM_UNIT))),fill=RED,width=5)
     
     draw_sky_ecl(paper, year, tz)
+    print('*** add_objs')
+    add_objs(paper)
     draw_fix_stars(paper)
 
     layer_cald = paper.add_layer(name='calendar')
     x = int(106 * MM_UNIT)
     y =  int(config.MARGIN+ 5* MM_UNIT)
-    title = '%s年 星图年历' % (year, )
+    title = '%s年 历象星图' % (year, )
     layer_cald.draw.text((x,y), text=title, font=unicode_font_112,fill=(0,0,0))
     
     x= int(config.MARGIN+ 2*MM_UNIT)

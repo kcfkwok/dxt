@@ -6,6 +6,7 @@ from cir_RA import add_cir_RA
 from def_color import *
 from cir_jieqi import add_cir_jieqi
 from sky_fix_stars import add_fix_stars, add_lmc_smc
+from sky_objs import add_objs
 
 def draw_cir_and_sky(paper,xc,yc,r1,r2,r3,r4,r5,rr,requ,tz,year,
                      im=None,draw=None,color_sky=config.color_sky_day):
@@ -14,7 +15,8 @@ def draw_cir_and_sky(paper,xc,yc,r1,r2,r3,r4,r5,rr,requ,tz,year,
         add_ecl_equ(None,xc,yc,r5,year,tz,rr,requ,im=im,draw=draw)
         add_cir_RA(None,xc,yc,r5,im=im,draw=draw)
         
-        add_lmc_smc(draw,xc,yc,rr)
+        #add_lmc_smc(draw,xc,yc,rr)
+        add_objs(None,xc,yc,rr,im=im,draw=draw)
         add_fix_stars(None,xc,yc,r3,year,tz,rr,requ,im=im,draw=draw)
         
         
