@@ -39,7 +39,7 @@ def parse_star_list(file_path: str) -> Dict:
             
             # Extract data (HR ID is first field)
             try:
-                hr_id = int(fields[0])
+                hr_id = fields[0] #int(fields[0])
                 bayer_name = fields[1]
                 
                 # Convert Bayer designation to Greek letter if needed
@@ -54,7 +54,7 @@ def parse_star_list(file_path: str) -> Dict:
                             break
                 
                 star_data = {
-                    'hr_id': int(fields[0]),
+                    'hr_id': fields[0], #int(fields[0]),
                     'bayer_name': bayer_name,
                     'constellation': fields[2],
                     'ra': float(fields[3]),
@@ -70,7 +70,7 @@ def parse_star_list(file_path: str) -> Dict:
                 
     return stars
 
-def find_star_by_hr(stars: Dict, hr_id: int) -> Dict:
+def find_star_by_hr(stars: Dict, hr_id: str) -> Dict:
     """Find star by HR ID.
     
     Args:

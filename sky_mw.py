@@ -38,6 +38,7 @@ def draw_milkyway_north(draw,xc,yc,rr):
         #break                        
 
     # milky way color
+    
     mwc={
     1: (240,240,240,255),
     2: (230,230,230,255),
@@ -45,6 +46,15 @@ def draw_milkyway_north(draw,xc,yc,rr):
     4: (210,210,210,255),
     5: (200,200,200,255),
     }
+    skip="""
+    mwc={
+    1: (200,200,200,200), #130), 
+    2: (210,210,210,200),
+    3: (220,220,220,200),
+    4: (230,230,230,200),
+    5: (240,240,240,200),
+    }
+    """
     dtss1= dtss[1]
     #print('dtss1[1]:%s' % dtss1[1])
     draw.polygon(dtss1[1], fill=mwc[1])
@@ -105,6 +115,7 @@ def draw_milkyway_south(draw,xc,yc,rr):
         #break                        
 
     # milky way color
+    
     mwc={
     1: (240,240,240,255),
     2: (230,230,230,255),
@@ -112,6 +123,15 @@ def draw_milkyway_south(draw,xc,yc,rr):
     4: (210,210,210,255),
     5: (200,200,200,255),
     }
+    skip="""
+    mwc={
+    1: (200,200,200,130), 
+    2: (210,210,210,130),
+    3: (220,220,220,130),
+    4: (230,230,230,130),
+    5: (240,240,240,130),
+    }
+    """
     dtss1= dtss[1]
     #print('dtss1[1]:%s' % dtss1[1])
     draw.polygon(dtss1[0], fill=mwc[1])
@@ -203,7 +223,6 @@ def app_mw(fn=None):
     draw.circle((xc,yc),r5, fill=g_share.color_sky)
     add_milkyway(None,xc,yc,rr,im=im,draw=draw)
     layer_bg = paper.add_layer(name='bg')
-    #draw1 = layer_bg.draw
     return im
 	
 if __name__=='__main__':

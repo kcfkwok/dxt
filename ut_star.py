@@ -187,7 +187,7 @@ def get_star_from_ra_dec(ra, dec):
     stars = parse_star_list(config.star_list_path)
             
     for star_hr in stars:
-        star_ra, star_dec, _,_ = starsi[star_hr]
+        star_ra, star_dec= stars[star_hr]['ra'], stars[star_hr]['dec']
         dist = ((ra - star_ra)**2 + (dec - star_dec)**2)**0.5
         if dist < min_dist:
             min_dist = dist

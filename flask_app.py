@@ -534,10 +534,12 @@ def get_star_info():
     if not hr_id:
         return jsonify({'error': 'HR ID required'}), 400
     
+    skip="""
     try:
         hr_id = int(hr_id)
     except ValueError:
         return jsonify({'error': 'Invalid HR ID'}), 400
+        """
     from ut_star import get_star_from_hr_id
     
     # Load star data
