@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-29 10:54+0800\n"
+"POT-Creation-Date: 2025-07-21 10:37+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -18,24 +18,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: flask_app.py:657
+#: flask_app.py:659
 msgid ""
 "The image data in this document is sourced from the Digital Sky Survey "
 "(DSS). This data can be used provided that it complies with its terms of "
 "use."
 msgstr "本图像数据来源于 Digital Sky Survey (DSS)，该数据可在符合其使用条款的前提下使用。"
 
-#: flask_app.py:660
+#: flask_app.py:662
 msgid ""
 "The image data is sourced from the Two Micron All Sky Survey (2MASS). "
 "Please comply with its relevant usage licenses."
 msgstr "本图像数据来源于 Two Micron All Sky Survey (2MASS)，请遵循其相关使用许可。"
 
-#: flask_app.py:663
+#: flask_app.py:665
 msgid "The image data is sourced from "
 msgstr "本图像数据来源于"
 
-#: flask_app.py:663
+#: flask_app.py:665
 msgid "Please comply with its relevant usage licenses."
 msgstr "请遵循其相关使用许可。"
 
@@ -136,59 +136,59 @@ msgstr "主页"
 
 #: templates/dxt_kz.html:60 templates/dxt_kz.html:190 templates/dxt_kz.html:398
 #: templates/lin_dxt.html:35 templates/lin_dxt.html:175
-#: templates/lin_dxt.html:300
+#: templates/lin_dxt.html:324
 msgid "Constellation"
 msgstr "星座"
 
 #: templates/dxt_kz.html:67 templates/lin_dxt.html:42
-msgid "Star"
-msgstr "恒星"
+msgid "Celestial body"
+msgstr "天体"
 
 #: templates/dxt_kz.html:69 templates/lin_dxt.html:44
 msgid "-- Select constellation first --"
 msgstr "-- 先選擇星座 --"
 
 #: templates/dxt_kz.html:72 templates/lin_dxt.html:47
-msgid "Locate Star"
-msgstr "找此星"
+msgid "Locate Celestial body"
+msgstr "找此天体"
 
 #: templates/dxt_kz.html:88 templates/dxt_kz.html:307 templates/lin_dxt.html:67
-msgid "-- Select star --"
-msgstr "-- 選擇恒星 --"
+msgid "-- Select Celestial body --"
+msgstr "-- 選擇天体 --"
 
 #: templates/dxt_kz.html:181 templates/dxt_kz.html:389
-#: templates/lin_dxt.html:168 templates/lin_dxt.html:293
+#: templates/lin_dxt.html:168 templates/lin_dxt.html:317
 msgid "RA"
 msgstr "赤經"
 
 #: templates/dxt_kz.html:185 templates/dxt_kz.html:393
-#: templates/lin_dxt.html:170 templates/lin_dxt.html:295
+#: templates/lin_dxt.html:170 templates/lin_dxt.html:319
 msgid "Dec"
 msgstr "赤緯"
 
 #: templates/dxt_kz.html:195 templates/dxt_kz.html:197
 #: templates/dxt_kz.html:403 templates/dxt_kz.html:405
-#: templates/lin_dxt.html:179 templates/lin_dxt.html:304
-msgid "Nearest Star"
-msgstr "附近恒星"
+#: templates/lin_dxt.html:179 templates/lin_dxt.html:328
+msgid "Nearest Celestial body"
+msgstr "附近天体"
 
 #: templates/dxt_kz.html:203 templates/dxt_kz.html:411
-#: templates/lin_dxt.html:183 templates/lin_dxt.html:308
+#: templates/lin_dxt.html:183 templates/lin_dxt.html:332
 msgid "Chinese Name"
 msgstr "中文名"
 
 #: templates/dxt_kz.html:209 templates/dxt_kz.html:417
-#: templates/lin_dxt.html:187 templates/lin_dxt.html:312
+#: templates/lin_dxt.html:187 templates/lin_dxt.html:336
 msgid "Magnitude"
 msgstr "視星等"
 
 #: templates/dxt_kz.html:214 templates/dxt_kz.html:422
-#: templates/lin_dxt.html:191 templates/lin_dxt.html:316
+#: templates/lin_dxt.html:191 templates/lin_dxt.html:340
 msgid "Spectrum"
 msgstr "光譜型"
 
 #: templates/dxt_kz.html:220 templates/dxt_kz.html:428
-#: templates/lin_dxt.html:195 templates/lin_dxt.html:320
+#: templates/lin_dxt.html:195 templates/lin_dxt.html:344
 msgid "Distance"
 msgstr "距離"
 
@@ -356,4 +356,10 @@ msgstr "設定位置"
 
 #~ msgid "DongXingTu - Check Other Times"
 #~ msgstr "动手造星图 - 看看其他時間"
+
+#~ msgid "Star"
+#~ msgstr "恒星"
+
+#~ msgid "Nearest Star"
+#~ msgstr "附近恒星"
 

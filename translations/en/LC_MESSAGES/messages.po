@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-29 10:54+0800\n"
+"POT-Creation-Date: 2025-07-21 10:37+0800\n"
 "PO-Revision-Date: 2025-03-25 14:25+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,24 +18,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: flask_app.py:657
+#: flask_app.py:659
 msgid ""
 "The image data in this document is sourced from the Digital Sky Survey "
 "(DSS). This data can be used provided that it complies with its terms of "
 "use."
 msgstr ""
 
-#: flask_app.py:660
+#: flask_app.py:662
 msgid ""
 "The image data is sourced from the Two Micron All Sky Survey (2MASS). "
 "Please comply with its relevant usage licenses."
 msgstr ""
 
-#: flask_app.py:663
+#: flask_app.py:665
 msgid "The image data is sourced from "
 msgstr ""
 
-#: flask_app.py:663
+#: flask_app.py:665
 msgid "Please comply with its relevant usage licenses."
 msgstr ""
 
@@ -136,12 +136,12 @@ msgstr ""
 
 #: templates/dxt_kz.html:60 templates/dxt_kz.html:190 templates/dxt_kz.html:398
 #: templates/lin_dxt.html:35 templates/lin_dxt.html:175
-#: templates/lin_dxt.html:300
+#: templates/lin_dxt.html:324
 msgid "Constellation"
 msgstr ""
 
 #: templates/dxt_kz.html:67 templates/lin_dxt.html:42
-msgid "Star"
+msgid "Celestial body"
 msgstr ""
 
 #: templates/dxt_kz.html:69 templates/lin_dxt.html:44
@@ -149,46 +149,46 @@ msgid "-- Select constellation first --"
 msgstr ""
 
 #: templates/dxt_kz.html:72 templates/lin_dxt.html:47
-msgid "Locate Star"
+msgid "Locate Celestial body"
 msgstr ""
 
 #: templates/dxt_kz.html:88 templates/dxt_kz.html:307 templates/lin_dxt.html:67
-msgid "-- Select star --"
+msgid "-- Select Celestial body --"
 msgstr ""
 
 #: templates/dxt_kz.html:181 templates/dxt_kz.html:389
-#: templates/lin_dxt.html:168 templates/lin_dxt.html:293
+#: templates/lin_dxt.html:168 templates/lin_dxt.html:317
 msgid "RA"
 msgstr ""
 
 #: templates/dxt_kz.html:185 templates/dxt_kz.html:393
-#: templates/lin_dxt.html:170 templates/lin_dxt.html:295
+#: templates/lin_dxt.html:170 templates/lin_dxt.html:319
 msgid "Dec"
 msgstr ""
 
 #: templates/dxt_kz.html:195 templates/dxt_kz.html:197
 #: templates/dxt_kz.html:403 templates/dxt_kz.html:405
-#: templates/lin_dxt.html:179 templates/lin_dxt.html:304
-msgid "Nearest Star"
+#: templates/lin_dxt.html:179 templates/lin_dxt.html:328
+msgid "Nearest Celestial body"
 msgstr ""
 
 #: templates/dxt_kz.html:203 templates/dxt_kz.html:411
-#: templates/lin_dxt.html:183 templates/lin_dxt.html:308
+#: templates/lin_dxt.html:183 templates/lin_dxt.html:332
 msgid "Chinese Name"
 msgstr ""
 
 #: templates/dxt_kz.html:209 templates/dxt_kz.html:417
-#: templates/lin_dxt.html:187 templates/lin_dxt.html:312
+#: templates/lin_dxt.html:187 templates/lin_dxt.html:336
 msgid "Magnitude"
 msgstr ""
 
 #: templates/dxt_kz.html:214 templates/dxt_kz.html:422
-#: templates/lin_dxt.html:191 templates/lin_dxt.html:316
+#: templates/lin_dxt.html:191 templates/lin_dxt.html:340
 msgid "Spectrum"
 msgstr ""
 
 #: templates/dxt_kz.html:220 templates/dxt_kz.html:428
-#: templates/lin_dxt.html:195 templates/lin_dxt.html:320
+#: templates/lin_dxt.html:195 templates/lin_dxt.html:344
 msgid "Distance"
 msgstr ""
 
@@ -373,5 +373,17 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "DongXingTu - Check Other Times"
+#~ msgstr ""
+
+#~ msgid "Star"
+#~ msgstr ""
+
+#~ msgid "Locate Star"
+#~ msgstr ""
+
+#~ msgid "-- Select star --"
+#~ msgstr ""
+
+#~ msgid "Nearest Star"
 #~ msgstr ""
 
