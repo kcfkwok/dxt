@@ -79,6 +79,7 @@ def day_cald(draw,x,y,year,month,day,hour=0,minute=0,show_hm=False,tzn=8):
 
 
 def make_dxt_kz_A5R(dt,latv,longv,place,timezone,psize='A5'):
+    print('make_dxt_kz_A5R')
     second=0
     if latv <0:
         g_share.set_f_south(True)
@@ -165,6 +166,47 @@ def make_dxt_kz_A5R(dt,latv,longv,place,timezone,psize='A5'):
     y= int(150*MM_UNIT)
     table_jieqi_to_zod_and_zhemonth(paper, x,y, sun_lon=g_share.sun_lon,header_f=False)
      
+
+     
+    # for display standard time, sun time, sidereal time
+    # 标准时”“太阳时”“恒星时
+    from ut_ast import calculate_AST, calculate_LMT
+    test_dt = datetime.datetime(year, month, day, hour, minute, 0)
+    print('timezone:%s', timezone)
+    print('calculate_LMT:',str(calculate_LMT))
+    lmt = calculate_LMT(test_dt, timezone, longv)
+    lmthr=int(lmt)
+    lmtmin =int(round((lmt%1)*60))
+    ast = calculate_AST(test_dt, timezone, longv)
+    print(f"真太阳时（AST）：{ast[0]}时{ast[1]}分")
+    
+    lsthr,lstmin = cal_lst(latv,longv,dt,timezone,form_hr_min=True)
+    FCOLOR=(0,0,0,255)
+    font=unicode_font_80
+    font1=unicode_font_42
+    x = MAX_X - int(35 *MM_UNIT)
+    y = MAX_Y - int(85*MM_UNIT)
+    ystep=100
+    y+=ystep
+    layer_cald.draw.text((x,y), text='标准时 %02d:%02d' % (hour,minute), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='平太阳时 %02d:%02d' % (lmthr,lmtmin), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='真太阳时 %02d:%02d' % (ast[0],ast[1]), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='恒星时 %d:%02d' % (lsthr,lstmin), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='%+.1f時區' % tzn, font=font1,
+            fill=FCOLOR)
+            
     skip="""
     x0=int(91 *MM_UNIT)
     x1=int(x0+ 118 * MM_UNIT)

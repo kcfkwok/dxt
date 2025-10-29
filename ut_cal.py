@@ -6,7 +6,7 @@ from g_share import g_share
 import pytz
 import datetime
 
-def cal_lst(latv,longv,dt, timezone):
+def cal_lst(latv,longv,dt, timezone, form_hr_min=False):
     import pytz
     from astropy.time import Time
     from astropy import units as u
@@ -33,8 +33,21 @@ def cal_lst(latv,longv,dt, timezone):
                           location=observing_location)
 
     lst = observing_time.sidereal_time('mean',longv)
+    if form_hr_min:
+        # 转换为 (小时, 分钟) 形式（分钟四舍五入到整数）
+        lst_hours = lst.hour  # 获取恒星时的小时数（带小数，如 12.5 表示 12小时30分钟）
+        hours = int(lst_hours)  # 整数部分为小时
+        minutes = int(round((lst_hours - hours) * 60))  # 小数部分转换为分钟（四舍五入）
+        # 处理分钟可能超出 60 的情况（如 23小时60分钟 → 24小时0分钟）
+        if minutes >= 60:
+            hours += 1
+            minutes -= 60
+        # 处理小时可能超出 24 的情况（恒星时范围 0-24小时）
+        hours %= 24
+        return (hours,minutes)
+    
     return lst.deg
-
+    
 def cal_d_w_hm(year,month,date,hour,mins):
     try:
         Obl=g_share.Obl
