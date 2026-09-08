@@ -265,9 +265,6 @@
                     alert('{{ gettext("Failed to process request. Please try again.") }}');
                 }
             }
-            
-			// Ensure button click handler is properly bound
-            document.getElementById('download-button').addEventListener('click', downloadPDF);
 
 
             function goToDxtKz() {
@@ -287,8 +284,6 @@
                 }
             }
 
-            // Ensure button click handler is properly bound
-            document.getElementById('go-button').addEventListener('click', goToDxtKz);
 
             // Load stars when constellation changes
             document.getElementById('constellation').addEventListener('change', function() {

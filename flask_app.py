@@ -1,10 +1,10 @@
 import platform
 import sys
 # 将子模块的路径添加到 Python 的模块搜索路径中
-if platform.system()=='Linux':
-    sys.path.append('/home/kcfkwok/lin_dxt')
-else:
-    sys.path.append('../lin_dxt')
+#if platform.system()=='Linux':
+#    sys.path.append('/home/kcfkwok/lin_dxt')
+#else:
+#    sys.path.append('../lin_dxt')
 
 from flask import Flask, request, render_template, render_template_string, send_file, Response, redirect, session, jsonify
 from csts import CSTS
@@ -356,6 +356,7 @@ def xy_to_radec():
         'hr_id': hr_id
     })
 
+
 @app.route('/xy_to_lin_radec', methods=['POST'])
 def xy_to_lin_radec():
     data = request.get_json()
@@ -369,6 +370,7 @@ def xy_to_lin_radec():
     
     
     from ut_star import get_star_from_ra_dec
+    
     skip="""
     # Load appropriate star coordinates file
     fn = 'star_coords_south.txt' if g_share.f_south else 'star_coords_north.txt'
@@ -740,12 +742,14 @@ def astronomical_image():
         </html>
     ''', ra=ra, dec=dec, name=name, img_base64=img_base64, source_info=source_info)
 
+skip="""
 @app.route('/lin_dxt')
 def lin_dxt():
     
     return render_template('lin_dxt.html',
                            csts=CSTS,
                            cstcn=cstcn)
+                           """
 skip="""
 @app.route('/dxt_map')
 def dxt_map():
