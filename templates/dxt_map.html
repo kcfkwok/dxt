@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+  <head>
+   <meta charset="UTF-8">
+    <link rel="icon" href="static/image/favicon.ico" type="image/x-icon">
+    <title>{{ gettext('DongXingTu - Explore') }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 5px;
+        }
+        #dxt_kz-image {
+            margin: 5px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+        #dxt_kz-img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        canvas {
+            border: 1px solid #000;
+            margin-top: 20px;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+    {% include 'styles.html' %}
+</head>
+<body>
+<!--
+    {{ gettext('Check Other Times') }} &nbsp;&nbsp;&nbsp;
+    {{ gettext('Month') }}:
+        <select id="month">
+        {% for i in range(1, 13) %}
+            <option value="{{ i }}" {% if i == month|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    {{ gettext('Day') }}:
+        <select id="day">
+        {% for i in range(1, 32) %}
+            <option value="{{ i }}" {% if i == day|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    {{ gettext('Hour') }}:
+        <select id="hour">
+        {% for i in range(0, 24) %}
+            <option value="{{ i }}" {% if i == hour|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    {{ gettext('Minute') }}:
+        <select id="minute">
+        {% for i in range(0, 60) %}
+            <option value="{{ i }}" {% if i == minute|int %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    <button id="go-button" onclick="goToDxtKz()">{{ gettext('Go') }}</button>    &nbsp;&nbsp;&nbsp;  <button id="download-button" onclick="downloadPDF()">{{ gettext('download pdf') }}</button> <a href="{{ url_for('index') }}">{{ gettext('Home') }}</a>
+    -->
+    <div style="margin-top: 20px;">
+        <label>{{ gettext('Constellation') }}:</label>
+        <select id="constellation">
+            {% for abbr in csts %}
+            <option value="{{ abbr }}" {% if abbr == 'And' %}selected{% endif %}>{{ abbr }} - {{ cstcn[abbr] }}</option>
+            {% endfor %}
+        </select>
+        
+        <label style="margin-left: 10px;">{{ gettext('Celestial body') }}:</label>
+        <select id="star" disabled>
+            <option value="">{{ gettext('-- Select constellation first --') }}</option>
+        </select>
+        
+        <button id="locate-star" style="margin-left: 10px;">{{ gettext('Locate Celestial body') }}</button>
+    </div>
+
+    <canvas id="dxt_kz-canvas" width="800" height="600"></canvas>
+    <script>
+        // Load stars for Andromeda on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const constellationSelect = document.getElementById('constellation');
+            const starSelect = document.getElementById('star');
+            
+            if (constellationSelect.value === 'And') {
+                starSelect.disabled = false;
+                fetch('/get_stars?constellation=And')
+                    .then(response => response.json())
+                    .then(stars => {
+                        starSelect.innerHTML = '';
+                        starSelect.add(new Option('{{ gettext("-- Select Celestial body --") }}', ''));
+                        
+                        stars.forEach(star => {
+                            let displayName = star.hr_id;
+                            if (star.bayer_name) {
+                                displayName += ' (' + star.bayer_name + ')';
+                            }
+                            if (star.chinese_name) {
+                                displayName += ' - ' + star.chinese_name;
+                            }
+                            starSelect.add(new Option(displayName, star.hr_id));
+                        });
+                    });
+            }
+        });
+        // Wait for DOM to be fully loaded before executing JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get config values from template
+            const config = JSON.parse('{{ config|tojson }}');
+            const canvas = document.getElementById('dxt_kz-canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+
+            // Set image source
+            img.src = "{{ url_for('dxt_map_img_rq', content='kz_' +  latitude + ';' + longitude + ';' + location +';' + timezone +';' + year + '-' + month +'-' + day +';' + hour +'-' + minute ) }}"
+			
+			
+            // Wait for image to load
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+            };
+            
+            // Mouse down event handler
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+
+                const centerX = config.xckz;
+                const centerY = config.yckz;
+                const radius = config.r5;
+                const dx = x - centerX;
+                const dy = y - centerY;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+
+                if (distance <= radius) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    
+                    fetch('/xy_to_radec', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({x: x, y: y})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const raH = Math.floor(data.ra/15);
+                        const raM = Math.floor((data.ra/15 - raH)*60);
+                        const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                        
+                        const decSign = data.dec >= 0 ? '+' : '-';
+                        const decAbs = Math.abs(data.dec);
+                        const decD = Math.floor(decAbs);
+                        const decM = Math.floor((decAbs - decD)*60);
+                        const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                        
+                        ctx.font = 'bold 40px Arial';
+                        ctx.fillStyle = 'red';
+                        let textY = y > canvas.height - 160 ? y - 160 : y;
+                        const xx = 2980;  // x+15
+						const ystep=50;
+						textY +=ystep;
+                        const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+                        ctx.fillText(raText, xx, textY);
+                        
+						textY +=ystep;
+                        const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+                        ctx.fillText(decText, xx, textY);
+                        
+						textY +=ystep;            
+                        if (data.constellation) {
+                            const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+                            ctx.fillText(constellationText, xx, textY);
+							textY +=ystep;                                    	
+                        }
+                        if (data.bayer_name) {
+                            let nearestStarText = '{{ gettext("Nearest Celestial body") }}: ' + data.bayer_name;
+                            if (data.hr_id) {
+                                nearestStarText = '{{ gettext("Nearest Celestial body") }}: ' + data.hr_id + ' - ' + data.bayer_name;
+                            }
+                            ctx.fillText(nearestStarText, xx, textY);
+							textY +=ystep;
+                        } 
+						if (data.chinese_name) {
+							let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
+							data.chinese_name;
+							ctx.fillText(chinesenameStarText, xx, textY);
+							textY +=ystep;
+						}
+						if (data.magnitude) {
+							let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
+							ctx.fillText(magnitudeStarText, xx, textY);
+							textY +=ystep;
+						}
+						if (data.spectrum) {
+							let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
+							data.spectrum;
+							ctx.fillText(spectrumStarText, xx, textY);
+							textY +=ystep;							
+						}
+						if (data.distance_ly) {
+							let distanceStarText ='{{ gettext("Distance") }}: ' +
+							data.distance_ly + ' lyr';
+							ctx.fillText(distanceStarText, xx, textY);
+							textY +=ystep;							
+						}
+						if (data.cst) {
+						// Draw polygon around crosshair
+								fetch('/get_cstbnd_polygon', {
+									method: 'POST',
+									headers: {
+									'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({x: x, y: y, cst:data.cst})
+								})
+								.then(response => response.json())
+								.then(data => {
+									const points = data.points;
+									if (points.length > 0) {
+										ctx.beginPath();
+										ctx.moveTo(points[0].x, points[0].y);
+										for (let i = 1; i < points.length; i++) {
+											ctx.lineTo(points[i].x, points[i].y);
+										}
+										ctx.closePath();
+										ctx.strokeStyle = 'orange';
+										ctx.lineWidth = 2;
+										ctx.stroke();
+									}
+								});
+						}
+						
+						
+                    });
+                }
+            });
+            
+            function downloadPDF() {
+				try {
+					const content = 'kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-{{ month }}-{{ day }};{{ hour }}-{{ minute }}'; 
+					const downloadUrl = `/download?content=${content}`;
+					window.location.href = downloadUrl;
+				} catch (error) {
+                    console.error('Error in downloadPDF:', error);
+                    alert('{{ gettext("Failed to process request. Please try again.") }}');
+                }
+            }
+            
+			// Ensure button click handler is properly bound
+            document.getElementById('download-button').addEventListener('click', downloadPDF);
+
+
+            function goToDxtKz() {
+                try {
+                    const month = document.getElementById('month').value.padStart(2, '0');
+                    const day = document.getElementById('day').value.padStart(2, '0');
+                    const hour = document.getElementById('hour').value.padStart(2, '0');
+                    const minute = document.getElementById('minute').value.padStart(2, '0');
+                    
+                    const content = `kz_{{ latitude }};{{ longitude }};{{ location }};{{ timezone }};{{ year }}-${month}-${day};${hour}-${minute}`;
+                    const url = `/dxt_kz?content=${encodeURIComponent(content)}`;
+                    console.log('Navigating to:', url);
+                    window.location.href = url;
+                } catch (error) {
+                    console.error('Error in goToDxtKz:', error);
+                    alert('{{ gettext("Failed to process request. Please try again.") }}');
+                }
+            }
+
+            // Ensure button click handler is properly bound
+            document.getElementById('go-button').addEventListener('click', goToDxtKz);
+
+            // Load stars when constellation changes
+            document.getElementById('constellation').addEventListener('change', function() {
+                const constellation = this.value;
+                const starSelect = document.getElementById('star');
+                
+                if (!constellation) {
+                    starSelect.disabled = true;
+                    starSelect.innerHTML = '<option value="">-- Select constellation first --</option>';
+                    return;
+                }
+                
+                fetch('/get_stars?constellation=' + constellation)
+                    .then(response => response.json())
+                    .then(stars => {
+                        starSelect.disabled = false;
+                        starSelect.innerHTML = '';
+                        starSelect.add(new Option('{{ gettext("-- Select Celestial body --") }}', ''));
+                        
+                        stars.forEach(star => {
+                            let displayName = star.hr_id;
+                            if (star.bayer_name) {
+                                displayName += ' (' + star.bayer_name + ')';
+                            }
+                            if (star.chinese_name) {
+                                displayName += ' - ' + star.chinese_name;
+                            }
+                            starSelect.add(new Option(displayName, star.hr_id));
+                        });
+                    });
+            });
+            
+            // Locate star button click handler
+            const locateStarBtn = document.getElementById('locate-star');
+            if (locateStarBtn) {
+                locateStarBtn.addEventListener('click', function() {
+                    const hrId = document.getElementById('star').value;
+                    if (!hrId) return;
+
+                    fetch('/get_star_info?hr_id=' + hrId)
+                        .then(response => response.json())
+                        .then(info => {
+                            if (info.ra && info.dec && info.cst) {
+                                return fetch('/radec_to_xy', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ra: info.ra, dec: info.dec, cst: info.cst, star: info})
+                                });
+                            }
+                            throw new Error('Invalid star coordinates');
+                        })
+                        .then(response => response.json())
+                        .then(coords => {
+                            if (coords.x && coords.y && coords.cst && coords.star) {
+                                const rect = canvas.getBoundingClientRect();
+                                const scaleX = canvas.width / rect.width;
+                                const scaleY = canvas.height / rect.height;
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                ctx.drawImage(img, 0, 0);
+                                const centerX = config.xckz;
+                                const centerY = config.yckz;
+                                const x = coords.x;
+                                const y = coords.y;
+								const cst = coords.cst;
+                                ctx.beginPath();
+                                ctx.moveTo(centerX, centerY);
+                                ctx.lineTo(x, y);
+                                ctx.strokeStyle = 'red';
+                                ctx.lineWidth = 2;
+                                ctx.stroke();
+                                
+                                ctx.beginPath();
+                                ctx.moveTo(x, 0);
+                                ctx.lineTo(x, canvas.height);
+                                ctx.moveTo(0, y);
+                                ctx.lineTo(canvas.width, y);
+                                ctx.strokeStyle = 'blue';
+                                ctx.lineWidth = 1;
+                                ctx.stroke();
+								
+								const data = coords.star;
+								const raH = Math.floor(data.ra/15);
+								const raM = Math.floor((data.ra/15 - raH)*60);
+								const raS = ((data.ra/15 - raH - raM/60)*3600).toFixed(1);
+                        
+								const decSign = data.dec >= 0 ? '+' : '-';
+								const decAbs = Math.abs(data.dec);
+								const decD = Math.floor(decAbs);
+								const decM = Math.floor((decAbs - decD)*60);
+								const decS = ((decAbs - decD - decM/60)*3600).toFixed(1);
+                        
+								ctx.font = 'bold 40px Arial';
+								ctx.fillStyle = 'red';
+								let textY = y > canvas.height - 160 ? y - 160 : y;
+								const xx = 2980;  // x+15
+								const ystep=50;
+								textY +=ystep;
+								const raText = '{{ gettext("RA") }}: ' + raH + 'h ' + raM + 'm ' + raS + 's';
+								ctx.fillText(raText, xx, textY);
+						
+								textY +=ystep;
+								const decText = '{{ gettext("Dec") }}: ' + decSign + decD + '° ' + decM + '\' ' + decS+'"';
+								ctx.fillText(decText, xx, textY);
+                        
+								textY +=ystep;            
+								if (data.constellation) {
+									const constellationText = '{{ gettext("Constellation") }}: ' + data.constellation;
+									ctx.fillText(constellationText, xx, textY);
+									textY +=ystep;                                    	
+								}
+								if (data.bayer_name) {
+									let nearestStarText = '{{ gettext("Nearest Celestial body") }}: ' + data.bayer_name;
+									if (data.hr_id) {
+										nearestStarText = '{{ gettext("Nearest Celestial body") }}: ' + data.hr_id + ' - ' + data.bayer_name;
+									}
+									ctx.fillText(nearestStarText, xx, textY);
+									textY +=ystep;
+								} 
+								if (data.chinese_name) {
+									let chinesenameStarText ='{{ gettext("Chinese Name") }}: ' + 
+									data.chinese_name;
+									ctx.fillText(chinesenameStarText, xx, textY);
+									textY +=ystep;
+								}
+								if (data.magnitude) {
+									let magnitudeStarText='{{ gettext("Magnitude") }}: ' + data.magnitude;
+									ctx.fillText(magnitudeStarText, xx, textY);
+									textY +=ystep;
+								}
+								if (data.spectrum) {
+									let spectrumStarText ='{{ gettext("Spectrum") }}: ' +
+									data.spectrum;
+									ctx.fillText(spectrumStarText, xx, textY);
+									textY +=ystep;							
+								}
+								if (data.distance_ly) {
+									let distanceStarText ='{{ gettext("Distance") }}: ' +
+									data.distance_ly + ' lyr';
+									ctx.fillText(distanceStarText, xx, textY);
+									textY +=ystep;							
+								}
+
+						
+								// Draw polygon around crosshair
+								fetch('/get_cstbnd_polygon', {
+									method: 'POST',
+									headers: {
+									'Content-Type': 'application/json',
+									},
+									body: JSON.stringify({x: x, y: y, cst:cst})
+								})
+								.then(response => response.json())
+								.then(data => {
+									const points = data.points;
+									if (points.length > 0) {
+										ctx.beginPath();
+										ctx.moveTo(points[0].x, points[0].y);
+										for (let i = 1; i < points.length; i++) {
+											ctx.lineTo(points[i].x, points[i].y);
+										}
+										ctx.closePath();
+										ctx.strokeStyle = 'orange';
+										ctx.lineWidth = 2;
+										ctx.stroke();
+									}
+								});
+
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error:', err);
+                        });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

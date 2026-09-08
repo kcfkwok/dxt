@@ -16,7 +16,7 @@ def get_banner():
         _banner_cache = Image.open(banner_path)
     return _banner_cache
 from dxt_rl import *
-from dxt_kz_A5R import make_dxt_kz_A5R
+from dxt_kz_A5R import make_dxt_kz_A5R, make_dxt_map_A5R
 from dxt_xt import make_dxt_xt_A4
 from dxt_zp import build_dxt_zp_A4L
 from config import config
@@ -169,6 +169,74 @@ def dxt_kz_img(content):
         pass  # Don't fail if metrics can't be sent
     return img
     
+def dxt_map_img(content):
+    start_time = time.time()
+    location = None
+    if content is not None:
+        m1 = re_kz1.match(content)
+        if m1 is None:
+            m0 = re_kz0.match(content)
+            if m0 is None:
+                error_html = '<html><body><h1>該location暫未支持</h1></body></html>'
+                return render_template_string(error_html)
+                
+    if m1 is not None:
+        lats,_,longs,_,location,timezone,year,month,day,hour,minute = m1.groups()
+    else:
+        lats,_,longs,_,location,timezone = m0.groups()
+        year=0
+        
+    if location is None:
+        error_html = '<html><body><h1>該location暫未支持</h1></body></html>'
+        return render_template_string(error_html)
+        
+    latv = float(lats)
+    longv = float(longs)
+    year = int(year)
+    if year ==0:
+        tz = pytz.timezone(timezone)
+        utc_now = datetime.datetime.utcnow()
+        now = utc_now.replace(tzinfo=pytz.utc).astimezone(tz)
+        year = now.year
+        month = now.month
+        day = now.day
+        hour = now.hour
+        minute = now.minute  
+        
+    month=int(month)
+    day = int(day)
+    hour=int(hour)
+    minute= int(minute)
+    
+    config.debug = False
+    dt = datetime_w_timezone(year,month,day,hour,minute,0,timezone)
+    g_share.hor_cir_opacity=128
+    paper = make_dxt_map_A5R(dt, latv, longv, location, timezone)
+    x = config.banner_x
+    y = config.banner_y
+    layer = paper.add_layer(name='banner')
+    banner = get_banner()
+    layer.im.paste(banner, (x,y))
+    
+    events = EVENTS(year, month)
+    evs = events.get_evs(day)
+    #print('evs:', evs)
+    show_events(layer.draw, evs)
+    
+    img =paper.commit_image()
+    duration = int((time.time() - start_time) * 1000)  # Convert to ms
+    try:
+        import requests
+        requests.post('http://localhost:5000/perf', json={
+            'type': 'dxt_map_img', 
+            'duration': duration,
+            'timestamp': datetime.datetime.utcnow().isoformat()
+        }, timeout=0.1)  # Non-blocking with short timeout
+    except:
+        pass  # Don't fail if metrics can't be sent
+    return img
+
+
 def dxt_kz_img_wu(user_info):
     start_time = time.time()
     config.debug = False

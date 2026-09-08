@@ -102,6 +102,22 @@ if __name__=='__main__':
     img.save(fn, dpi=(600,600))
     print('saved to %s' % fn)
     
+    # fbg_a5r_yw_n = 'skyl_bg_n_y%s_A5R.png' # % year <- sky_rl_bg.py
+    # fbg_a5r_yw_s = 'skyl_bg_s_y%s_A5R.png' # % year <- sky_rl_bg.py
+    g_share.set_f_south(False)
+    paper= make_dxt_rl_A5R_bg(year,cir_yellow=False)
+    fn = Path(config.interpath, config.fbg_a5r_n % year) 
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
+    print('saved to %s' % fn)
+    
+    g_share.set_f_south(True)
+    paper= make_dxt_rl_A5R_bg(year,cir_yellow=False)
+    fn = Path(config.interpath, config.fbg_a5r_s % year) 
+    img =paper.commit_image()
+    img.save(fn, dpi=(600,600))
+    print('saved to %s' % fn)
+    
     # dxt_xt -> dxt_xt_A4.png , pdf
     fpng = config.fxt_png
     fpdf = config.fxt_pdf

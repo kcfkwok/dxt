@@ -15,7 +15,7 @@ from flask_babel import Babel, gettext
 from secret_key import secret_key
 from config import config
 from g_share import g_share
-from image_generator import dxt_rl_img, dxt_kz_img, dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp, re_kz0, re_kz1,re_rl
+from image_generator import dxt_rl_img, dxt_kz_img, dxt_map_img,dxt_kz_img_wu, dxt_xt_img, dxt_zp_img,re_xt, re_zp, re_kz0, re_kz1,re_rl
 from pdf_generator import dxt_rl_pdf, dxt_xt_pdf, dxt_zp_pdf, dxt_kz_pdf
 from default_info import default_info
 from io import BytesIO
@@ -48,6 +48,40 @@ def inject_get_locale():
 
 
 @app.route('/', methods=['GET', 'POST'])
+def dxt_map():
+    #return render_template('dxt_map.html',
+    #                       csts=CSTS,
+    #                       cstcn=cstcn)
+    latitude='22'
+    longitude='114'
+    location='香港'
+    timezone='Asia/Hong_Kong'
+    year='2026'
+    month='1'
+    day='1'
+    hour='0'
+    minute='0'
+
+    template_config = {
+        'xckz': config.xckz,
+        'yckz': config.yckz,
+        'r5': config.r5
+    }
+    return render_template('dxt_map.html',
+        latitude=latitude,
+        longitude=longitude,
+        location=location,
+        timezone=timezone,
+        year=year,
+        month=month,
+        day=day,
+        hour=hour,
+        minute=minute,
+        config=template_config,
+        csts=CSTS,
+        cstcn=cstcn)
+
+@app.route('/index', methods=['GET', 'POST'])
 def index():
     print('*** index.html')
     if request.method == 'POST':
@@ -170,7 +204,17 @@ def dxt_kz_img_rq():
     buf.seek(0)
     return Response(buf.getvalue(), mimetype='image/png')
 
-
+@app.route('/dxt_map_img_rq')
+def dxt_map_img_rq():
+    content = request.args.get('content', None)
+    result = dxt_map_img(content)
+    if isinstance(result, str):  # 如果返回的是错误信息
+        return result
+    buf = BytesIO()
+    result.save(buf, format='PNG')
+    buf.seek(0)
+    return Response(buf.getvalue(), mimetype='image/png')
+    
 @app.route('/dxt_kz')
 def dxt_kz():
     content = request.args.get('content', None)
@@ -702,7 +746,41 @@ def lin_dxt():
     return render_template('lin_dxt.html',
                            csts=CSTS,
                            cstcn=cstcn)
+skip="""
+@app.route('/dxt_map')
+def dxt_map():
+    #return render_template('dxt_map.html',
+    #                       csts=CSTS,
+    #                       cstcn=cstcn)
+    latitude='22'
+    longitude='114'
+    location='香港'
+    timezone='Asia/Hong_Kong'
+    year='2026'
+    month='1'
+    day='1'
+    hour='0'
+    minute='0'
 
-
+    template_config = {
+        'xckz': config.xckz,
+        'yckz': config.yckz,
+        'r5': config.r5
+    }
+    return render_template('dxt_map.html',
+        latitude=latitude,
+        longitude=longitude,
+        location=location,
+        timezone=timezone,
+        year=year,
+        month=month,
+        day=day,
+        hour=hour,
+        minute=minute,
+        config=template_config,
+        csts=CSTS,
+        cstcn=cstcn)
+        """
+        
 if __name__=='__main__':
     app.run(debug=True)

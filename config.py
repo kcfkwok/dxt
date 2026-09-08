@@ -32,6 +32,8 @@ class CONFIG:
     fbg_rl = 'skyl_rl_bg_y%s.png' # % year <- sky_rl_bg.py
     fbg_a5r_yw_n = 'skyl_bg_n_y%s_A5R_yw.png' # % year <- sky_rl_bg.py
     fbg_a5r_yw_s = 'skyl_bg_s_y%s_A5R_yw.png' # % year <- sky_rl_bg.py
+    fbg_a5r_n = 'skyl_bg_n_y%s_A5R.png' # % year <- sky_rl_bg.py
+    fbg_a5r_s = 'skyl_bg_s_y%s_A5R.png' # % year <- sky_rl_bg.py
     fmw_n = 'skyl_mw_n_j2000.png' # <- sky_mw.py
     fmw_s = 'skyl_mw_s_j2000.png' # <- sky_mw.py
     fdt_n = 'skyl_dt_n.y%s.png' # % year <- sky_dt.py

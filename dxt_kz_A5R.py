@@ -215,6 +215,146 @@ def make_dxt_kz_A5R(dt,latv,longv,place,timezone,psize='A5'):
     """
     return paper
 
+def make_dxt_map_A5R(dt,latv,longv,place,timezone,psize='A5'):
+    print('make_dxt_map_A5R')
+    second=0
+    if latv <0:
+        g_share.set_f_south(True)
+    else:
+        g_share.set_f_south(False)
+    year = dt.year
+    month = dt.month
+    day = dt.day
+    hour= dt.hour
+    minute = dt.minute
+    tzn = get_timezone_offset(timezone)
+    lst = cal_lst(latv,longv,dt,timezone)
+    
+    paper = PAPER(psize)
+    paper.draw_outline()
+    #paper.draw_MAX_RECT()
+    OFS_X=int(10 * MM_UNIT)
+    OFS_Y=int(16 * MM_UNIT)
+    LW=2
+    MAX_X = paper.max_x
+    MIN_X = paper.min_x
+    MIN_Y = paper.min_y
+    MAX_Y = paper.max_y
+    r1 = round(2.333 * DPI) #1400 #1350 
+    r2 = r1 - 60
+    r3 = r2 - 60
+    r4 = r3 - 60
+    r5 = r4 -60
+    r1a = r1 -30
+    r2a = r2 - 30
+    r4a = r4 - 30
+    r5a = r5 -30 # for ra marker
+    r5b = r5 -100 # planet name
+    
+    r_90=r5
+    rr = 180/r_90
+    requ = int(r_90/2)
+
+    layer0 = paper.add_layer(name='0')    
+    xc = config.xc1
+    yc = config.yc1
+    #layer0.draw.circle((xc,yc),r1,fill=YELLOW)
+    layer0.draw.circle((xc,yc),r3, fill=WHITE)
+    xc = config.xc1
+    yc = config.yc1
+
+    
+    layer_bg = paper.add_layer(name='bg')
+    if g_share.f_south:
+        fn = Path(config.interpath, config.fbg_a5r_s % year)
+    else:
+        fn = Path(config.interpath, config.fbg_a5r_n % year) 
+    print('fn:%s' % fn)
+    im_bg=Image.open(fn)
+    
+    layer_bg.im.paste(im_bg, (0,0))
+    
+    cal_planet_info(year,month,day,hour,minute,tzn)
+    
+    #add_sky_plnt(paper, xc, yc,r1,r5, r5b,rr,
+    #                year,month,day,hour,minute,tzn)
+
+    print('sun_lon:', g_share.sun_lon)
+    layer_zp = paper.add_layer(name='zp')
+
+    from def_sky import r1,r2,r3,rr
+    sun_ra=g_share.pln_0[K_SUN].ra
+
+    
+    xc1 = config.xc1
+    yc1 = config.yc1
+    skip="""
+    build_dxt_zp(layer_zp.im,xc1,yc1,r1,r2,r3,rr,latv,
+                                      longv=longv,place=place,tz=tzn,lst=lst,
+                show_t_cir=False)
+    add_cir_hor_time_over(paper,xc1,yc1,r2,r3,hour,minute,second,sun_ra)
+    """
+    skip="""
+    x=OFS_X
+    y=OFS_Y + 100 
+    layer_cald = paper.add_layer(name='calendar')
+    txt_year=day_cald(layer_cald.draw,x,y,year,month,day,hour,minute,show_hm=True,tzn=tzn)
+    draw_txt_year(layer_cald.draw,x,y-100,txt_year)
+    """
+    skip="""
+    x= int(3*MM_UNIT)
+    y= int(150*MM_UNIT)
+    table_jieqi_to_zod_and_zhemonth(paper, x,y, sun_lon=g_share.sun_lon,header_f=False)
+     """
+
+    skip="""
+    # for display standard time, sun time, sidereal time
+    # 标准时”“太阳时”“恒星时
+    from ut_ast import calculate_AST, calculate_LMT
+    test_dt = datetime.datetime(year, month, day, hour, minute, 0)
+    print('timezone:%s', timezone)
+    print('calculate_LMT:',str(calculate_LMT))
+    lmt = calculate_LMT(test_dt, timezone, longv)
+    lmthr=int(lmt)
+    lmtmin =int(round((lmt%1)*60))
+    ast = calculate_AST(test_dt, timezone, longv)
+    print(f"真太阳时（AST）：{ast[0]}时{ast[1]}分")
+    
+    lsthr,lstmin = cal_lst(latv,longv,dt,timezone,form_hr_min=True)
+    FCOLOR=(0,0,0,255)
+    font=unicode_font_80
+    font1=unicode_font_42
+    x = MAX_X - int(35 *MM_UNIT)
+    y = MAX_Y - int(85*MM_UNIT)
+    ystep=100
+    y+=ystep
+    layer_cald.draw.text((x,y), text='标准时 %02d:%02d' % (hour,minute), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='平太阳时 %02d:%02d' % (lmthr,lmtmin), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='真太阳时 %02d:%02d' % (ast[0],ast[1]), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='恒星时 %d:%02d' % (lsthr,lstmin), font=font,
+            fill=FCOLOR)
+            
+    y+=ystep
+    layer_cald.draw.text((x,y), text='%+.1f時區' % tzn, font=font1,
+            fill=FCOLOR)
+            """
+    skip="""
+    x0=int(91 *MM_UNIT)
+    x1=int(x0+ 118 * MM_UNIT)
+    y0=0
+    y1=int(16 * MM_UNIT)
+    """
+    return paper
+
 
 if __name__=='__main__':
     use_current_time=False
